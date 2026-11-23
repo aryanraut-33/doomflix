@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0c10;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #252d3d;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #F0141E;
+  }
+}
+
+@layer utilities {
+  .text-glow-red {
+    text-shadow: 0 0 16px rgba(240, 20, 30, 0.7);
+  }
+  .text-glow-gold {
+    text-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+  }
+  .text-glow-emerald {
+    text-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+  }
+  .text-glow-blue {
+    text-shadow: 0 0 16px rgba(2, 132, 199, 0.6);
+  }
+
+  /* Scanline effect for high-tech multiverse HUDs */
+  .hud-scanline {
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%, 
+      rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.03),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.03)
+    );
+    background-size: 100% 3px, 4px 100%;
+  }
+
+  .clip-corner-br {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  }
+
+  .clip-corner-both {
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  }
+}
+
+/* Marvel-style Block Badge */
+.marvel-badge {
+  background-color: #F0141E;
+  color: #ffffff;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.075em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Metallic accent border */
+.metallic-card {
+  background: linear-gradient(135deg, rgba(28, 34, 46, 0.9) 0%, rgba(15, 18, 23, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metallic-card:hover {
+  border-color: rgba(240, 20, 30, 0.4);
+  box-shadow: 0 15px 35px -10px rgba(240, 20, 30, 0.2);
+}
