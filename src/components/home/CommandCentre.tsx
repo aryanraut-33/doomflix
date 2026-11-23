@@ -20,6 +20,7 @@ import { ACHIEVEMENTS } from '../../data/achievements';
 import { useAppStore } from '../../services/store';
 import { DoomsdayCountdown } from '../common/DoomsdayCountdown';
 import { GeometricCube } from '../common/GeometricCube';
+import { CinematicImage } from '../common/CinematicImage';
 import { NavTab } from '../common/Sidebar';
 
 interface CommandCentreProps {
@@ -73,7 +74,6 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
     <div className="space-y-10 pb-16">
       {/* 1. Cinematic Hero Section with 3D Geometric Chronal Cube & Countdown */}
       <section className="relative rounded-3xl overflow-hidden border border-doom-border/90 bg-gradient-to-b from-doom-900/90 via-doom-950 to-doom-950 p-6 md:p-12 shadow-2xl">
-        {/* Subtle grid background texture */}
         <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-40" />
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-doom-red/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-doom-gold/15 rounded-full blur-3xl pointer-events-none" />
@@ -223,9 +223,10 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                   className="group metallic-card rounded-2xl overflow-hidden border border-doom-border/80 hover:border-doom-red/50 cursor-pointer transition-all flex flex-col"
                 >
                   <div className="relative h-44 overflow-hidden bg-doom-950">
-                    <img
+                    <CinematicImage
                       src={title.backdropPath || title.posterPath}
                       alt={title.title}
+                      fallbackTitle={title.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
@@ -294,14 +295,16 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
 
       {/* 4. Editorial Next Up Spotlight */}
       <section className="metallic-card rounded-3xl overflow-hidden border border-doom-border/90 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
-        <div className="w-full lg:w-72 shrink-0 rounded-2xl overflow-hidden shadow-2xl relative group">
-          <img
+        <div className="w-full lg:w-72 shrink-0 rounded-2xl overflow-hidden shadow-2xl relative group bg-doom-950">
+          <CinematicImage
             src={recommendedTitle.posterPath}
             alt={recommendedTitle.title}
+            fallbackTitle={recommendedTitle.title}
+            fallbackSubtitle={String(recommendedTitle.releaseYear)}
             className="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent" />
-          <span className="absolute top-3 left-3 marvel-badge px-2 py-0.5 text-xs rounded">
+          <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent pointer-events-none" />
+          <span className="absolute top-3 left-3 marvel-badge px-2 py-0.5 text-xs rounded shadow-md">
             RECOMMENDED NEXT
           </span>
         </div>
@@ -423,7 +426,6 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
 
       {/* 6. Quick Lore Arena & Multiverse Explorer Callout */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Knowledge Arena Banner */}
         <div 
           onClick={() => onSelectTab('quiz')}
           className="metallic-card rounded-2xl p-6 border border-doom-border hover:border-doom-gold/50 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950"
@@ -448,7 +450,6 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
           </div>
         </div>
 
-        {/* Multiverse Explorer Banner */}
         <div 
           onClick={() => onSelectTab('multiverse')}
           className="metallic-card rounded-2xl p-6 border border-doom-border hover:border-doom-red/50 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950"

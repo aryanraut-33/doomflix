@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { MULTIVERSE_GRAPH_NODES, MultiverseNode } from '../../data/multiverseGraph';
 import { MARVEL_TITLES, MarvelTitle } from '../../data/marvelCatalogue';
+import { CinematicImage } from '../common/CinematicImage';
 
 interface MultiverseExplorerProps {
   onOpenTitleDetails: (title: MarvelTitle) => void;
@@ -269,7 +270,14 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
                       className="p-2.5 rounded-xl bg-doom-950 border border-doom-border hover:border-doom-red/50 cursor-pointer transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <img src={media.posterPath} alt={media.title} className="w-7 h-10 object-cover rounded" />
+                        <div className="w-7 h-10 shrink-0 rounded overflow-hidden">
+                          <CinematicImage
+                            src={media.posterPath}
+                            alt={media.title}
+                            fallbackTitle={media.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <span className="text-xs text-white font-medium truncate">{media.title}</span>
                       </div>
                       <ChevronRight size={14} className="text-gray-500 shrink-0" />

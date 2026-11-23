@@ -26,6 +26,7 @@ import { useAppStore } from '../../services/store';
 import { CollectionModal } from './CollectionModal';
 import { NotesModal } from './NotesModal';
 import { MoveCollectionModal } from './MoveCollectionModal';
+import { CinematicImage } from '../common/CinematicImage';
 
 interface WatchlistManagerProps {
   onOpenTitleDetails: (title: MarvelTitle) => void;
@@ -53,7 +54,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
     getSeriesEpisodeStats
   } = useAppStore();
 
-  // Active Collection
   const activeCol = collections.find(c => c.id === activeCollectionId) || collections[0];
 
   // Modals state
@@ -150,7 +150,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
     reorderCollectionTitles(activeCol.id, newItems);
   };
 
-  // Completion calculation for active collection
   const collectionCompletedCount = enrichedItems.filter(i => watchProgress[i.movieId]?.status === 'completed').length;
   const collectionTotalCount = enrichedItems.length;
   const collectionPercent = collectionTotalCount > 0 ? Math.round((collectionCompletedCount / collectionTotalCount) * 100) : 0;
@@ -280,7 +279,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
 
       {/* 2. Filter & Sort Toolbar */}
       <div className="bg-doom-950/80 border border-doom-border p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
-        {/* Status Filters */}
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10px] font-marvel uppercase tracking-wider text-gray-400 font-bold mr-1">
             Status:
@@ -305,9 +303,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           ))}
         </div>
 
-        {/* Dropdowns for Priority, Phase, Media & Sorting */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Priority */}
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as any)}
@@ -318,7 +314,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             <option value="optional">Optional Only</option>
           </select>
 
-          {/* Media Type */}
           <select
             value={mediaFilter}
             onChange={(e) => setMediaFilter(e.target.value as any)}
@@ -329,7 +324,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             <option value="tv">TV Series Only</option>
           </select>
 
-          {/* Phase Filter */}
           <select
             value={phaseFilter}
             onChange={(e) => setPhaseFilter(e.target.value)}
@@ -341,7 +335,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             ))}
           </select>
 
-          {/* Sort By */}
           <div className="flex items-center gap-1.5 pl-2 border-l border-doom-border">
             <ArrowUpDown size={13} className="text-gray-400" />
             <select
@@ -398,7 +391,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                     : 'border-doom-border/80'
                 }`}
               >
-                {/* Main Card Header / Summary */}
+                {/* Main Card Header */}
                 <div className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   {/* Left: Sequence + Poster + Details */}
                   <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -434,9 +427,11 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       onClick={() => onOpenTitleDetails(title)}
                       className="w-16 sm:w-20 aspect-[2/3] rounded-lg overflow-hidden bg-doom-950 shrink-0 border border-doom-border relative group cursor-pointer shadow-md"
                     >
-                      <img
+                      <CinematicImage
                         src={title.posterPath}
                         alt={title.title}
+                        fallbackTitle={title.title}
+                        fallbackSubtitle={String(title.releaseYear)}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         loading="lazy"
                       />
@@ -507,7 +502,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
 
                   {/* Right Side: Status Controls & Actions */}
                   <div className="flex flex-wrap items-center gap-2 self-end md:self-center shrink-0">
-                    {/* Status Pill Switcher */}
                     <div className="flex items-center bg-doom-950 border border-doom-border rounded-lg p-0.5">
                       <button
                         onClick={() => updateWatchStatus(title.id, 'not_started')}
@@ -542,7 +536,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       </button>
                     </div>
 
-                    {/* Priority Toggle */}
                     <button
                       onClick={() => toggleTitlePriority(activeCol.id, title.id)}
                       className="p-2 rounded-lg bg-doom-950 border border-doom-border text-gray-400 hover:text-doom-gold transition-colors"
@@ -551,7 +544,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       <Sparkles size={14} />
                     </button>
 
-                    {/* Personal Notes */}
                     <button
                       onClick={() => setNotesModalTitle(title)}
                       className={`p-2 rounded-lg bg-doom-950 border transition-colors ${
@@ -564,7 +556,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       <FileText size={14} />
                     </button>
 
-                    {/* Move to another collection */}
                     <button
                       onClick={() => setMoveModalTitle(title)}
                       className="p-2 rounded-lg bg-doom-950 border border-doom-border text-gray-400 hover:text-white transition-colors"
@@ -573,7 +564,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       <Layers size={14} />
                     </button>
 
-                    {/* Remove from active collection */}
                     <button
                       onClick={() => removeTitleFromCollection(activeCol.id, title.id)}
                       className="p-2 rounded-lg bg-doom-950 border border-doom-border text-gray-400 hover:text-red-400 transition-colors"
@@ -584,10 +574,9 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                   </div>
                 </div>
 
-                {/* TV Series Episode Accordion Breakdown */}
+                {/* TV Series Episode Breakdown */}
                 {title.mediaType === 'tv' && isExpanded && title.seasons && (
                   <div className="border-t border-doom-border/80 bg-doom-950/90 p-4 sm:p-6 space-y-4">
-                    {/* Season Selectors */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {title.seasons.map(s => (
@@ -612,7 +601,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                       )}
                     </div>
 
-                    {/* Episode List */}
                     {title.seasons
                       .filter(s => s.seasonNumber === selectedSeasonNumber)
                       .map(season => (
@@ -630,7 +618,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                                 }`}
                               >
                                 <div className="flex items-start gap-3">
-                                  {/* Checkbox */}
                                   <div className="pt-0.5">
                                     <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
                                       watched

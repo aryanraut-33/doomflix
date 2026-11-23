@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { MarvelTitle } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
+import { CinematicImage } from '../common/CinematicImage';
 
 interface TitleDetailsModalProps {
   title: MarvelTitle | null;
@@ -81,9 +82,11 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
       <div className="relative w-full max-w-4xl bg-doom-900 border border-doom-border rounded-3xl overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col">
         {/* Backdrop Image Hero Header */}
         <div className="relative h-64 sm:h-80 w-full overflow-hidden shrink-0 bg-doom-950">
-          <img
+          <CinematicImage
             src={title.backdropPath || title.posterPath}
             alt={title.title}
+            fallbackTitle={title.title}
+            fallbackSubtitle={title.releaseYear?.toString()}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-doom-900 via-doom-900/60 to-transparent" />
@@ -101,7 +104,13 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
           <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row items-start sm:items-end gap-6 z-10">
             {/* Poster Thumbnail */}
             <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden border-2 border-white/10 shadow-2xl shrink-0 hidden sm:block bg-doom-950">
-              <img src={title.posterPath} alt={title.title} className="w-full h-full object-cover" />
+              <CinematicImage
+                src={title.posterPath}
+                alt={title.title}
+                fallbackTitle={title.title}
+                fallbackSubtitle={title.releaseYear?.toString()}
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <div className="space-y-1.5 flex-1">

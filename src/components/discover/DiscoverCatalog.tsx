@@ -17,6 +17,7 @@ import {
 import { MARVEL_TITLES, MarvelTitle } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
 import { MoveCollectionModal } from '../watchlist/MoveCollectionModal';
+import { CinematicImage } from '../common/CinematicImage';
 
 // Extended discovery titles library for rich exploration
 const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
@@ -35,7 +36,7 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
     cast: ['Robert Downey Jr.', 'Gwyneth Paltrow', 'Jeff Bridges', 'Terrence Howard'],
     synopsis: 'After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil, sparking the birth of the Marvel Cinematic Universe.',
     posterPath: 'https://image.tmdb.org/t/p/w780/78lPtwv72eTNqFW9COBYI0dWDJa.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/cyecbHqH4rFqaBbtiIeStK0bS1h.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/cKvDv2LpwVEqbdXWoQl4XgGN6le.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 99,
     defaultPriority: 'optional',
@@ -69,8 +70,8 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
     director: 'Matt Shakman',
     cast: ['Elizabeth Olsen', 'Paul Bettany', 'Kathryn Hahn', 'Teyonah Parris'],
     synopsis: 'Living idealized suburban lives in the town of Westview, super-powered newlyweds Wanda and Vision begin to suspect that everything is not as it seems.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/glKDvtWUZw9leGQFiUUuJxSiOmt.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/57vVjteucIF3LGnptxqxe0vgv0.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/glKDfE6btIRcVB5zrjspRIs4r52.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/cq62fLH3vwOmiaLKMqkDI86tPtH.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 99,
     defaultPriority: 'optional',
@@ -105,7 +106,7 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
     cast: ['Chris Hemsworth', 'Tom Hiddleston', 'Cate Blanchett', 'Mark Ruffalo', 'Tessa Thompson'],
     synopsis: 'Imprisoned on the garbage planet Sakaar, Thor must race against time to return to Asgard and stop Ragnarok—the destruction of his world at the hands of the ruthless Hela.',
     posterPath: 'https://image.tmdb.org/t/p/w780/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/kaIfm5ryEOwYg8visq2SM0PVaQ2.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/vLmHH8jAy8Jq8uBsLucd3592WGh.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 99,
     defaultPriority: 'optional',
@@ -140,7 +141,7 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
     cast: ['Hugh Jackman', 'Patrick Stewart', 'Dafne Keen', 'Boyd Holbrook', 'Stephen Merchant'],
     synopsis: 'In the near future, a weary Logan cares for an ailing Professor X in a hideout on the Mexican border. But his attempts to hide from the world are upended when a young mutant closely resembling him arrives.',
     posterPath: 'https://image.tmdb.org/t/p/w780/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/5pAGnkFYSsFJ99vKiCStda09Ac1.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/4DZxWNSAyksN6N3JkvpJ53Yq6zU.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 99,
     defaultPriority: 'optional',
@@ -349,9 +350,11 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                     onClick={() => onOpenTitleDetails(title)}
                     className="relative aspect-[2/3] w-full overflow-hidden bg-doom-950 cursor-pointer"
                   >
-                    <img
+                    <CinematicImage
                       src={title.posterPath}
                       alt={title.title}
+                      fallbackTitle={title.title}
+                      fallbackSubtitle={String(title.releaseYear)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />

@@ -28,15 +28,15 @@ export interface StreamingProviderInfo {
 }
 
 export interface MarvelTitle {
-  id: string; // e.g., 'mcu-cap-1', 'mcu-loki-1'
+  id: string;
   tmdbId: number;
   mediaType: 'movie' | 'tv';
   title: string;
   originalTitle?: string;
   releaseYear: number;
   releaseDate: string;
-  runtime: number; // in mins, or avg episode runtime
-  rating: number; // TMDB rating out of 10
+  runtime: number;
+  rating: number;
   voteCount: number;
   genres: string[];
   director: string;
@@ -45,12 +45,10 @@ export interface MarvelTitle {
   posterPath: string;
   backdropPath: string;
   
-  // Curated sequence metadata
   defaultPhaseGroup: 'Phase 01 — The Avengers Foundation' | 'Phase 02 — The Multiverse' | 'Phase 03 — New Generation and Returning Universes' | 'Optional Viewing';
   defaultSequenceNumber: number;
   defaultPriority: 'essential' | 'optional';
   
-  // Contextual cinematic lore
   whyItMatters: string;
   charactersIntroduced: string[];
   relevantPlotPoints: string[];
@@ -58,10 +56,7 @@ export interface MarvelTitle {
   multiverseSignificance: string;
   canonStatus: 'Confirmed Canon' | 'Official Alternate Reality' | 'Upcoming Production' | 'Speculation / Theory';
   
-  // Streaming in India
   streamingIndia: StreamingProviderInfo[];
-  
-  // TV Series specific
   seasons?: Season[];
 }
 
@@ -83,8 +78,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Joe Johnston',
     cast: ['Chris Evans', 'Hayley Atwell', 'Sebastian Stan', 'Hugo Weaving', 'Tommy Lee Jones'],
     synopsis: 'During World War II, Steve Rogers is transformed into the super-soldier Captain America to stop the Red Skull and the rogue Nazi division HYDRA from using the Space Stone (Tesseract) to conquer the world.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/vSNxAJTlD0r02V9sPYpqjqDbe4v.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/eQN31P492EjQqZYLJ4nF81TE44.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/vSNxAJTlD0r02V9sPYpOjqDZXUK.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/yFuKvT4Vm3sKHdFY4eG6I4ldAnn.jpg',
     defaultPhaseGroup: 'Phase 01 — The Avengers Foundation',
     defaultSequenceNumber: 1,
     defaultPriority: 'essential',
@@ -164,8 +159,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Anthony Russo, Joe Russo',
     cast: ['Chris Evans', 'Robert Downey Jr.', 'Sebastian Stan', 'Chadwick Boseman', 'Tom Holland', 'Anthony Mackie', 'Paul Rudd'],
     synopsis: 'Political pressure mounts to install a system of accountability when the actions of the Avengers lead to collateral damage. The new status quo fractures the team into two opposing factions led by Steve Rogers and Tony Stark.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/rAG2v378Y3m04y6J6t6K4Hk1bS6.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/kv7v6hv2Zg560v1Y1t7N6rG9l.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/7FWlcZq3r6525LWOcvO9kNWurN1.jpg',
     defaultPhaseGroup: 'Phase 01 — The Avengers Foundation',
     defaultSequenceNumber: 3,
     defaultPriority: 'essential',
@@ -205,8 +200,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Anthony Russo, Joe Russo',
     cast: ['Robert Downey Jr.', 'Chris Hemsworth', 'Mark Ruffalo', 'Chris Evans', 'Scarlett Johansson', 'Benedict Cumberbatch', 'Josh Brolin'],
     synopsis: 'The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to half of all life in the universe.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/7WsyChvgMotZwhAcAiF8EuXrVIy.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/bOGkgRGdhrBYJSLpXaxhXVstNsV.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/mDfJG3LC3Dqb67AZ52x3Z0jU0uB.jpg',
     defaultPhaseGroup: 'Phase 01 — The Avengers Foundation',
     defaultSequenceNumber: 4,
     defaultPriority: 'essential',
@@ -292,8 +287,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Kate Herron',
     cast: ['Tom Hiddleston', 'Owen Wilson', 'Sophia Di Martino', 'Gugu Mbatha-Raw', 'Wunmi Mosaku', 'Jonathan Majors'],
     synopsis: 'After stealing the Tesseract in Endgame, an alternate Loki is brought to the mysterious Time Variance Authority (TVA), a bureaucratic organization that exists outside of time and space to preserve the Sacred Timeline.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc39gIIjqgQB09aJpHn.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/9J5qNkmZlS9w16vD04p6h21y3K3.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg',
     defaultPhaseGroup: 'Phase 02 — The Multiverse',
     defaultSequenceNumber: 6,
     defaultPriority: 'essential',
@@ -324,14 +319,14 @@ export const MARVEL_TITLES: MarvelTitle[] = [
         name: 'Season 1',
         episodeCount: 6,
         overview: 'Loki faces trial at the TVA and embarks on a multiversal pursuit of his variant Sylvie.',
-        posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc39gIIjqgQB09aJpHn.jpg',
+        posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg',
         episodes: [
-          { episodeNumber: 1, seasonNumber: 1, title: 'Glorious Purpose', runtime: 51, overview: 'After taking the Tesseract, Loki lands in the Gobi Desert and is captured by the Minutemen of the TVA.', stillPath: 'https://image.tmdb.org/t/p/w780/wS60l9tB88hW8qjF7F6vG0tH6mD.jpg', airDate: '2021-06-09' },
-          { episodeNumber: 2, seasonNumber: 1, title: 'The Variant', runtime: 54, overview: 'Mobius puts Loki to work investigating a lethal variant stalking TVA squads across apocalypse events.', stillPath: 'https://image.tmdb.org/t/p/w780/yvO45s6y6fX5yG7mP5eD1dM0x2F.jpg', airDate: '2021-06-16' },
-          { episodeNumber: 3, seasonNumber: 1, title: 'Lamentis', runtime: 43, overview: 'Loki and Sylvie are trapped on Lamentis-1 in 2077 during an impending planetary collision with no TemPad power.', stillPath: 'https://image.tmdb.org/t/p/w780/jH8G6nK5b9b8nB7yD3vT4rW2q1F.jpg', airDate: '2021-06-23' },
-          { episodeNumber: 4, seasonNumber: 1, title: 'The Nexus Event', runtime: 49, overview: 'Faced with imminent doom on Lamentis, Loki and Sylvie generate a mutual bond creating a historic nexus spike.', stillPath: 'https://image.tmdb.org/t/p/w780/4fL6vN8yP2k7jH3xG5mD8tB1v0F.jpg', airDate: '2021-06-30' },
-          { episodeNumber: 5, seasonNumber: 1, title: 'Journey Into Mystery', runtime: 50, overview: 'Pruned into the Void at the end of time, Loki meets classic, kid, alligator, and boaster variants running from Alioth.', stillPath: 'https://image.tmdb.org/t/p/w780/8bT4nF9vJ5w8kL3yH7mG2tD1x0F.jpg', airDate: '2021-07-07' },
-          { episodeNumber: 6, seasonNumber: 1, title: 'For All Time. Always.', runtime: 55, overview: 'Inside the Citadel at the End of Time, He Who Remains presents Loki and Sylvie with an impossible choice.', stillPath: 'https://image.tmdb.org/t/p/w780/5yH7mK2vL8w4jB9xG3tD1nF0b0F.jpg', airDate: '2021-07-14' }
+          { episodeNumber: 1, seasonNumber: 1, title: 'Glorious Purpose', runtime: 51, overview: 'After taking the Tesseract, Loki lands in the Gobi Desert and is captured by the Minutemen of the TVA.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-06-09' },
+          { episodeNumber: 2, seasonNumber: 1, title: 'The Variant', runtime: 54, overview: 'Mobius puts Loki to work investigating a lethal variant stalking TVA squads across apocalypse events.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-06-16' },
+          { episodeNumber: 3, seasonNumber: 1, title: 'Lamentis', runtime: 43, overview: 'Loki and Sylvie are trapped on Lamentis-1 in 2077 during an impending planetary collision with no TemPad power.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-06-23' },
+          { episodeNumber: 4, seasonNumber: 1, title: 'The Nexus Event', runtime: 49, overview: 'Faced with imminent doom on Lamentis, Loki and Sylvie generate a mutual bond creating a historic nexus spike.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-06-30' },
+          { episodeNumber: 5, seasonNumber: 1, title: 'Journey Into Mystery', runtime: 50, overview: 'Pruned into the Void at the end of time, Loki meets classic, kid, alligator, and boaster variants running from Alioth.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-07-07' },
+          { episodeNumber: 6, seasonNumber: 1, title: 'For All Time. Always.', runtime: 55, overview: 'Inside the Citadel at the End of Time, He Who Remains presents Loki and Sylvie with an impossible choice.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2021-07-14' }
         ]
       }
     ]
@@ -350,8 +345,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Justin Benson, Aaron Moorhead',
     cast: ['Tom Hiddleston', 'Sophia Di Martino', 'Owen Wilson', 'Ke Huy Quan', 'Gugu Mbatha-Raw', 'Wunmi Mosaku'],
     synopsis: 'Loki navigates an ever-expanding and increasingly dangerous multiverse in search of Sylvie, Judge Renslayer, and Miss Minutes, whilst racing against time to prevent the catastrophic overload of the Temporal Loom.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/voHUmlvjysv9257gVw8tZ8b3iWp.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/9v0R8mF5uT0yE5zJ4K6u9e2B1hP.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg',
     defaultPhaseGroup: 'Phase 02 — The Multiverse',
     defaultSequenceNumber: 7,
     defaultPriority: 'essential',
@@ -383,14 +378,14 @@ export const MARVEL_TITLES: MarvelTitle[] = [
         name: 'Season 2',
         episodeCount: 6,
         overview: 'Loki fights to stabilize the TVA and the infinite branches of time, culminating in his supreme sacrifice.',
-        posterPath: 'https://image.tmdb.org/t/p/w780/voHUmlvjysv9257gVw8tZ8b3iWp.jpg',
+        posterPath: 'https://image.tmdb.org/t/p/w780/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg',
         episodes: [
-          { episodeNumber: 1, seasonNumber: 2, title: 'Ouroboros', runtime: 47, overview: 'Loki slips between past, present, and future inside the TVA while Mobius seeks assistance from repairs guru O.B.', stillPath: 'https://image.tmdb.org/t/p/w780/3G0X1b9vN8yP2k7jH3xG5mD8tB1.jpg', airDate: '2023-10-05' },
-          { episodeNumber: 2, seasonNumber: 2, title: 'Breaking Brad', runtime: 50, overview: 'Loki and Mobius hunt down Hunter X-5 on the Sacred Timeline where he lives as an actor named Brad Wolfe.', stillPath: 'https://image.tmdb.org/t/p/w780/7G5X1b9vN8yP2k7jH3xG5mD8tB2.jpg', airDate: '2023-10-12' },
-          { episodeNumber: 3, seasonNumber: 2, title: '1893', runtime: 55, overview: 'Loki and Mobius travel to Chicago World\'s Fair in 1893 to track down Victor Timely and Miss Minutes.', stillPath: 'https://image.tmdb.org/t/p/w780/9G5X1b9vN8yP2k7jH3xG5mD8tB3.jpg', airDate: '2023-10-19' },
-          { episodeNumber: 4, seasonNumber: 2, title: 'Heart of the TVA', runtime: 51, overview: 'With the Temporal Loom on the verge of critical meltdown, the team makes a daring gambit with Timely.', stillPath: 'https://image.tmdb.org/t/p/w780/2G5X1b9vN8yP2k7jH3xG5mD8tB4.jpg', airDate: '2023-10-26' },
-          { episodeNumber: 5, seasonNumber: 2, title: 'Science/Fiction', runtime: 46, overview: 'Following the Loom explosion, Loki time-slips into the original civilian lives of his TVA friends.', stillPath: 'https://image.tmdb.org/t/p/w780/5G5X1b9vN8yP2k7jH3xG5mD8tB5.jpg', airDate: '2023-11-02' },
-          { episodeNumber: 6, seasonNumber: 2, title: 'Glorious Purpose', runtime: 57, overview: 'Loki masters his time-slipping ability, reliving centuries of trial and error before taking his eternal mantle as the God of Stories.', stillPath: 'https://image.tmdb.org/t/p/w780/1G5X1b9vN8yP2k7jH3xG5mD8tB6.jpg', airDate: '2023-11-09' }
+          { episodeNumber: 1, seasonNumber: 2, title: 'Ouroboros', runtime: 47, overview: 'Loki slips between past, present, and future inside the TVA while Mobius seeks assistance from repairs guru O.B.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-10-05' },
+          { episodeNumber: 2, seasonNumber: 2, title: 'Breaking Brad', runtime: 50, overview: 'Loki and Mobius hunt down Hunter X-5 on the Sacred Timeline where he lives as an actor named Brad Wolfe.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-10-12' },
+          { episodeNumber: 3, seasonNumber: 2, title: '1893', runtime: 55, overview: 'Loki and Mobius travel to Chicago World\'s Fair in 1893 to track down Victor Timely and Miss Minutes.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-10-19' },
+          { episodeNumber: 4, seasonNumber: 2, title: 'Heart of the TVA', runtime: 51, overview: 'With the Temporal Loom on the verge of critical meltdown, the team makes a daring gambit with Timely.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-10-26' },
+          { episodeNumber: 5, seasonNumber: 2, title: 'Science/Fiction', runtime: 46, overview: 'Following the Loom explosion, Loki time-slips into the original civilian lives of his TVA friends.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-11-02' },
+          { episodeNumber: 6, seasonNumber: 2, title: 'Glorious Purpose', runtime: 57, overview: 'Loki masters his time-slipping ability, reliving centuries of trial and error before taking his eternal mantle as the God of Stories.', stillPath: 'https://image.tmdb.org/t/p/w780/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg', airDate: '2023-11-09' }
         ]
       }
     ]
@@ -459,8 +454,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Sam Raimi',
     cast: ['Benedict Cumberbatch', 'Elizabeth Olsen', 'Xochitl Gomez', 'Benedict Wong', 'Rachel McAdams', 'Chiwetel Ejiofor', 'Patrick Stewart'],
     synopsis: 'Doctor Strange teams up with America Chavez, a teenager with the unique ability to punch star-shaped portals across the multiverse, to escape a grief-corrupted Wanda Maximoff (Scarlet Witch) armed with the Darkhold.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/wcKFYIiVDvRURrzglV9kGu7fpfY.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/ddJcSKbcp4rKZTmuyWaMhuwcfMz.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/AdyJH8kDm8xT8IKTlgpEC15ny4u.jpg',
     defaultPhaseGroup: 'Phase 02 — The Multiverse',
     defaultSequenceNumber: 9,
     defaultPriority: 'essential',
@@ -503,7 +498,7 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     cast: ['Ryan Reynolds', 'Hugh Jackman', 'Emma Corrin', 'Matthew Macfadyen', 'Dafne Keen', 'Channing Tatum', 'Wesley Snipes', 'Jennifer Garner'],
     synopsis: 'A listless Wade Wilson is plucked from his quiet life by the TVA and given an opportunity to join the MCU, only to discover his home universe (Earth-10005) is dying after the loss of its Anchor Being (Logan). He recruits a variant Wolverine to save it.',
     posterPath: 'https://image.tmdb.org/t/p/w780/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/yDHYTjA3R0ne82cu4twepEZzbR.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/by8z9Fe8y7p4jo2YlW2SZDnptyT.jpg',
     defaultPhaseGroup: 'Phase 02 — The Multiverse',
     defaultSequenceNumber: 10,
     defaultPriority: 'essential',
@@ -549,8 +544,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Bryan Singer',
     cast: ['Hugh Jackman', 'Patrick Stewart', 'Ian McKellen', 'Famke Janssen', 'James Marsden', 'Halle Berry', 'Anna Paquin'],
     synopsis: 'In a world where mutants exist and are feared by humanity, two mutant groups with differing philosophies clash: Professor Charles Xavier\'s peaceful X-Men and Magneto\'s militant Brotherhood of Mutants.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/bRDAc4GogS9ciRAggTwviBmXdMm.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/5j1bY3d3H2L3s5nJ2K2H6G5u4bT.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/bRDAc4GogyS9ci3ow7UnInOcriN.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/3QUVzbcNyfGe3ocWkYAT8emK8Co.jpg',
     defaultPhaseGroup: 'Phase 03 — New Generation and Returning Universes',
     defaultSequenceNumber: 11,
     defaultPriority: 'essential',
@@ -590,8 +585,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Bryan Singer',
     cast: ['Hugh Jackman', 'Patrick Stewart', 'Ian McKellen', 'Brian Cox', 'Alan Cumming', 'Famke Janssen', 'Halle Berry'],
     synopsis: 'When anti-mutant military scientist William Stryker raids the Xavier mansion, the X-Men must form an uneasy alliance with their bitter enemy Magneto to stop Stryker from weaponizing Cerebro against all mutants on Earth.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/hB8xQW2B8a9y6qF4b9a1M2n3D5k.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/9J2m7qW3k5L0s1H7j2R8g5v3b9N.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/bst4alFUXCxISwdRUKSMhhkrX1M.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/s8ftvFvafWWEhApISamHx32bx6h.jpg',
     defaultPhaseGroup: 'Phase 03 — New Generation and Returning Universes',
     defaultSequenceNumber: 12,
     defaultPriority: 'essential',
@@ -631,8 +626,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Jake Schreier',
     cast: ['Florence Pugh', 'Sebastian Stan', 'David Harbour', 'Wyatt Russell', 'Hannah John-Kamen', 'Julia Louis-Dreyfus', 'Lewis Pullman'],
     synopsis: 'An irreverent team-up of reformed anti-heroes and disillusioned government operatives—including Yelena Belova, Bucky Barnes, Red Guardian, and U.S. Agent—find themselves on an unsanctioned suicide mission after being sent to their deaths by the CIA.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/m9EtP1Yp09x7sF4w8m6v2d1n9hA.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/9J2m7qW3k5L0s1H7j2R8g5v3b9N.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/hqcexYHbiTBfDIdDWxrxPtVndBX.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/rthMuZfFv4fqEU4JVbgSW9wQ8rs.jpg',
     defaultPhaseGroup: 'Phase 03 — New Generation and Returning Universes',
     defaultSequenceNumber: 13,
     defaultPriority: 'essential',
@@ -671,8 +666,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Matt Shakman',
     cast: ['Pedro Pascal', 'Vanessa Kirby', 'Joseph Quinn', 'Ebon Moss-Bachrach', 'Ralph Ineson', 'Julia Garner'],
     synopsis: 'Set against the vibrant backdrop of a 1960s retro-futuristic alternate universe, Marvel\'s First Family—Reed Richards, Sue Storm, Johnny Storm, and Ben Grimm—must defend their world from the planet-devouring Galactus and his herald Shalla-Bal.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/4fL6vN8yP2k7jH3xG5mD8tB1v0F.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/nf5qaSEvyYSNeFH0YhSs5EsBLX9.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/s94NjfKkcSczZ1FembwmQZwsuwY.jpg',
     defaultPhaseGroup: 'Phase 03 — New Generation and Returning Universes',
     defaultSequenceNumber: 14,
     defaultPriority: 'essential',
@@ -716,7 +711,7 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     cast: ['Letitia Wright', 'Angela Bassett', 'Tenoch Huerta Mejía', 'Danai Gurira', 'Lupita Nyong\'o', 'Winston Duke', 'Dominique Thorne'],
     synopsis: 'Following the death of King T\'Challa, Queen Ramonda, Shuri, M\'Baku, and the Dora Milaje fight to protect their nation from intervening world powers and an undersea civilization led by Namor.',
     posterPath: 'https://image.tmdb.org/t/p/w780/sv1xJUazXeYqALzczSZ3O6nkH75.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/xDMIl84Qo5Tsu62c9DGWhmPI672.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/83H0C66AcvkwpG2738VCTHMY9uv.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 15,
     defaultPriority: 'optional',
@@ -756,8 +751,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Julius Onah',
     cast: ['Anthony Mackie', 'Harrison Ford', 'Danny Ramirez', 'Shira Haas', 'Carl Lumbly', 'Giancarlo Esposito', 'Tim Blake Nelson'],
     synopsis: 'Sam Wilson finds himself in the middle of an international incident after meeting with newly elected U.S. President Thaddeus Ross, uncovering a sinister global conspiracy centered on Adamantium and the frozen Celestial Tiamut.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/pmAvLucp8kIq07iQY79B0v64j1y.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/9J2m7qW3k5L0s1H7j2R8g5v3b9N.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/ce3prrjh9ZehEl5JinNqr4jIeaB.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 16,
     defaultPriority: 'optional',
@@ -796,8 +791,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Destin Daniel Cretton',
     cast: ['Simu Liu', 'Tony Leung Chiu-wai', 'Awkwafina', 'Meng\'er Zhang', 'Fala Chen', 'Michelle Yeoh', 'Ben Kingsley'],
     synopsis: 'Shang-Chi, a martial artist living quietly in San Francisco, is confronted by his mysterious past when he is drawn into the clandestine Ten Rings organization led by his immortal father Wenwu.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/1BIoJGKbXjdFDAvFarI3ZoqjQ9I.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/cinER0ESG0eJ49kXlExM0MEWGxW.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/9f2Q0U3IOsLgrI2HkvldwSABZy5.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/r7K6Xt0RX4Mw0cAbZVw5cyb1Tux.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 17,
     defaultPriority: 'optional',
@@ -837,8 +832,8 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     director: 'Bryan Singer',
     cast: ['Hugh Jackman', 'James McAvoy', 'Michael Fassbender', 'Jennifer Lawrence', 'Patrick Stewart', 'Ian McKellen', 'Peter Dinklage'],
     synopsis: 'In a dystopian future where unstoppable Sentinels hunt mutants and humans alike to extinction, the surviving X-Men send Wolverine\'s consciousness back to 1973 to prevent Mystique from assassinating Sentinel creator Bolivar Trask.',
-    posterPath: 'https://image.tmdb.org/t/p/w780/tTKvgpE1F30v8l2Q7oMv2N5a3aT.jpg',
-    backdropPath: 'https://image.tmdb.org/t/p/original/5j1bY3d3H2L3s5nJ2K2H6G5u4bT.jpg',
+    posterPath: 'https://image.tmdb.org/t/p/w780/tYfijzolzgoMOtegh1Y7j2Enorg.jpg',
+    backdropPath: 'https://image.tmdb.org/t/p/original/3czpqXzFy5UcNuD1AubecRLWkwD.jpg',
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 18,
     defaultPriority: 'optional',
