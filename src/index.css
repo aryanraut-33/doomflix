@@ -2,63 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    color-scheme: dark;
-  }
-  
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0a0c10;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #252d3d;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #F0141E;
-  }
+:root {
+  color-scheme: dark;
 }
 
-@layer utilities {
-  .text-glow-red {
-    text-shadow: 0 0 16px rgba(240, 20, 30, 0.7);
-  }
-  .text-glow-gold {
-    text-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
-  }
-  .text-glow-emerald {
-    text-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
-  }
-  .text-glow-blue {
-    text-shadow: 0 0 16px rgba(2, 132, 199, 0.6);
-  }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0c10;
+}
+::-webkit-scrollbar-thumb {
+  background: #252d3d;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F0141E;
+}
 
-  /* Scanline effect for high-tech multiverse HUDs */
-  .hud-scanline {
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%, 
-      rgba(0, 0, 0, 0.25) 50%
-    ), linear-gradient(
-      90deg,
-      rgba(255, 0, 0, 0.03),
-      rgba(0, 255, 0, 0.01),
-      rgba(0, 0, 255, 0.03)
-    );
-    background-size: 100% 3px, 4px 100%;
-  }
+.text-glow-red {
+  text-shadow: 0 0 16px rgba(240, 20, 30, 0.7);
+}
+.text-glow-gold {
+  text-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+}
+.text-glow-emerald {
+  text-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+}
+.text-glow-blue {
+  text-shadow: 0 0 16px rgba(2, 132, 199, 0.6);
+}
 
-  .clip-corner-br {
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
-  }
+/* Scanline effect for high-tech multiverse HUDs */
+.hud-scanline {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 4px 100%;
+}
 
-  .clip-corner-both {
-    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
-  }
+.clip-corner-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.clip-corner-both {
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 
 /* Marvel-style Block Badge */
