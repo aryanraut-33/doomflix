@@ -62,7 +62,7 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
             <span>INTERACTIVE MULTIVERSE ATLAS & INCURSION NEXUS</span>
           </div>
 
-          <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider text-glow-red">
+          <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider ">
             MULTIVERSE EXPLORER
           </h2>
 
@@ -96,7 +96,7 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
               onClick={() => setFilterCategory(opt.id as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all ${
                 filterCategory === opt.id
-                  ? 'bg-doom-red text-white font-bold shadow-glow-red'
+                  ? 'bg-doom-red text-white font-bold shadow-sm'
                   : 'bg-doom-900 text-gray-400 hover:text-white border border-doom-border'
               }`}
             >
@@ -143,13 +143,13 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
               let badgeColor = 'bg-doom-800 text-gray-300 border-doom-border';
 
               if (node.id === 'earth-616') {
-                badgeColor = isSelected ? 'bg-doom-red text-white border-doom-red shadow-glow-red' : 'bg-doom-red/20 text-doom-red border-doom-red/40';
+                badgeColor = isSelected ? 'bg-doom-red text-white border-doom-red shadow-sm' : 'bg-doom-red/20 text-doom-red border-doom-red/40';
               } else if (node.category === 'incursion') {
-                badgeColor = isSelected ? 'bg-doom-red text-white border-doom-red shadow-glow-red animate-pulse' : 'bg-red-950 text-red-300 border-red-800';
+                badgeColor = isSelected ? 'bg-doom-red text-white border-doom-red shadow-sm animate-pulse' : 'bg-red-950 text-red-300 border-red-800';
               } else if (node.category === 'organization') {
-                badgeColor = isSelected ? 'bg-doom-gold text-doom-950 border-doom-gold shadow-glow-gold' : 'bg-amber-950 text-doom-gold border-amber-800';
+                badgeColor = isSelected ? 'bg-doom-gold text-doom-950 border-doom-gold shadow-sm' : 'bg-amber-950 text-doom-gold border-amber-800';
               } else {
-                badgeColor = isSelected ? 'bg-doom-blue text-white border-doom-blue shadow-glow-blue' : 'bg-blue-950 text-blue-300 border-blue-800';
+                badgeColor = isSelected ? 'bg-doom-blue text-white border-doom-blue shadow-sm' : 'bg-blue-950 text-blue-300 border-blue-800';
               }
 
               return (

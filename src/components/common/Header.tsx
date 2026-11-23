@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
         {user.isGuest ? (
           <button
             onClick={onOpenAuth}
-            className="flex items-center gap-1.5 bg-doom-red hover:bg-doom-red-bright text-white px-3 py-1.5 rounded-md text-xs font-semibold shadow-glow-red transition-all"
+            className="flex items-center gap-1.5 bg-doom-red hover:bg-doom-red-bright text-white px-3 py-1.5 rounded-md text-xs font-semibold shadow-sm transition-all"
           >
             <LogIn size={13} />
             <span>Sign In / Sync</span>

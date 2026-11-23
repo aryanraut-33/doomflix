@@ -10,10 +10,11 @@ import {
   Award, 
   HelpCircle, 
   Compass, 
-  Flame,
-  ChevronRight,
-  TrendingUp,
-  Bookmark
+  ChevronRight, 
+  Bookmark,
+  Layers,
+  ShieldCheck,
+  TrendingUp
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalogue';
 import { ACHIEVEMENTS } from '../../data/achievements';
@@ -22,6 +23,11 @@ import { DoomsdayCountdown } from '../common/DoomsdayCountdown';
 import { CinematicImage } from '../common/CinematicImage';
 import { RotatingHeroPane } from './RotatingHeroPane';
 import { NavTab } from '../common/Sidebar';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
+import { NumberTicker } from '../magicui/number-ticker';
+import { BorderBeam } from '../magicui/border-beam';
 
 interface CommandCentreProps {
   onSelectTab: (tab: NavTab) => void;
@@ -35,18 +41,11 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
     getSeriesEpisodeStats, 
     overallStats, 
     unlockedAchievements,
-    collections,
-    activeCollectionId
   } = useAppStore();
 
   // Find currently watching / in-progress titles
   const inProgressTitles = MARVEL_TITLES.filter(
     t => watchProgress[t.id]?.status === 'in_progress'
-  );
-
-  // Find recently completed titles
-  const recentlyCompletedTitles = MARVEL_TITLES.filter(
-    t => watchProgress[t.id]?.status === 'completed'
   );
 
   // Determine Recommended Next Title
@@ -70,6 +69,9 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
     };
   });
 
+  // Identify active operational phase
+  const activePhaseData = phaseStats.find(p => p.percent < 100) || phaseStats[0];
+
   return (
     <div className="space-y-10 pb-16">
       {/* 1. Cinematic Rotating Hero Screen (Curated Showcase & Active Phase Movies) */}
@@ -81,92 +83,104 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
       {/* 2. Official Avengers: Doomsday Nexus Countdown */}
       <DoomsdayCountdown variant="hero" />
 
-      {/* 2. Command Centre Intelligence & Overview Metrics */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border flex flex-col justify-between">
-          <div className="flex items-center justify-between text-gray-400 text-xs">
-            <span className="font-marvel uppercase tracking-wider">Completion Rate</span>
-            <TrendingUp size={16} className="text-doom-red" />
+      {/* 3. Asymmetric Mission Telemetry Bar (No generic 4-card SaaS grid) */}
+      <section className="metallic-card p-6 rounded-2xl border border-border flex flex-col lg:flex-row items-stretch justify-between gap-6 shadow-card">
+        {/* Left: Active Phase Mission Progress */}
+        <div className="flex-1 space-y-2.5">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-doom-red animate-pulse" />
+              <span className="font-marvel uppercase tracking-wider text-muted-foreground font-semibold">
+                Active Multiverse Mission
+              </span>
+            </div>
+            <span className="font-mono text-doom-gold text-xs font-bold">
+              <NumberTicker value={activePhaseData.percent} />% PREPARED
+            </span>
           </div>
-          <div className="font-cinematic text-4xl lg:text-5xl text-white font-black tracking-wider my-1">
-            {overallStats.completionPercentage}%
+
+          <div className="font-cinematic text-2xl sm:text-3xl text-white uppercase tracking-wider">
+            {activePhaseData.name}
           </div>
-          <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-doom-red to-doom-gold rounded-full"
-              style={{ width: `${overallStats.completionPercentage}%` }}
-            />
+
+          <Progress value={activePhaseData.percent} indicatorClassName="bg-gradient-to-r from-doom-red to-doom-gold" />
+
+          <div className="flex justify-between text-[11px] text-muted-foreground font-mono">
+            <span>{activePhaseData.completed} of {activePhaseData.total} Phase Titles Verified</span>
+            <button
+              onClick={() => onSelectTab('watchlist')}
+              className="text-doom-red hover:underline font-semibold"
+            >
+              Open Phase Sequence →
+            </button>
           </div>
         </div>
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border flex flex-col justify-between">
-          <div className="flex items-center justify-between text-gray-400 text-xs">
-            <span className="font-marvel uppercase tracking-wider">Movies Watched</span>
-            <Film size={16} className="text-doom-gold" />
-          </div>
-          <div className="font-cinematic text-4xl lg:text-5xl text-white font-black tracking-wider my-1">
-            {overallStats.moviesWatched}
-          </div>
-          <div className="text-[11px] text-gray-400 font-mono">
-            Across Marvel cinematic canon
-          </div>
-        </div>
+        {/* Center Divider */}
+        <div className="hidden lg:block w-[1px] bg-border my-1" />
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border flex flex-col justify-between">
-          <div className="flex items-center justify-between text-gray-400 text-xs">
-            <span className="font-marvel uppercase tracking-wider">Series Completed</span>
-            <Tv size={16} className="text-doom-emerald" />
+        {/* Right: Telemetry Metrics in High-Density Alignment */}
+        <div className="flex items-center gap-8 justify-around lg:justify-start px-2 sm:px-6">
+          <div className="text-center sm:text-left">
+            <div className="text-[10px] font-marvel uppercase tracking-widest text-muted-foreground font-semibold">
+              Readiness Status
+            </div>
+            <div className="font-cinematic text-4xl sm:text-5xl text-white font-black tracking-wider leading-none mt-1">
+              <NumberTicker value={overallStats.completionPercentage} />%
+            </div>
+            <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+              {overallStats.completedCount}/{overallStats.totalTitles} Titles Watched
+            </div>
           </div>
-          <div className="font-cinematic text-4xl lg:text-5xl text-white font-black tracking-wider my-1">
-            {overallStats.seriesCompleted}
-          </div>
-          <div className="text-[11px] text-gray-400 font-mono">
-            TVA & Multiverse serials
-          </div>
-        </div>
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border flex flex-col justify-between">
-          <div className="flex items-center justify-between text-gray-400 text-xs">
-            <span className="font-marvel uppercase tracking-wider">Badges Earned</span>
-            <Award size={16} className="text-purple-400" />
-          </div>
-          <div className="font-cinematic text-4xl lg:text-5xl text-white font-black tracking-wider my-1">
-            {unlockedAchievements.length} <span className="text-xl text-gray-400 font-normal">/ {ACHIEVEMENTS.length}</span>
-          </div>
-          <div className="text-[11px] text-gray-400 font-mono">
-            Operative status active
+          <div className="text-center sm:text-left">
+            <div className="text-[10px] font-marvel uppercase tracking-widest text-muted-foreground font-semibold">
+              Badges Cleared
+            </div>
+            <div className="font-cinematic text-4xl sm:text-5xl text-doom-gold font-black tracking-wider leading-none mt-1">
+              <NumberTicker value={unlockedAchievements.length} />
+              <span className="text-xl text-muted-foreground">/{ACHIEVEMENTS.length}</span>
+            </div>
+            <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+              Level {Math.max(1, Math.floor(unlockedAchievements.length / 2))} Operative
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. Continue Watching / Currently Watching Section */}
+      {/* 4. Continue Watching / Currently Watching Section */}
       {inProgressTitles.length > 0 && (
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-doom-red animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-doom-red" />
               <h3 className="font-cinematic text-2xl md:text-3xl uppercase tracking-wider text-white">
                 Continue Watching
               </h3>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => onSelectTab('watchlist')}
-              className="text-xs text-gray-400 hover:text-white flex items-center gap-1 font-medium"
+              className="text-gray-400 hover:text-white"
             >
               <span>View All</span>
               <ChevronRight size={14} />
-            </button>
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {inProgressTitles.map((title) => {
+            {inProgressTitles.map((title, idx) => {
               const epStats = title.mediaType === 'tv' ? getSeriesEpisodeStats(title.id) : null;
               return (
                 <div
                   key={title.id}
                   onClick={() => onOpenTitleDetails(title)}
-                  className="group metallic-card rounded-2xl overflow-hidden border border-doom-border/80 hover:border-doom-red/50 cursor-pointer transition-all flex flex-col"
+                  className="group relative metallic-card rounded-2xl overflow-hidden border border-border hover:border-white/30 cursor-pointer transition-all flex flex-col shadow-card"
                 >
+                  {/* Subtle Magic UI BorderBeam on the first in-progress item */}
+                  {idx === 0 && <BorderBeam size={150} duration={8} borderWidth={1.5} />}
+
                   <div className="relative h-44 overflow-hidden bg-doom-950">
                     <CinematicImage
                       src={title.backdropPath || title.posterPath}
@@ -181,7 +195,10 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                       {title.mediaType === 'tv' ? 'TV SERIES' : 'MOVIE'}
                     </span>
 
-                    <button className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-doom-red text-white flex items-center justify-center shadow-glow-red group-hover:scale-110 transition-transform">
+                    <button 
+                      className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-doom-red text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
+                      aria-label="Play title"
+                    >
                       <Play size={16} fill="white" />
                     </button>
                   </div>
@@ -191,13 +208,13 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                       <h4 className="font-marvel text-lg text-white font-bold tracking-wide truncate">
                         {title.title}
                       </h4>
-                      <p className="text-xs text-gray-400 line-clamp-1 mt-0.5">
+                      <p className="text-xs text-gray-400 line-clamp-1 mt-0.5 font-sans">
                         {title.whyItMatters}
                       </p>
                     </div>
 
                     {/* Progress indicator */}
-                    <div className="mt-3 pt-3 border-t border-doom-border/60">
+                    <div className="mt-3 pt-3 border-t border-border">
                       {title.mediaType === 'tv' && epStats ? (
                         <div>
                           <div className="flex justify-between text-[11px] mb-1 font-mono">
@@ -208,25 +225,22 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                             </span>
                             <span className="text-doom-gold font-bold">{epStats.watched}/{epStats.total} eps</span>
                           </div>
-                          <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-doom-gold rounded-full transition-all"
-                              style={{ width: `${epStats.percentage}%` }}
-                            />
-                          </div>
+                          <Progress value={epStats.percentage} indicatorClassName="bg-doom-gold" />
                         </div>
                       ) : (
                         <div className="flex items-center justify-between text-xs text-doom-gold font-mono">
-                          <span>Marked In Progress</span>
-                          <button
+                          <span>In Progress</span>
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               updateWatchStatus(title.id, 'completed');
                             }}
-                            className="text-[11px] bg-doom-800 hover:bg-doom-red hover:text-white px-2 py-0.5 rounded text-gray-300 transition-colors"
+                            className="h-6 text-[10px] px-2"
                           >
                             Mark Complete
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -238,9 +252,9 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
         </section>
       )}
 
-      {/* 4. Editorial Next Up Spotlight */}
-      <section className="metallic-card rounded-3xl overflow-hidden border border-doom-border/90 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
-        <div className="w-full lg:w-72 shrink-0 rounded-2xl overflow-hidden shadow-2xl relative group bg-doom-950">
+      {/* 5. Editorial Next Up Spotlight */}
+      <section className="metallic-card rounded-3xl overflow-hidden border border-border p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950 shadow-card">
+        <div className="w-full lg:w-72 shrink-0 rounded-2xl overflow-hidden relative group bg-doom-950 shadow-md">
           <CinematicImage
             src={recommendedTitle.posterPath}
             alt={recommendedTitle.title}
@@ -249,16 +263,16 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
             className="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent pointer-events-none" />
-          <span className="absolute top-3 left-3 marvel-badge px-2 py-0.5 text-xs rounded shadow-md">
+          <Badge variant="marvel" className="absolute top-3 left-3 text-xs px-2 py-0.5 rounded shadow-sm">
             RECOMMENDED NEXT
-          </span>
+          </Badge>
         </div>
 
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono uppercase tracking-widest text-doom-gold">
+            <Badge variant="outline" className="text-doom-gold border-doom-gold/30">
               {recommendedTitle.defaultPhaseGroup}
-            </span>
+            </Badge>
             <span className="text-gray-500">•</span>
             <span className="text-xs text-gray-400 font-mono">#{recommendedTitle.defaultSequenceNumber} in sequence</span>
           </div>
@@ -271,36 +285,38 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
             {recommendedTitle.synopsis}
           </p>
 
-          <div className="bg-doom-950/80 p-4 rounded-xl border border-doom-border/80">
+          <div className="bg-doom-950/90 p-4 rounded-xl border border-border">
             <div className="text-[10px] font-marvel uppercase tracking-wider text-doom-red font-bold mb-1">
               Why This Matters To Avengers: Doomsday
             </div>
-            <p className="text-xs text-gray-300 italic font-sans">
+            <p className="text-xs text-gray-300 font-sans leading-relaxed">
               "{recommendedTitle.whyItMatters}"
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <button
+            <Button
+              variant="default"
+              size="lg"
               onClick={() => onOpenTitleDetails(recommendedTitle)}
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold tracking-wide shadow-glow-red transition-all flex items-center gap-2"
             >
               <span>Explore Lore & Episodes</span>
               <ArrowRight size={14} />
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => updateWatchStatus(recommendedTitle.id, 'completed')}
-              className="bg-doom-900 hover:bg-doom-800 border border-doom-border hover:border-doom-emerald text-gray-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2"
             >
               <CheckCircle2 size={15} className="text-doom-emerald" />
               <span>Mark as Watched</span>
-            </button>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* 5. Progress by Cinematic Phase */}
+      {/* 6. Progress by Cinematic Phase */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-cinematic text-2xl md:text-3xl uppercase tracking-wider text-white">
@@ -316,7 +332,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
             <div
               key={idx}
               onClick={() => onSelectTab('watchlist')}
-              className="metallic-card p-5 rounded-2xl border border-doom-border/80 hover:border-doom-border-light cursor-pointer transition-all flex flex-col justify-between"
+              className="metallic-card p-5 rounded-2xl border border-border hover:border-white/20 cursor-pointer transition-all flex flex-col justify-between shadow-card"
             >
               <div>
                 <div className="flex justify-between items-center text-xs mb-2">
@@ -354,12 +370,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
               </div>
 
               <div>
-                <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden mb-1">
-                  <div
-                    className="h-full bg-gradient-to-r from-doom-red to-doom-gold rounded-full transition-all"
-                    style={{ width: `${phase.percent}%` }}
-                  />
-                </div>
+                <Progress value={phase.percent} indicatorClassName="bg-gradient-to-r from-doom-red to-doom-gold" className="h-1.5 mb-1" />
                 <div className="text-[10px] text-gray-400 text-right font-mono">
                   {phase.percent}% completed
                 </div>
@@ -369,11 +380,11 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
         </div>
       </section>
 
-      {/* 6. Quick Lore Arena & Multiverse Explorer Callout */}
+      {/* 7. Quick Lore Arena & Multiverse Explorer Callout */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div 
           onClick={() => onSelectTab('quiz')}
-          className="metallic-card rounded-2xl p-6 border border-doom-border hover:border-doom-gold/50 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950"
+          className="metallic-card rounded-2xl p-6 border border-border hover:border-doom-gold/40 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950 shadow-card"
         >
           <div className="space-y-2 max-w-sm">
             <span className="text-[10px] font-marvel uppercase tracking-wider text-doom-gold font-bold">
@@ -390,14 +401,14 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
               <ChevronRight size={14} />
             </div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-doom-gold/10 border border-doom-gold/30 flex items-center justify-center text-doom-gold shadow-glow-gold shrink-0">
-            <HelpCircle size={32} />
+          <div className="w-14 h-14 rounded-2xl bg-doom-gold/10 border border-doom-gold/30 flex items-center justify-center text-doom-gold shrink-0">
+            <HelpCircle size={28} />
           </div>
         </div>
 
         <div 
           onClick={() => onSelectTab('multiverse')}
-          className="metallic-card rounded-2xl p-6 border border-doom-border hover:border-doom-red/50 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950"
+          className="metallic-card rounded-2xl p-6 border border-border hover:border-doom-red/40 cursor-pointer transition-all flex items-center justify-between group bg-gradient-to-br from-doom-900 to-doom-950 shadow-card"
         >
           <div className="space-y-2 max-w-sm">
             <span className="text-[10px] font-marvel uppercase tracking-wider text-doom-red font-bold">
@@ -414,8 +425,8 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
               <ChevronRight size={14} />
             </div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-doom-red/10 border border-doom-red/30 flex items-center justify-center text-doom-red shadow-glow-red shrink-0">
-            <Compass size={32} />
+          <div className="w-14 h-14 rounded-2xl bg-doom-red/10 border border-doom-red/30 flex items-center justify-center text-doom-red shrink-0">
+            <Compass size={28} />
           </div>
         </div>
       </section>

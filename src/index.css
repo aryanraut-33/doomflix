@@ -2,83 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
+@layer base {
+  :root {
+    --background: 228 28% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 226 22% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 226 22% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 356 85% 48%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 224 18% 13%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 224 18% 12%;
+    --muted-foreground: 215 16% 62%;
+
+    --accent: 43 65% 52%;
+    --accent-foreground: 228 28% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 224 14% 17%;
+    --input: 224 14% 17%;
+    --ring: 356 85% 48%;
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    color-scheme: dark;
+  }
 }
 
-/* Custom scrollbar */
+/* Custom discreet scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0c10;
+  background: #090a0f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #252d3d;
-  border-radius: 3px;
+  background: #23293b;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #F0141E;
-}
-
-.text-glow-red {
-  text-shadow: 0 0 16px rgba(240, 20, 30, 0.7);
-}
-.text-glow-gold {
-  text-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
-}
-.text-glow-emerald {
-  text-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
-}
-.text-glow-blue {
-  text-shadow: 0 0 16px rgba(2, 132, 199, 0.6);
-}
-
-/* Scanline effect for high-tech multiverse HUDs */
-.hud-scanline {
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
-  );
-  background-size: 100% 3px, 4px 100%;
-}
-
-.clip-corner-br {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
-}
-
-.clip-corner-both {
-  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  background: #e21b24;
 }
 
 /* Marvel-style Block Badge */
 .marvel-badge {
-  background-color: #F0141E;
+  background-color: #e21b24;
   color: #ffffff;
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.075em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.08em;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-/* Metallic accent border */
+/* Subtle Matte Metallic Card (No cheap glowing drop-shadows) */
 .metallic-card {
-  background: linear-gradient(135deg, rgba(28, 34, 46, 0.9) 0%, rgba(15, 18, 23, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(145deg, rgba(20, 24, 36, 0.95), rgba(12, 14, 21, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
 }
 
-.metallic-card:hover {
-  border-color: rgba(240, 20, 30, 0.4);
-  box-shadow: 0 15px 35px -10px rgba(240, 20, 30, 0.2);
+.metallic-card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.metallic-card-hover:hover {
+  border-color: rgba(226, 27, 36, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.75);
+}
+
+/* Technical angled corners */
+.clip-corner-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
 }

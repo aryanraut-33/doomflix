@@ -4,45 +4,98 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
         doom: {
-          950: '#060709',
-          900: '#0a0c10',
-          850: '#0f1217',
-          800: '#151922',
-          750: '#1c222e',
-          700: '#252d3d',
-          600: '#384358',
-          border: '#222838',
-          'border-light': '#323b4e',
-          red: '#F0141E',
+          950: '#090a0f',
+          900: '#10131b',
+          850: '#141824',
+          800: '#1a1f2e',
+          750: '#21273a',
+          700: '#2a3148',
+          600: '#3d4764',
+          border: '#23293b',
+          'border-light': '#313950',
+          red: '#e21b24',
           'red-dark': '#9e0d14',
           'red-bright': '#ff2a35',
-          gold: '#f59e0b',
+          gold: '#d8a63f',
           'gold-dark': '#b45309',
-          emerald: '#10b981',
+          emerald: '#1bc775',
           blue: '#0284c7',
         }
       },
       fontFamily: {
         cinematic: ['"Bebas Neue"', 'sans-serif'],
         marvel: ['"Oswald"', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        editorial: ['"Rozha One"', 'serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        'glow-red': '0 0 25px -5px rgba(240, 20, 30, 0.45)',
-        'glow-red-lg': '0 0 50px -10px rgba(240, 20, 30, 0.6)',
-        'glow-gold': '0 0 25px -5px rgba(245, 158, 11, 0.4)',
-        'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.4)',
-        'cinematic': '0 20px 40px -15px rgba(0, 0, 0, 0.85)',
+        'cinematic': '0 20px 40px -15px rgba(0, 0, 0, 0.9)',
+        'subtle': '0 2px 10px rgba(0, 0, 0, 0.4)',
+        'card': '0 8px 24px -4px rgba(0, 0, 0, 0.5)',
       },
       backgroundImage: {
-        'radial-vignette': 'radial-gradient(circle at center, transparent 40%, rgba(6, 7, 9, 0.95) 100%)',
-        'subtle-grid': 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
-      }
+        'radial-vignette': 'radial-gradient(circle at center, transparent 40%, rgba(9, 10, 15, 0.98) 100%)',
+        'subtle-grid': 'linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px)',
+      },
+      keyframes: {
+        "shimmer-slide": {
+          to: {
+            transform: "translate(calc(100cqw - 100%), 0)",
+          },
+        },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
+      },
+      animation: {
+        "shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
+      },
     },
   },
   plugins: [],

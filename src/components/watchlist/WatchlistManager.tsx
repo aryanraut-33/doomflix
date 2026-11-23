@@ -170,7 +170,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                     onClick={() => setActiveCollectionId(col.id)}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-marvel tracking-wider uppercase transition-all flex items-center gap-2 ${
                       isActive
-                        ? 'bg-doom-red text-white font-bold shadow-glow-red'
+                        ? 'bg-doom-red text-white font-bold shadow-sm'
                         : 'bg-doom-950/80 text-gray-400 hover:text-white border border-doom-border'
                     }`}
                   >
@@ -267,7 +267,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
 
               <button
                 onClick={onNavigateDiscover}
-                className="bg-doom-red hover:bg-doom-red-bright text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-glow-red flex items-center gap-1.5"
+                className="bg-doom-red hover:bg-doom-red-bright text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
               >
                 <Plus size={14} />
                 <span>Add Title</span>
@@ -294,7 +294,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               onClick={() => setStatusFilter(opt.val as any)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 statusFilter === opt.val
-                  ? 'bg-doom-red text-white font-semibold shadow-glow-red'
+                  ? 'bg-doom-red text-white font-semibold shadow-sm'
                   : 'bg-doom-900 text-gray-400 hover:text-white border border-doom-border'
               }`}
             >
@@ -365,7 +365,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           </p>
           <button
             onClick={onNavigateDiscover}
-            className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-glow-red inline-flex items-center gap-2"
+            className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm inline-flex items-center gap-2"
           >
             <Plus size={15} />
             <span>Discover Titles to Add</span>

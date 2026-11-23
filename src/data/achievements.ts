@@ -4,7 +4,7 @@ export interface Achievement {
   description: string;
   unlockCondition: string;
   icon: string;
-  badgeColor: 'red' | 'gold' | 'emerald' | 'blue' | 'purple';
+  badgeColor: 'red' | 'gold' | 'emerald' | 'blue';
   rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary';
 }
 
@@ -60,7 +60,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Create and complete your first custom collection.',
     unlockCondition: 'Create a custom collection and mark all its titles watched',
     icon: 'bookmark',
-    badgeColor: 'purple',
+    badgeColor: 'gold',
     rarity: 'Rare'
   },
   {

@@ -84,7 +84,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
                 onClick={() => setPriority('essential')}
                 className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-all ${
                   priority === 'essential'
-                    ? 'bg-doom-red text-white border-doom-red shadow-glow-red'
+                    ? 'bg-doom-red text-white border-doom-red shadow-sm'
                     : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
                 }`}
               >
@@ -95,7 +95,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
                 onClick={() => setPriority('optional')}
                 className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-all ${
                   priority === 'optional'
-                    ? 'bg-doom-gold text-doom-950 border-doom-gold shadow-glow-gold'
+                    ? 'bg-doom-gold text-doom-950 border-doom-gold shadow-sm'
                     : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
                 }`}
               >
@@ -114,7 +114,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
             </button>
             <button
               onClick={handleAdd}
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-glow-red flex items-center gap-1.5"
+              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
             >
               <Plus size={14} />
               <span>Add Title</span>

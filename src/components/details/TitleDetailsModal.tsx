@@ -134,7 +134,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </div>
               </div>
 
-              <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider text-glow-red">
+              <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider ">
                 {title.title}
               </h2>
 
@@ -443,7 +443,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                             href={provider.directUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full bg-doom-red hover:bg-doom-red-bright text-white py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-glow-red flex items-center justify-center gap-1.5"
+                            className="w-full bg-doom-red hover:bg-doom-red-bright text-white py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5"
                           >
                             <span>Stream Directly on {provider.provider}</span>
                             <ExternalLink size={12} />
@@ -485,7 +485,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </div>
                 <button
                   onClick={handleSaveNotes}
-                  className="bg-doom-red hover:bg-doom-red-bright text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-glow-red flex items-center gap-1.5"
+                  className="bg-doom-red hover:bg-doom-red-bright text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
                 >
                   <Check size={14} />
                   <span>Save Notes</span>

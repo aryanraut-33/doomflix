@@ -10,14 +10,15 @@ import {
   Layers, 
   Info, 
   Film,
-  Tv,
-  RotateCw,
-  Compass
+  Tv
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
 import { CinematicImage } from '../common/CinematicImage';
 import { NavTab } from '../common/Sidebar';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { ShimmerButton } from '../magicui/shimmer-button';
 
 interface RotatingHeroPaneProps {
   onSelectTab: (tab: NavTab) => void;
@@ -69,7 +70,6 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [slideProgress, setSlideProgress] = useState<number>(0);
-  const timerRef = useRef<number | null>(null);
 
   // Active movie list according to mode
   const currentMovies = React.useMemo(() => {
@@ -92,7 +92,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
   useEffect(() => {
     if (isPaused || currentMovies.length <= 1) return;
 
-    const intervalStep = 50; // update progress bar every 50ms
+    const intervalStep = 50;
     const totalDuration = 6500;
     const progressIncrement = (intervalStep / totalDuration) * 100;
 
@@ -133,7 +133,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
   return (
     <section 
-      className="relative rounded-3xl overflow-hidden border border-doom-border/90 bg-doom-950 shadow-2xl group select-none min-h-[500px] sm:min-h-[540px] flex flex-col justify-between"
+      className="relative rounded-3xl overflow-hidden border border-border bg-doom-950 shadow-cinematic group select-none min-h-[500px] sm:min-h-[540px] flex flex-col justify-between"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -145,22 +145,22 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           alt={activeMovie.title}
           fallbackTitle={activeMovie.title}
           fallbackSubtitle={`${activeMovie.releaseYear} • Marvel Cinematic Universe`}
-          className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out filter brightness-[0.78] contrast-105"
+          className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out filter brightness-[0.72] contrast-105"
         />
 
-        {/* Cinematic Vignettes & Gradient Overlays */}
+        {/* Cinematic Vignettes & Matte Gradients (No purple tints) */}
         <div className="absolute inset-0 bg-gradient-to-t from-doom-950 via-doom-950/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-doom-950/95 via-doom-950/80 to-transparent" />
-        <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-doom-950/95 via-doom-950/75 to-transparent" />
+        <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-20" />
       </div>
 
       {/* 2. Top Header HUD: Mode Switcher & Auto-rotation Progress Indicator */}
-      <div className="relative z-10 p-4 sm:p-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 backdrop-blur-sm bg-black/25">
+      <div className="relative z-10 p-4 sm:p-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/5 backdrop-blur-sm bg-black/30">
         <div className="flex items-center gap-2">
           {/* Engine indicator */}
-          <div className="inline-flex items-center gap-2 bg-doom-950/90 border border-doom-red/40 px-3 py-1 rounded-full text-[11px] font-mono shadow-glow-red">
-            <span className="w-2 h-2 rounded-full bg-doom-red animate-ping" />
-            <span className="text-gray-200 uppercase tracking-wider font-semibold">
+          <div className="inline-flex items-center gap-2 bg-doom-950/90 border border-doom-red/50 px-3 py-1 rounded-full text-[11px] font-mono">
+            <span className="w-2 h-2 rounded-full bg-doom-red" />
+            <span className="text-gray-200 uppercase tracking-wider font-semibold font-marvel">
               CINEMATIC MULTIVERSE MARQUEE
             </span>
           </div>
@@ -174,12 +174,12 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
         </div>
 
         {/* Mode Selector Tabs: Curated Showcase (Default) vs Active Phase */}
-        <div className="flex items-center gap-1.5 bg-doom-950/90 border border-doom-border p-1 rounded-xl shadow-lg">
+        <div className="flex items-center gap-1 bg-doom-950/90 border border-doom-border p-1 rounded-xl shadow-sm">
           <button
             onClick={() => setRotationMode('default')}
-            className={`px-3 py-1 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
               rotationMode === 'default'
-                ? 'bg-doom-red text-white font-bold shadow-glow-red'
+                ? 'bg-doom-red text-white font-bold'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
@@ -189,15 +189,15 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
           <button
             onClick={() => setRotationMode('active_phase')}
-            className={`px-3 py-1 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
               rotationMode === 'active_phase'
-                ? 'bg-doom-red text-white font-bold shadow-glow-red'
+                ? 'bg-doom-red text-white font-bold'
                 : 'text-gray-400 hover:text-white'
             }`}
             title={`Movies from your current phase: ${userCurrentPhase}`}
           >
             <Layers size={12} className={rotationMode === 'active_phase' ? 'text-white' : 'text-doom-gold'} />
-            <span className="hidden sm:inline">Your Active Phase:</span>
+            <span className="hidden sm:inline">Active:</span>
             <span className="font-mono text-doom-gold text-[11px]">
               {userCurrentPhase.split('—')[0].trim()}
             </span>
@@ -217,36 +217,31 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
       <div className="relative z-10 p-6 sm:p-8 md:p-10 flex-1 flex flex-col justify-end max-w-3xl space-y-4">
         {/* Phase Pill & Status Badges */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="bg-doom-red/25 border border-doom-red/50 text-white font-marvel uppercase text-[11px] font-bold px-2.5 py-0.5 rounded-md tracking-wider">
+          <Badge variant="outline" className="border-doom-red/50 text-white bg-doom-red/20 font-bold px-2.5 py-0.5">
             {activeMovie.defaultPhaseGroup}
-          </span>
+          </Badge>
 
-          <span className="bg-black/60 border border-white/10 text-gray-300 font-mono text-[11px] px-2 py-0.5 rounded-md">
+          <Badge variant="hud">
             {activeMovie.mediaType === 'tv' ? 'TV SERIES' : 'FEATURE FILM'}
-          </span>
+          </Badge>
 
           {/* User Watch Status */}
           {currentStatus === 'completed' && (
-            <span className="bg-emerald-950/80 border border-emerald-700/80 text-emerald-400 font-marvel uppercase text-[11px] font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1">
+            <Badge variant="watched" className="flex items-center gap-1">
               <CheckCircle2 size={12} />
               <span>Watched</span>
-            </span>
+            </Badge>
           )}
           {currentStatus === 'in_progress' && (
-            <span className="bg-amber-950/80 border border-amber-700/80 text-amber-300 font-marvel uppercase text-[11px] font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1">
+            <Badge variant="watching" className="flex items-center gap-1">
               <Clock size={12} />
-              <span>Currently Watching</span>
-            </span>
-          )}
-          {currentStatus === 'not_started' && (
-            <span className="bg-doom-900/80 border border-doom-border text-gray-400 font-marvel uppercase text-[11px] px-2.5 py-0.5 rounded-md">
-              Not Started
-            </span>
+              <span>Watching</span>
+            </Badge>
           )}
         </div>
 
         {/* Massive Cinematic Title */}
-        <h2 className="font-cinematic text-4xl sm:text-6xl lg:text-7xl text-white uppercase tracking-wider leading-none text-glow-red">
+        <h2 className="font-cinematic text-4xl sm:text-6xl lg:text-7xl text-white uppercase tracking-wider leading-none">
           {activeMovie.title}
         </h2>
 
@@ -271,7 +266,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
         </div>
 
         {/* Why this matters to Doomsday Lore Callout */}
-        <div className="bg-black/60 backdrop-blur-md p-3.5 rounded-2xl border border-doom-red/30 max-w-2xl shadow-xl">
+        <div className="bg-black/60 backdrop-blur-md p-3.5 rounded-2xl border border-border max-w-2xl shadow-card">
           <div className="text-[10px] font-marvel uppercase tracking-wider text-doom-red font-bold flex items-center gap-1.5 mb-1">
             <Sparkles size={12} />
             <span>Why This Matters to Avengers: Doomsday</span>
@@ -299,19 +294,21 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           </div>
         )}
 
-        {/* Action Controls */}
+        {/* Action Controls using Magic UI ShimmerButton & shadcn Buttons */}
         <div className="flex flex-wrap items-center gap-3 pt-2">
-          {/* Primary CTA: Open Dossier */}
-          <button
+          {/* Primary CTA: Magic UI ShimmerButton */}
+          <ShimmerButton
             onClick={() => onOpenTitleDetails(activeMovie)}
-            className="bg-doom-red hover:bg-doom-red-bright text-white px-6 py-3 rounded-xl font-bold text-xs sm:text-sm tracking-wide shadow-glow-red hover:shadow-glow-red-lg transition-all flex items-center gap-2"
+            className="flex items-center gap-2"
           >
             <Info size={16} />
             <span>Inspect Intelligence Dossier</span>
-          </button>
+          </ShimmerButton>
 
           {/* Quick Watch Status Toggle */}
-          <button
+          <Button
+            variant="outline"
+            size="lg"
             onClick={() => {
               if (currentStatus === 'completed') {
                 updateWatchStatus(activeMovie.id, 'not_started');
@@ -321,7 +318,6 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 updateWatchStatus(activeMovie.id, 'in_progress');
               }
             }}
-            className="bg-doom-900/90 hover:bg-doom-850 border border-doom-border hover:border-white/30 text-white px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2"
           >
             {currentStatus === 'completed' ? (
               <>
@@ -339,16 +335,18 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 <span>Start Watching</span>
               </>
             )}
-          </button>
+          </Button>
 
           {/* Watchlist Hub CTA */}
-          <button
+          <Button
+            variant="ghost"
+            size="lg"
             onClick={() => onSelectTab('watchlist')}
-            className="text-gray-400 hover:text-white text-xs font-semibold px-3 py-3 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-1"
+            className="text-gray-400 hover:text-white"
           >
             <span>View Full Watchlist</span>
             <ChevronRight size={14} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -356,27 +354,31 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
       <div className="relative z-10 p-4 sm:p-6 bg-gradient-to-t from-doom-950 via-doom-950/90 to-transparent border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Navigation Arrows */}
         <div className="flex items-center gap-2 order-2 sm:order-1">
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={handlePrev}
-            className="w-9 h-9 rounded-full bg-black/60 hover:bg-doom-red border border-white/10 hover:border-doom-red text-white flex items-center justify-center transition-all shadow-lg"
+            className="rounded-full bg-black/60 hover:bg-doom-red hover:text-white"
             title="Previous Movie"
             aria-label="Previous Movie"
           >
             <ChevronLeft size={18} />
-          </button>
+          </Button>
 
           <span className="font-mono text-xs text-gray-400 px-2">
             <span className="text-white font-bold">{currentIndex + 1}</span> / {currentMovies.length}
           </span>
 
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={handleNext}
-            className="w-9 h-9 rounded-full bg-black/60 hover:bg-doom-red border border-white/10 hover:border-doom-red text-white flex items-center justify-center transition-all shadow-lg"
+            className="rounded-full bg-black/60 hover:bg-doom-red hover:text-white"
             title="Next Movie"
             aria-label="Next Movie"
           >
             <ChevronRight size={18} />
-          </button>
+          </Button>
         </div>
 
         {/* Thumbnail Carousel Track */}
@@ -391,7 +393,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 onClick={() => handleSelectMovie(idx)}
                 className={`group relative shrink-0 rounded-xl overflow-hidden transition-all duration-300 text-left ${
                   isSelected
-                    ? 'ring-2 ring-doom-red scale-105 shadow-glow-red w-28 sm:w-36 h-14 sm:h-16'
+                    ? 'ring-2 ring-doom-red scale-105 w-28 sm:w-36 h-14 sm:h-16 shadow-card'
                     : 'opacity-60 hover:opacity-100 w-24 sm:w-28 h-12 sm:h-14 border border-white/10'
                 }`}
                 title={movie.title}

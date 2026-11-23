@@ -32,7 +32,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab })
                 : 'text-gray-400 hover:text-gray-200'
             }`}
           >
-            <Icon size={20} className={isActive ? 'text-doom-red drop-shadow-[0_0_8px_rgba(240,20,30,0.6)]' : ''} />
+            <Icon size={20} className={isActive ? 'text-doom-red' : ''} />
             <span className="text-[10px] mt-1 font-sans">{tab.label}</span>
           </button>
         );

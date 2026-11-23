@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
               className="flex items-center gap-3 cursor-pointer overflow-hidden" 
               onClick={() => onSelectTab('home')}
             >
-              <div className="w-9 h-9 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-glow-red tracking-wider shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider shrink-0">
                 D
               </div>
               <div className="truncate">
@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
           <div className="flex flex-col items-center gap-2.5">
             <div 
               onClick={() => onSelectTab('home')}
-              className="w-10 h-10 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-glow-red tracking-wider cursor-pointer transition-transform hover:scale-105"
+              className="w-10 h-10 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider cursor-pointer transition-transform hover:scale-105"
               title="DOOMFLIX Home"
             >
               D
@@ -133,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
                   onClick={() => onSelectTab(item.id)}
                   className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
                     isActive
-                      ? 'bg-doom-red text-white shadow-glow-red'
+                      ? 'bg-doom-red text-white shadow-sm'
                       : 'text-gray-400 hover:text-white hover:bg-doom-900'
                   }`}
                   title={item.label}

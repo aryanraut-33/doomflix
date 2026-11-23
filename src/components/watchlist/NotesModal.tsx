@@ -68,7 +68,7 @@ export const NotesModal: React.FC<NotesModalProps> = ({ title, isOpen, onClose }
             </button>
             <button
               onClick={handleSave}
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-glow-red flex items-center gap-1.5"
+              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
             >
               <Check size={14} />
               <span>Save Operative Notes</span>

@@ -237,7 +237,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
             <span>TMDB-POWERED MARVEL CATALOGUE</span>
           </div>
 
-          <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider text-glow-red">
+          <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider ">
             DISCOVER & EXPAND
           </h2>
 
@@ -283,7 +283,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
               onClick={() => setSelectedTag(tag.id as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all ${
                 selectedTag === tag.id
-                  ? 'bg-doom-red text-white font-bold shadow-glow-red'
+                  ? 'bg-doom-red text-white font-bold shadow-sm'
                   : 'bg-doom-900 text-gray-400 hover:text-white border border-doom-border'
               }`}
             >
@@ -404,7 +404,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                         className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
                           inCollection
                             ? 'bg-doom-950 text-gray-400 hover:text-white border border-doom-border'
-                            : 'bg-doom-red hover:bg-doom-red-bright text-white shadow-glow-red'
+                            : 'bg-doom-red hover:bg-doom-red-bright text-white shadow-sm'
                         }`}
                         title={inCollection ? 'Add to another collection' : 'Add to collection'}
                       >

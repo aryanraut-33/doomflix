@@ -215,7 +215,7 @@ export const KnowledgeArena: React.FC = () => {
                 <span>INTERACTIVE LORE BATTLE ARENA</span>
               </div>
 
-              <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider text-glow-gold">
+              <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider ">
                 KNOWLEDGE ARENA
               </h2>
 
@@ -242,7 +242,7 @@ export const KnowledgeArena: React.FC = () => {
                   onClick={() => setQuizMode('watched_only')}
                   className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     quizMode === 'watched_only'
-                      ? 'bg-doom-950 border-doom-emerald shadow-glow-emerald'
+                      ? 'bg-doom-950 border-doom-emerald shadow-sm'
                       : 'bg-doom-950/60 border-doom-border hover:border-doom-border-light'
                   }`}
                 >
@@ -261,7 +261,7 @@ export const KnowledgeArena: React.FC = () => {
                   onClick={() => setQuizMode('full_collection')}
                   className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     quizMode === 'full_collection'
-                      ? 'bg-doom-950 border-doom-red shadow-glow-red'
+                      ? 'bg-doom-950 border-doom-red shadow-sm'
                       : 'bg-doom-950/60 border-doom-border hover:border-doom-border-light'
                   }`}
                 >
@@ -329,7 +329,7 @@ export const KnowledgeArena: React.FC = () => {
                       onClick={() => setQuestionCount(cnt)}
                       className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all border ${
                         questionCount === cnt
-                          ? 'bg-doom-red text-white border-doom-red shadow-glow-red'
+                          ? 'bg-doom-red text-white border-doom-red shadow-sm'
                           : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
                       }`}
                     >
@@ -371,7 +371,7 @@ export const KnowledgeArena: React.FC = () => {
               <button
                 onClick={handleStartQuiz}
                 disabled={availableQuestions.length === 0}
-                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-all shadow-glow-red flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2"
               >
                 <span>Enter Arena</span>
                 <ChevronRight size={18} />
@@ -437,14 +437,14 @@ export const KnowledgeArena: React.FC = () => {
 
                 if (isAnswerSubmitted) {
                   if (isCorrect) {
-                    optionClasses = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold shadow-glow-emerald';
+                    optionClasses = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold shadow-sm';
                   } else if (isSelected && !isCorrect) {
                     optionClasses = 'bg-red-950/80 border-red-500 text-red-200 line-through';
                   } else {
                     optionClasses = 'bg-doom-950/40 border-doom-border/40 text-gray-600';
                   }
                 } else if (isSelected) {
-                  optionClasses = 'bg-doom-900 border-doom-gold text-white font-semibold shadow-glow-gold';
+                  optionClasses = 'bg-doom-900 border-doom-gold text-white font-semibold shadow-sm';
                 }
 
                 return (
@@ -491,14 +491,14 @@ export const KnowledgeArena: React.FC = () => {
                 <button
                   onClick={() => handleSubmitAnswer()}
                   disabled={!selectedAnswer}
-                  className="bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-glow-red"
+                  className="bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm"
                 >
                   Confirm Answer
                 </button>
               ) : (
                 <button
                   onClick={handleNextQuestion}
-                  className="bg-doom-gold hover:bg-amber-400 text-doom-950 font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-glow-gold flex items-center gap-2"
+                  className="bg-doom-gold hover:bg-amber-400 text-doom-950 font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2"
                 >
                   <span>{currentIndex + 1 < activeQuestions.length ? 'Next Question' : 'View Debrief & Results'}</span>
                   <ArrowRight size={14} />
@@ -515,7 +515,7 @@ export const KnowledgeArena: React.FC = () => {
       {gameState === 'results' && (
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="metallic-card rounded-3xl p-8 border border-doom-border text-center space-y-4">
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-doom-gold to-doom-red flex items-center justify-center text-white shadow-glow-gold">
+            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-doom-gold to-doom-red flex items-center justify-center text-white shadow-sm">
               <Award size={40} />
             </div>
 
@@ -540,7 +540,7 @@ export const KnowledgeArena: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <button
                 onClick={() => setGameState('lobby')}
-                className="bg-doom-red hover:bg-doom-red-bright text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-glow-red transition-all flex items-center gap-2"
+                className="bg-doom-red hover:bg-doom-red-bright text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2"
               >
                 <RotateCcw size={14} />
                 <span>Return to Arena Lobby</span>

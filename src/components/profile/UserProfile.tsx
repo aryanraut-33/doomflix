@@ -84,7 +84,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
       <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-doom-red to-doom-red-dark flex items-center justify-center text-white font-cinematic font-black text-3xl shadow-glow-red">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-doom-red to-doom-red-dark flex items-center justify-center text-white font-cinematic font-black text-3xl shadow-sm">
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -113,7 +113,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             {user.isGuest ? (
               <button
                 onClick={onOpenAuth}
-                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-glow-red flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
               >
                 <Database size={14} />
                 <span>Create Cloud Account & Sync</span>
@@ -182,7 +182,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
         <div className="metallic-card p-5 rounded-2xl border border-doom-border space-y-1">
           <div className="text-gray-400 text-xs font-marvel uppercase tracking-wider flex items-center justify-between">
             <span>Collections</span>
-            <Layers size={14} className="text-purple-400" />
+            <Layers size={14} className="text-doom-gold" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
             {collections.length}
@@ -217,11 +217,11 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
 
             let borderGlow = 'border-doom-border/60 bg-doom-950/40 text-gray-500';
             if (unlocked) {
-              if (ach.badgeColor === 'red') borderGlow = 'border-doom-red bg-doom-950 shadow-glow-red text-doom-red';
-              else if (ach.badgeColor === 'gold') borderGlow = 'border-doom-gold bg-doom-950 shadow-glow-gold text-doom-gold';
-              else if (ach.badgeColor === 'emerald') borderGlow = 'border-doom-emerald bg-doom-950 shadow-glow-emerald text-doom-emerald';
-              else if (ach.badgeColor === 'blue') borderGlow = 'border-doom-blue bg-doom-950 shadow-glow-blue text-doom-blue';
-              else borderGlow = 'border-purple-500 bg-doom-950 text-purple-400';
+              if (ach.badgeColor === 'red') borderGlow = 'border-doom-red bg-doom-950 shadow-sm text-doom-red';
+              else if (ach.badgeColor === 'gold') borderGlow = 'border-doom-gold bg-doom-950 shadow-sm text-doom-gold';
+              else if (ach.badgeColor === 'emerald') borderGlow = 'border-doom-emerald bg-doom-950 shadow-sm text-doom-emerald';
+              else if (ach.badgeColor === 'blue') borderGlow = 'border-doom-blue bg-doom-950 shadow-sm text-doom-blue';
+              else borderGlow = 'border-doom-gold bg-doom-950 text-doom-gold';
             }
 
             return (
@@ -336,7 +336,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
 
             <button
               type="submit"
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-glow-red flex items-center gap-1.5"
+              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
             >
               <Check size={14} />
               <span>Save Release Date</span>

@@ -85,7 +85,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 mx-auto rounded-xl bg-doom-red flex items-center justify-center shadow-glow-red mb-3">
+          <div className="w-12 h-12 mx-auto rounded-xl bg-doom-red flex items-center justify-center shadow-sm mb-3">
             <Shield className="text-white" size={24} />
           </div>
           <h3 className="font-cinematic text-3xl uppercase tracking-wider text-white">
@@ -187,7 +187,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-doom-red hover:bg-doom-red-bright text-white font-semibold py-2.5 rounded-lg text-sm transition-all shadow-glow-red flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-doom-red hover:bg-doom-red-bright text-white font-semibold py-2.5 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 mt-2"
             >
               {isLoading ? (
                 <RefreshCw size={16} className="animate-spin" />
