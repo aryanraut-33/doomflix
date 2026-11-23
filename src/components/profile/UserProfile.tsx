@@ -74,7 +74,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
     setSyncLoading(true);
     setSyncMessage('');
     const res = await migrateGuestData();
-    setSyncMessage(res.message || 'Data synchronized successfully with Cloudflare D1!');
+    setSyncMessage(res.message || 'Data synchronized successfully with your cloud account!');
     setSyncLoading(false);
   };
 
@@ -98,7 +98,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
                   </span>
                 ) : (
                   <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded font-mono flex items-center gap-1">
-                    <CheckCircle2 size={10} /> D1 CLOUD SYNCED
+                    <CheckCircle2 size={10} /> CLOUD SYNCED
                   </span>
                 )}
               </div>
@@ -125,7 +125,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
                 className="w-full sm:w-auto bg-doom-900 hover:bg-doom-850 border border-doom-border text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
-                <span>Sync with D1</span>
+                <span>Sync with Cloud</span>
               </button>
             )}
           </div>

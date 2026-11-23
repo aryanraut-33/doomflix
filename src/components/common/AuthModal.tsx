@@ -65,7 +65,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
     const res = await migrateGuestData();
     if (res.success) {
-      setSuccessMsg(res.message || 'Data synchronized successfully with Cloudflare D1!');
+      setSuccessMsg(res.message || 'Data synchronized successfully with your cloud account!');
     } else {
       setErrorMsg(res.message || 'Sync failed');
     }
@@ -95,8 +95,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </h3>
           <p className="text-xs text-gray-400 mt-1 font-sans">
             {user.isGuest
-              ? 'Save your watch progress, custom collections, and quiz stats to Cloudflare D1 across all your devices.'
-              : `Authenticated as ${user.username} (${user.email || 'Cloudflare D1 Account'})`}
+              ? 'Save your watch progress, custom collections, and quiz stats across all your devices with cloud sync.'
+              : `Authenticated as ${user.username} (${user.email || 'Cloud Account'})`}
           </p>
         </div>
 
@@ -130,7 +130,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               className="w-full flex items-center justify-center gap-2 bg-doom-800 hover:bg-doom-750 border border-doom-border text-white text-xs py-2.5 rounded-lg font-semibold transition-all"
             >
               <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-              <span>Sync All Progress to Cloudflare D1</span>
+              <span>Sync All Progress to Cloud</span>
             </button>
 
             <button

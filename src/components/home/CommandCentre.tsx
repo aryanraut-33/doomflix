@@ -19,8 +19,8 @@ import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalo
 import { ACHIEVEMENTS } from '../../data/achievements';
 import { useAppStore } from '../../services/store';
 import { DoomsdayCountdown } from '../common/DoomsdayCountdown';
-import { GeometricCube } from '../common/GeometricCube';
 import { CinematicImage } from '../common/CinematicImage';
+import { RotatingHeroPane } from './RotatingHeroPane';
 import { NavTab } from '../common/Sidebar';
 
 interface CommandCentreProps {
@@ -72,69 +72,14 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
 
   return (
     <div className="space-y-10 pb-16">
-      {/* 1. Cinematic Hero Section with 3D Geometric Chronal Cube & Countdown */}
-      <section className="relative rounded-3xl overflow-hidden border border-doom-border/90 bg-gradient-to-b from-doom-900/90 via-doom-950 to-doom-950 p-6 md:p-12 shadow-2xl">
-        <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-40" />
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-doom-red/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-doom-gold/15 rounded-full blur-3xl pointer-events-none" />
+      {/* 1. Cinematic Rotating Hero Screen (Curated Showcase & Active Phase Movies) */}
+      <RotatingHeroPane 
+        onSelectTab={onSelectTab} 
+        onOpenTitleDetails={onOpenTitleDetails} 
+      />
 
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-          {/* Hero Left Content */}
-          <div className="max-w-2xl space-y-4 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-doom-900 border border-doom-red/40 px-3 py-1 rounded-full text-xs font-mono">
-              <span className="w-2 h-2 rounded-full bg-doom-red animate-ping" />
-              <span className="text-gray-300 font-sans tracking-wide">MULTIVERSE WATCH-TRACKING ENGINE</span>
-            </div>
-
-            <h1 className="font-cinematic text-5xl sm:text-7xl lg:text-8xl text-white tracking-wider leading-none uppercase text-glow-red">
-              YOUR UNIVERSE.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-doom-red">
-                YOUR COUNTDOWN.
-              </span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-gray-300 font-sans leading-relaxed max-w-xl">
-              Track essential cinematic storylines, verify timeline connections, and prepare for the cataclysmic arrival of Victor Von Doom in <strong className="text-white">Avengers: Doomsday</strong>.
-            </p>
-
-            {/* Call to actions */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
-              <button
-                onClick={() => onSelectTab('watchlist')}
-                className="bg-doom-red hover:bg-doom-red-bright text-white px-6 py-3 rounded-xl font-bold text-sm tracking-wide shadow-glow-red hover:shadow-glow-red-lg transition-all flex items-center gap-2"
-              >
-                <Play size={16} fill="white" />
-                <span>Open Multiverse Watchlist</span>
-              </button>
-
-              <button
-                onClick={() => onSelectTab('quiz')}
-                className="bg-doom-900 hover:bg-doom-850 border border-doom-border hover:border-doom-gold text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
-              >
-                <HelpCircle size={16} className="text-doom-gold" />
-                <span>Test Lore in Knowledge Arena</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Hero Right: Interactive 3D Chronal Cube Visualizer */}
-          <div className="relative flex flex-col items-center justify-center">
-            <div className="relative">
-              <GeometricCube size={240} className="mx-auto" />
-              <div className="text-center mt-2">
-                <span className="text-[10px] font-mono tracking-widest text-doom-gold uppercase bg-doom-950/80 px-2.5 py-1 rounded-full border border-doom-gold/30">
-                  ✦ Chronal Convergence Core (Interactive)
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Integrated Doomsday Release Countdown */}
-        <div className="mt-8 pt-8 border-t border-doom-border/80">
-          <DoomsdayCountdown variant="hero" />
-        </div>
-      </section>
+      {/* 2. Official Avengers: Doomsday Nexus Countdown */}
+      <DoomsdayCountdown variant="hero" />
 
       {/* 2. Command Centre Intelligence & Overview Metrics */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">

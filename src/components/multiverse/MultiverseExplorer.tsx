@@ -15,6 +15,7 @@ import {
 import { MULTIVERSE_GRAPH_NODES, MultiverseNode } from '../../data/multiverseGraph';
 import { MARVEL_TITLES, MarvelTitle } from '../../data/marvelCatalogue';
 import { CinematicImage } from '../common/CinematicImage';
+import { GeometricCube } from '../common/GeometricCube';
 
 interface MultiverseExplorerProps {
   onOpenTitleDetails: (title: MarvelTitle) => void;
@@ -54,7 +55,7 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Explorer Header Banner */}
-      <div className="metallic-card rounded-3xl p-6 md:p-10 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
+      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="max-w-2xl space-y-3">
           <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-red/40 px-3 py-1 rounded-full text-xs font-mono text-doom-red">
             <Compass size={13} />
@@ -68,6 +69,13 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
           <p className="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed">
             Navigate intersecting timelines, alternate realities, and looming Incursions. Understand how Earth-616, Fox mutants, the TVA, and the Fantastic Four converge toward Doctor Doom's Battleworld.
           </p>
+        </div>
+
+        <div className="shrink-0 flex flex-col items-center">
+          <GeometricCube size={140} />
+          <span className="text-[9px] font-mono tracking-widest text-doom-gold uppercase bg-doom-950/80 px-2 py-0.5 rounded-full border border-doom-gold/30 mt-1">
+            ✦ Chronal Core
+          </span>
         </div>
       </div>
 
