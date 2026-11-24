@@ -18,6 +18,7 @@ const NAV_ITEMS: NavItemConfig[] = [
   { id: 'watchlist', label: 'My List' },
   { id: 'discover', label: 'Discover' },
   { id: 'quiz', label: 'Quiz' },
+  { id: 'profile', label: 'Profile' },
 ];
 
 /* Phosphor Icon Geometries (256x256 scaled to 24x24, 1.5px stroke weight look) */
@@ -70,6 +71,19 @@ const PhosphorIcons: Record<string, { regular: React.ReactNode; fill: React.Reac
     fill: (
       <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
         <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm16,152a12,12,0,1,1-12-12A12,12,0,0,1,144,176Zm8-76c0,10.22-8.52,18.73-16,21.78V128a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c8.82,0,16-5.38,16-12s-7.18-12-16-12-16,5.38-16,12a8,8,0,0,1-16,0c0-15.44,14.36-28,32-28S152,84.56,152,100Z" />
+      </svg>
+    )
+  },
+  profile: {
+    regular: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16">
+        <circle cx="128" cy="96" r="48" />
+        <path d="M32,216a96,96,0,0,1,192,0" />
+      </svg>
+    ),
+    fill: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
+        <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z" />
       </svg>
     )
   }
