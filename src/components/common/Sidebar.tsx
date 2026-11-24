@@ -1,308 +1,269 @@
-import React, { useState } from 'react';
-import { 
-  Compass, 
-  Film, 
-  HelpCircle, 
-  Home, 
-  Layers, 
-  Search, 
-  Sliders, 
-  User as UserIcon,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
-import { useAppStore } from '../../services/store';
+import React, { useState, useRef, useEffect } from 'react';
 
-export type NavTab = 'home' | 'watchlist' | 'discover' | 'quiz' | 'multiverse' | 'profile' | 'settings';
+export type NavTab = 'home' | 'watchlist' | 'discover' | 'quiz' | 'profile' | 'settings';
 
 interface SidebarProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
-  onOpenAuth: () => void;
+  onOpenAuth?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpenAuth }) => {
-  const { collections, activeCollectionId, setActiveCollectionId, overallStats, user } = useAppStore();
+interface NavItemConfig {
+  id: NavTab;
+  label: string;
+}
 
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('doomflix_sidebar_collapsed') === 'true';
-    } catch {
-      return false;
+const NAV_ITEMS: NavItemConfig[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'watchlist', label: 'My List' },
+  { id: 'discover', label: 'Discover' },
+  { id: 'quiz', label: 'Quiz' },
+];
+
+/* Phosphor Icon Geometries (256x256 scaled to 24x24, 1.5px stroke weight look) */
+const PhosphorIcons: Record<string, { regular: React.ReactNode; fill: React.ReactNode }> = {
+  home: {
+    regular: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16">
+        <path d="M213.66,101.66l-80-80a8,8,0,0,0-11.32,0l-80,80A8,8,0,0,0,40,112v96a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V112A8,8,0,0,0,213.66,101.66Z" />
+      </svg>
+    ),
+    fill: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
+        <path d="M218.83,103.77l-80-75.48a16,16,0,0,0-21.66,0l-80,75.48A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77Z" />
+      </svg>
+    )
+  },
+  watchlist: {
+    regular: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16">
+        <path d="M192,24H64A16,16,0,0,0,48,40V224a8,8,0,0,0,12.65,6.51L128,183.13l67.35,47.38A8,8,0,0,0,208,224V40A16,16,0,0,0,192,24Z" />
+      </svg>
+    ),
+    fill: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
+        <path d="M192,24H64A16,16,0,0,0,48,40V224a8,8,0,0,0,12.65,6.51L128,183.13l67.35,47.38A8,8,0,0,0,208,224V40A16,16,0,0,0,192,24Z" />
+      </svg>
+    )
+  },
+  discover: {
+    regular: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16">
+        <circle cx="128" cy="128" r="96" />
+        <polygon points="176 80 144 144 80 176 112 112 176 80" />
+      </svg>
+    ),
+    fill: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
+        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,58.34-16,64a8,8,0,0,1-5.68,5.68l-64,16a8,8,0,0,1-9.66-9.66l16-64a8,8,0,0,1,5.68-5.68l64-16a8,8,0,0,1,9.66,9.66Z" />
+      </svg>
+    )
+  },
+  quiz: {
+    regular: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16">
+        <circle cx="128" cy="128" r="96" />
+        <circle cx="128" cy="180" r="10" fill="currentColor" stroke="none" />
+        <path d="M128,144v-8a24,24,0,0,1,24-24,20,20,0,1,0-28-18.32" />
+      </svg>
+    ),
+    fill: (
+      <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor">
+        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm16,152a12,12,0,1,1-12-12A12,12,0,0,1,144,176Zm8-76c0,10.22-8.52,18.73-16,21.78V128a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c8.82,0,16-5.38,16-12s-7.18-12-16-12-16,5.38-16,12a8,8,0,0,1-16,0c0-15.44,14.36-28,32-28S152,84.56,152,100Z" />
+      </svg>
+    )
+  }
+};
+
+export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [focusedId, setFocusedId] = useState<string | null>(null);
+
+  const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  // Expand when pointer enters nav
+  const handleMouseEnter = () => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
     }
-  });
-
-  const toggleCollapse = () => {
-    setIsCollapsed(prev => {
-      const next = !prev;
-      try {
-        localStorage.setItem('doomflix_sidebar_collapsed', String(next));
-      } catch (e) {}
-      return next;
-    });
+    setIsExpanded(true);
   };
 
-  const navItems = [
-    { id: 'home' as NavTab, label: 'Command Centre', icon: Home, badge: null },
-    { id: 'watchlist' as NavTab, label: 'My Watchlist', icon: Film, badge: `${overallStats.completedCount}/${overallStats.totalTitles}` },
-    { id: 'discover' as NavTab, label: 'Discover & Add', icon: Search, badge: null },
-    { id: 'quiz' as NavTab, label: 'Knowledge Arena', icon: HelpCircle, badge: 'QUIZ' },
-    { id: 'multiverse' as NavTab, label: 'Multiverse Explorer', icon: Compass, badge: '3D' },
-    { id: 'profile' as NavTab, label: 'Profile & Badges', icon: UserIcon, badge: null },
-  ];
+  // 120ms leave delay to avoid flicker
+  const handleMouseLeave = () => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    leaveTimerRef.current = setTimeout(() => {
+      setIsExpanded(false);
+      setHoveredId(null);
+    }, 120);
+  };
+
+  // Keyboard focus-within expands the nav
+  const handleFocus = () => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
+    setIsExpanded(true);
+  };
+
+  const handleBlur = (e: React.FocusEvent) => {
+    if (!navRef.current?.contains(e.relatedTarget as Node)) {
+      if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = setTimeout(() => {
+        setIsExpanded(false);
+        setFocusedId(null);
+      }, 120);
+    }
+  };
+
+  // Touch devices: first tap expands rail; tapping outside collapses
+  useEffect(() => {
+    const handleOutsideInteraction = (e: MouseEvent | TouchEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+        setHoveredId(null);
+        setFocusedId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideInteraction);
+    document.addEventListener('touchstart', handleOutsideInteraction);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideInteraction);
+      document.removeEventListener('touchstart', handleOutsideInteraction);
+    };
+  }, []);
 
   return (
-    <aside 
-      className={`hidden lg:flex flex-col ${
-        isCollapsed ? 'w-20' : 'w-64'
-      } bg-doom-950 border-r border-doom-border/80 h-screen sticky top-0 z-40 select-none transition-all duration-300 ease-in-out`}
+    <nav
+      ref={navRef}
+      aria-label="Primary"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      className="fixed top-0 left-0 h-screen select-none z-50 transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      style={{
+        width: isExpanded ? '280px' : '96px',
+      }}
     >
-      {/* Brand Identity & Collapse Toggle */}
-      <div className="p-4 border-b border-doom-border/60">
-        {!isCollapsed ? (
-          <div className="flex items-center justify-between">
-            <div 
-              className="flex items-center gap-3 cursor-pointer overflow-hidden" 
-              onClick={() => onSelectTab('home')}
-            >
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider shrink-0">
-                D
-              </div>
-              <div className="truncate">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-cinematic text-2xl tracking-widest text-white uppercase font-black">
-                    DOOMFLIX
-                  </span>
-                  <span className="text-[9px] bg-doom-emerald/20 text-doom-emerald border border-doom-emerald/40 px-1 py-0.2 rounded font-mono font-bold">
-                    MCU
-                  </span>
-                </div>
-                <p className="text-[10px] text-gray-400 font-sans tracking-wide truncate">
-                  Your Universe. Your Countdown.
-                </p>
-              </div>
-            </div>
+      {/* 1. Collapsed Faint Scrim Background across 96px */}
+      <div
+        className="absolute top-0 left-0 h-full w-[96px] hotstar-nav-scrim-collapsed pointer-events-none z-0 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{ opacity: isExpanded ? 0 : 1 }}
+      />
 
-            <button
-              onClick={toggleCollapse}
-              className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-doom-900 border border-transparent hover:border-doom-border transition-colors shrink-0 ml-1"
-              title="Collapse Sidebar"
-              aria-label="Collapse Sidebar"
-            >
-              <ChevronLeft size={16} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-2.5">
-            <div 
-              onClick={() => onSelectTab('home')}
-              className="w-10 h-10 rounded-lg bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider cursor-pointer transition-transform hover:scale-105"
-              title="DOOMFLIX Home"
-            >
-              D
-            </div>
-            <button
-              onClick={toggleCollapse}
-              className="p-1 text-gray-400 hover:text-white rounded-lg hover:bg-doom-900 border border-transparent hover:border-doom-border transition-colors"
-              title="Expand Sidebar"
-              aria-label="Expand Sidebar"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        )}
-      </div>
+      {/* 2. Expanded 420px Seamless Gradient Scrim with Soft Fadeout */}
+      <div
+        className="absolute top-0 left-0 h-full w-[420px] hotstar-nav-scrim-expanded pointer-events-none z-0 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{ opacity: isExpanded ? 1 : 0 }}
+      />
 
-      {/* Main Navigation Links */}
-      <div className={`flex-1 overflow-y-auto ${isCollapsed ? 'px-2 py-4 space-y-2' : 'px-3 py-4 space-y-1'}`}>
-        {!isCollapsed && (
-          <div className="text-[10px] font-marvel uppercase tracking-wider text-gray-400 px-3 pb-2 font-bold">
-            Navigation
-          </div>
-        )}
+      {/* 3. Top Logo Slot: 36x36, centered at x = 48px, top offset 40px */}
+      <a
+        href="#home"
+        onClick={(e) => {
+          e.preventDefault();
+          onSelectTab('home');
+        }}
+        className="absolute top-[40px] left-[48px] -translate-x-1/2 w-[36px] h-[36px] rounded-xl bg-gradient-to-br from-emerald-600 to-teal-400 flex items-center justify-center font-cinematic font-black text-xl text-white shadow-[0_0_15px_rgba(16,185,129,0.35)] border border-emerald-400/30 cursor-pointer z-20 transition-transform active:scale-95 select-none"
+        aria-label="Doomflix Home"
+      >
+        D
+      </a>
 
-        {navItems.map((item) => {
-          const Icon = item.icon;
+      {/* 4. Item List: Vertically Centered in Viewport, Pitch 52px (44px height + 8px gap) */}
+      <div className="absolute top-0 left-0 h-full w-full flex flex-col justify-center gap-[8px] z-10 pointer-events-auto">
+        {NAV_ITEMS.map((item, index) => {
           const isActive = currentTab === item.id;
+          const isHovered = hoveredId === item.id;
+          const isFocused = focusedId === item.id;
+          const isItemActiveOrHovered = isActive || isHovered || isFocused;
 
-          if (isCollapsed) {
-            return (
-              <div key={item.id} className="relative flex justify-center">
-                <button
-                  onClick={() => onSelectTab(item.id)}
-                  className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
-                    isActive
-                      ? 'bg-gradient-to-br from-doom-emerald-dark to-doom-emerald text-white shadow-sm'
-                      : 'text-gray-400 hover:text-white hover:bg-doom-900'
-                  }`}
-                  title={item.label}
-                  aria-label={item.label}
-                >
-                  <Icon size={19} />
-                  {item.badge && (
-                    <span className="absolute top-1 right-2 w-2 h-2 bg-doom-emerald rounded-full border border-doom-950" />
-                  )}
-                </button>
-              </div>
-            );
-          }
+          // Staggered entrance for labels on expand; instant unified exit on collapse
+          const labelStyle: React.CSSProperties = isExpanded
+            ? {
+                opacity: 1,
+                transform: 'translateX(0px)',
+                transition: `opacity 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, transform 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)`
+              }
+            : {
+                opacity: 0,
+                transform: 'translateX(-8px)',
+                transition: 'opacity 120ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)'
+              };
 
           return (
-            <button
+            <a
               key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                isActive
-                  ? 'bg-gradient-to-r from-doom-emerald/20 to-transparent text-white border-l-2 border-doom-emerald shadow-inner'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-doom-900/60'
-              }`}
+              href={`#${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectTab(item.id);
+              }}
+              onMouseEnter={() => setHoveredId(item.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              onFocus={() => setFocusedId(item.id)}
+              onBlur={() => setFocusedId(null)}
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
+              className="relative w-full h-[44px] flex items-center select-none active:scale-[0.97] transition-transform duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset rounded-[8px]"
             >
-              <div className="flex items-center gap-3">
-                <Icon size={18} className={isActive ? 'text-doom-emerald' : 'text-gray-400'} />
-                <span className="tracking-wide">{item.label}</span>
-              </div>
-              {item.badge && (
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  isActive ? 'bg-doom-emerald text-doom-950' : 'bg-doom-800 text-gray-400'
-                }`}>
-                  {item.badge}
+              {/* Active Route Soft Glow Halo (64x64 circle centered on icon at x=48px, y=22px) */}
+              <div
+                className="absolute w-[64px] h-[64px] rounded-full pointer-events-none transition-opacity duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                style={{
+                  left: '48px',
+                  top: '22px',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0) 70%)',
+                  opacity: isActive ? 1 : 0
+                }}
+              />
+
+              {/* 24x24 Icon Box centered at x = 48px (left: 36px to 60px) */}
+              <div className="absolute left-[36px] w-[24px] h-[24px] flex items-center justify-center pointer-events-none">
+                {/* Outline Icon Variant */}
+                <span
+                  className="absolute inset-0 flex items-center justify-center text-[rgba(255,255,255,0.62)] transition-opacity duration-150 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  style={{ opacity: isItemActiveOrHovered ? 0 : 1 }}
+                >
+                  {PhosphorIcons[item.id]?.regular}
                 </span>
-              )}
-            </button>
+
+                {/* Fill Icon Variant */}
+                <span
+                  className="absolute inset-0 flex items-center justify-center text-white transition-opacity duration-150 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  style={{ opacity: isItemActiveOrHovered ? 1 : 0 }}
+                >
+                  {PhosphorIcons[item.id]?.fill}
+                </span>
+              </div>
+
+              {/* Label starting at x = 78px (18px gap from icon box right edge at 60px) */}
+              <div
+                className="absolute left-[78px] pointer-events-none overflow-hidden"
+                style={labelStyle}
+              >
+                <span
+                  data-label={item.label}
+                  className={`nav-label ${
+                    isItemActiveOrHovered
+                      ? 'font-bold text-white'
+                      : 'font-medium text-[rgba(255,255,255,0.62)]'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </div>
+            </a>
           );
         })}
-
-        {/* Collections Section */}
-        {isCollapsed ? (
-          <div className="pt-3 border-t border-doom-border/60 flex justify-center">
-            <button
-              onClick={() => onSelectTab('watchlist')}
-              className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-400 hover:text-doom-gold hover:bg-doom-900 transition-all"
-              title={`Collections (${collections.length})`}
-              aria-label="Collections"
-            >
-              <Layers size={18} />
-            </button>
-          </div>
-        ) : (
-          <div className="pt-6 pb-2">
-            <div className="flex items-center justify-between px-3 pb-2">
-              <span className="text-[10px] font-marvel uppercase tracking-wider text-gray-400 font-bold">
-                Collections ({collections.length})
-              </span>
-              <button
-                onClick={() => onSelectTab('watchlist')}
-                className="text-[10px] text-doom-gold hover:underline"
-              >
-                Manage
-              </button>
-            </div>
-
-            <div className="space-y-1">
-              {collections.map(col => {
-                const isColActive = currentTab === 'watchlist' && activeCollectionId === col.id;
-                return (
-                  <button
-                    key={col.id}
-                    onClick={() => {
-                      setActiveCollectionId(col.id);
-                      onSelectTab('watchlist');
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-md text-xs truncate transition-colors flex items-center gap-2 ${
-                      isColActive 
-                        ? 'bg-doom-800 text-doom-gold font-semibold border-l-2 border-doom-gold' 
-                        : 'text-gray-400 hover:text-gray-300 hover:bg-doom-900/40'
-                    }`}
-                    title={col.name}
-                  >
-                    <Layers size={13} className={col.isSystemCollection ? 'text-doom-red' : 'text-gray-400'} />
-                    <span className="truncate">{col.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
-
-      {/* Overall Progress Mini Meter */}
-      {!isCollapsed ? (
-        <div className="p-4 border-t border-doom-border/60 bg-doom-900/50">
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-gray-400 font-sans">Multiverse Prep</span>
-            <span className="text-white font-mono font-bold">{overallStats.completionPercentage}%</span>
-          </div>
-          <div className="w-full bg-doom-950 h-2 rounded-full overflow-hidden border border-white/5">
-            <div
-              className="h-full bg-gradient-to-r from-doom-emerald to-doom-gold transition-all duration-500 rounded-full"
-              style={{ width: `${overallStats.completionPercentage}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-gray-400 mt-1 font-mono">
-            <span>{overallStats.completedCount} Watched</span>
-            <span>{overallStats.totalTitles - overallStats.completedCount} Remaining</span>
-          </div>
-        </div>
-      ) : (
-        <div 
-          onClick={() => onSelectTab('watchlist')}
-          className="p-3 border-t border-doom-border/60 bg-doom-900/50 flex flex-col items-center justify-center cursor-pointer hover:bg-doom-900 transition-colors"
-          title={`Multiverse Progress: ${overallStats.completionPercentage}% (${overallStats.completedCount}/${overallStats.totalTitles} watched)`}
-        >
-          <span className="text-[11px] font-mono font-bold text-doom-gold">{overallStats.completionPercentage}%</span>
-          <div className="w-9 bg-doom-950 h-1.5 rounded-full overflow-hidden border border-white/5 mt-1">
-            <div
-              className="h-full bg-gradient-to-r from-doom-red to-doom-gold rounded-full"
-              style={{ width: `${overallStats.completionPercentage}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* User / Account Footer */}
-      <div className={`p-3 border-t border-doom-border/60 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} bg-doom-950`}>
-        {!isCollapsed ? (
-          <>
-            <div className="flex items-center gap-2 overflow-hidden">
-              <div className="w-8 h-8 rounded-full bg-doom-800 border border-doom-border flex items-center justify-center text-xs font-bold text-white shrink-0">
-                {user.username.charAt(0).toUpperCase()}
-              </div>
-              <div className="truncate">
-                <div className="text-xs font-semibold text-white truncate flex items-center gap-1">
-                  <span>{user.username}</span>
-                  {user.isGuest ? (
-                    <span className="text-[9px] bg-doom-800 text-gray-400 px-1 rounded font-mono">Guest</span>
-                  ) : (
-                    <CheckCircle2 size={11} className="text-doom-emerald" />
-                  )}
-                </div>
-                <div className="text-[10px] text-gray-400 truncate">
-                  {user.isGuest ? 'Local storage only' : user.email}
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={onOpenAuth}
-              className="text-xs text-gray-400 hover:text-white p-1.5 rounded hover:bg-doom-800 transition-colors"
-              title={user.isGuest ? 'Sign In / Cloud Sync' : 'Account Settings'}
-              aria-label="Account Settings"
-            >
-              <Sliders size={15} />
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={onOpenAuth}
-            className="w-10 h-10 rounded-full bg-doom-800 border border-doom-border hover:border-doom-red flex items-center justify-center text-xs font-bold text-white transition-all hover:scale-105"
-            title={user.isGuest ? 'Sign In / Cloud Sync' : `${user.username} (Account Settings)`}
-            aria-label="User Account"
-          >
-            {user.username.charAt(0).toUpperCase()}
-          </button>
-        )}
-      </div>
-    </aside>
+    </nav>
   );
 };
