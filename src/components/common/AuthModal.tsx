@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Shield, LogIn, UserPlus, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAppStore } from '../../services/store';
 
@@ -16,6 +16,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsRegistering(false);
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setErrorMsg('');
+      setSuccessMsg('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

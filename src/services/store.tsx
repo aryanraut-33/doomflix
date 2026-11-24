@@ -11,6 +11,14 @@ import {
   QuizAttemptRecord, 
   UnlockedAchievement 
 } from './types';
+import {
+  dbCreateUser,
+  dbAuthenticateUser,
+  dbGetUserData,
+  dbSaveUserData,
+  getActiveSessionUserId,
+  setActiveSessionUserId
+} from './db';
 
 // Pre-populated default collection: Multiverse Essentials
 const INITIAL_MULTIVERSE_ESSENTIALS: Collection = {
@@ -102,68 +110,117 @@ const STORAGE_KEYS = {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Auth State (Defaults to Guest Mode)
+  // 1. Auth State: Check active session for logged in user; default to pristine guest
   const [user, setUser] = useState<User>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.USER);
-      if (saved) return JSON.parse(saved);
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const users = JSON.parse(localStorage.getItem('doomflix_db_users_v2') || '{}');
+        const found = users[activeUserId];
+        if (found) {
+          return { id: found.id, username: found.username, email: found.email, isGuest: false };
+        }
+      }
     } catch {}
     return { id: 'guest_user', username: 'Operative (Guest)', isGuest: true };
   });
 
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem(STORAGE_KEYS.TOKEN);
+    try {
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        return `doom_${activeUserId}`;
+      }
+    } catch {}
+    return null;
   });
 
-  // 2. Collections
+  // 2. Collections (Per-user saved lists or pristine default)
   const [collections, setCollections] = useState<Collection[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.COLLECTIONS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.collections && parsed.collections.length > 0) return parsed.collections;
+        }
       }
     } catch {}
     return [INITIAL_MULTIVERSE_ESSENTIALS];
   });
 
   const [activeCollectionId, setActiveCollectionId] = useState<string>(() => {
-    return localStorage.getItem(STORAGE_KEYS.ACTIVE_COLLECTION) || 'multiverse-essentials';
+    try {
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.activeCollectionId) return parsed.activeCollectionId;
+        }
+      }
+    } catch {}
+    return 'multiverse-essentials';
   });
 
-  // 3. Watch Progress
+  // 3. Watch Progress (Per-user history or pristine empty)
   const [watchProgress, setWatchProgress] = useState<Record<string, TitleWatchProgress>>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.WATCH_PROGRESS);
-      if (saved) return JSON.parse(saved);
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.watchProgress) return parsed.watchProgress;
+        }
+      }
     } catch {}
     return {};
   });
 
-  // 4. Series Episode Progress
+  // 4. Series Episode Progress (Per-user current watch or pristine empty)
   const [episodeProgress, setEpisodeProgress] = useState<EpisodeProgress>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.EPISODE_PROGRESS);
-      if (saved) return JSON.parse(saved);
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.episodeProgress) return parsed.episodeProgress;
+        }
+      }
     } catch {}
     return {};
   });
 
-  // 5. Achievements
+  // 5. Achievements (Per-user badges or pristine empty)
   const [unlockedAchievements, setUnlockedAchievements] = useState<UnlockedAchievement[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACHIEVEMENTS);
-      if (saved) return JSON.parse(saved);
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.unlockedAchievements) return parsed.unlockedAchievements;
+        }
+      }
     } catch {}
     return [];
   });
   const [newUnlockedToast, setNewUnlockedToast] = useState<Achievement | null>(null);
 
-  // 6. Quiz Attempts
+  // 6. Quiz Attempts (Per-user history or pristine empty)
   const [quizAttempts, setQuizAttempts] = useState<QuizAttemptRecord[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.QUIZ_ATTEMPTS);
-      if (saved) return JSON.parse(saved);
+      const activeUserId = getActiveSessionUserId();
+      if (activeUserId && activeUserId !== 'guest_user') {
+        const raw = localStorage.getItem(`doomflix_db_userdata_v2_${activeUserId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.quizAttempts) return parsed.quizAttempts;
+        }
+      }
     } catch {}
     return [];
   });
@@ -178,39 +235,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem(STORAGE_KEYS.DOOMSDAY_DATE, date);
   };
 
-  // Sync state to LocalStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-  }, [user]);
+  // Guard to prevent auto-save from overwriting DB during login/logout state restoration
+  const isRestoringRef = React.useRef(false);
 
+  // Automatically save any changes into the authenticated user's isolated database record
   useEffect(() => {
-    if (token) localStorage.setItem(STORAGE_KEYS.TOKEN, token);
-    else localStorage.removeItem(STORAGE_KEYS.TOKEN);
-  }, [token]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.COLLECTIONS, JSON.stringify(collections));
-  }, [collections]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ACTIVE_COLLECTION, activeCollectionId);
-  }, [activeCollectionId]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.WATCH_PROGRESS, JSON.stringify(watchProgress));
-  }, [watchProgress]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.EPISODE_PROGRESS, JSON.stringify(episodeProgress));
-  }, [episodeProgress]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ACHIEVEMENTS, JSON.stringify(unlockedAchievements));
-  }, [unlockedAchievements]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, JSON.stringify(quizAttempts));
-  }, [quizAttempts]);
+    if (isRestoringRef.current) {
+      isRestoringRef.current = false;
+      return;
+    }
+    if (user && !user.isGuest && user.id && user.id !== 'guest_user') {
+      dbSaveUserData(user.id, {
+        watchProgress,
+        episodeProgress,
+        collections,
+        activeCollectionId,
+        unlockedAchievements,
+        quizAttempts
+      });
+    }
+  }, [user, watchProgress, episodeProgress, collections, activeCollectionId, unlockedAchievements, quizAttempts]);
 
   // Achievement unlocker with celebration confetti
   const triggerUnlock = useCallback((achievementId: string) => {
@@ -492,81 +536,144 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // Auth Operations
+  // Auth Operations with Per-User Database Isolation & Instant Retrieval
   const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: pass })
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        return { success: false, error: data.error || 'Login failed' };
+      // 1. Authenticate user credentials in the database
+      const authRes = await dbAuthenticateUser(email, pass);
+      if (!authRes.success || !authRes.user) {
+        return { success: false, error: authRes.error || 'Authentication failed' };
       }
-      setUser({ ...data.user, isGuest: false });
-      setToken(data.token);
+
+      const authenticatedUser: User = {
+        id: authRes.user.id,
+        username: authRes.user.username,
+        email: authRes.user.email,
+        isGuest: false
+      };
+
+      // 2. Retrieve all saved watch history, badges, quiz history, and custom collections for this user
+      const userData = await dbGetUserData(authRes.user.id);
+
+      // 3. Mark active session and restore all isolated data into state
+      isRestoringRef.current = true;
+      setActiveSessionUserId(authRes.user.id);
+      setUser(authenticatedUser);
+      setToken(`doom_${btoa(authRes.user.email)}`);
+
+      setWatchProgress(userData.watchProgress || {});
+      setEpisodeProgress(userData.episodeProgress || {});
+      setCollections(
+        userData.collections && userData.collections.length > 0 
+          ? userData.collections 
+          : [INITIAL_MULTIVERSE_ESSENTIALS]
+      );
+      setActiveCollectionId(userData.activeCollectionId || 'multiverse-essentials');
+      setUnlockedAchievements(userData.unlockedAchievements || []);
+      setQuizAttempts(userData.quizAttempts || []);
+
       return { success: true };
-    } catch {
-      // Local fallback simulation if server is offline
-      const userObj: User = { id: `usr_${Date.now()}`, username: email.split('@')[0], email, isGuest: false };
-      setUser(userObj);
-      setToken(`doom_${btoa(email)}`);
-      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Login failed' };
     }
   };
 
   const register = async (username: string, email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password: pass })
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        return { success: false, error: data.error || 'Registration failed' };
+      const createRes = await dbCreateUser(username, email, pass);
+      if (!createRes.success || !createRes.user) {
+        return { success: false, error: createRes.error || 'Registration failed' };
       }
-      setUser({ ...data.user, isGuest: false });
-      setToken(data.token);
+
+      const authenticatedUser: User = {
+        id: createRes.user.id,
+        username: createRes.user.username,
+        email: createRes.user.email,
+        isGuest: false
+      };
+
+      // If user had existing session data prior to creating account, migrate and save it
+      const hasGuestProgress = Object.keys(watchProgress).length > 0 || quizAttempts.length > 0 || unlockedAchievements.length > 0;
+      let initialData;
+      if (hasGuestProgress) {
+        initialData = {
+          userId: createRes.user.id,
+          watchProgress: { ...watchProgress },
+          episodeProgress: { ...episodeProgress },
+          collections: collections.length > 0 ? [...collections] : [INITIAL_MULTIVERSE_ESSENTIALS],
+          activeCollectionId,
+          unlockedAchievements: [...unlockedAchievements],
+          quizAttempts: [...quizAttempts],
+          updatedAt: new Date().toISOString()
+        };
+        await dbSaveUserData(createRes.user.id, initialData);
+      } else {
+        initialData = await dbGetUserData(createRes.user.id);
+      }
+
+      isRestoringRef.current = true;
+      setActiveSessionUserId(createRes.user.id);
+      setUser(authenticatedUser);
+      setToken(`doom_${btoa(createRes.user.email)}`);
+
+      setWatchProgress(initialData.watchProgress || {});
+      setEpisodeProgress(initialData.episodeProgress || {});
+      setCollections(
+        initialData.collections && initialData.collections.length > 0 
+          ? initialData.collections 
+          : [INITIAL_MULTIVERSE_ESSENTIALS]
+      );
+      setActiveCollectionId(initialData.activeCollectionId || 'multiverse-essentials');
+      setUnlockedAchievements(initialData.unlockedAchievements || []);
+      setQuizAttempts(initialData.quizAttempts || []);
+
       return { success: true };
-    } catch {
-      // Local fallback simulation
-      const userObj: User = { id: `usr_${Date.now()}`, username, email, isGuest: false };
-      setUser(userObj);
-      setToken(`doom_${btoa(email)}`);
-      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Registration failed' };
     }
   };
 
   const logout = () => {
+    // 1. Terminate active user session
+    isRestoringRef.current = true;
+    setActiveSessionUserId(null);
+
+    // 2. Return all application state to clean pristine defaults
     setUser({ id: 'guest_user', username: 'Operative (Guest)', isGuest: true });
     setToken(null);
+    setWatchProgress({});
+    setEpisodeProgress({});
+    setCollections([INITIAL_MULTIVERSE_ESSENTIALS]);
+    setActiveCollectionId('multiverse-essentials');
+    setUnlockedAchievements([]);
+    setQuizAttempts([]);
+
+    // 3. Purge legacy global keys so no previously saved data leaks into guest mode
+    try {
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.WATCH_PROGRESS);
+      localStorage.removeItem(STORAGE_KEYS.EPISODE_PROGRESS);
+      localStorage.removeItem(STORAGE_KEYS.COLLECTIONS);
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_COLLECTION);
+      localStorage.removeItem(STORAGE_KEYS.ACHIEVEMENTS);
+      localStorage.removeItem(STORAGE_KEYS.QUIZ_ATTEMPTS);
+    } catch {}
   };
 
   const migrateGuestData = async (): Promise<{ success: boolean; message?: string }> => {
-    if (user.isGuest || !token) {
+    if (user.isGuest || !user.id || user.id === 'guest_user') {
       return { success: false, message: 'Please log in to sync your guest data to your account.' };
     }
-    try {
-      const res = await fetch('/api/migrate-guest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          watchProgress,
-          episodeProgress,
-          customCollections: collections.filter(c => !c.isSystemCollection),
-          quizAttempts
-        })
-      });
-      const data = await res.json();
-      return { success: data.success, message: data.message || 'Synced successfully.' };
-    } catch {
-      return { success: true, message: 'Local data retained and synced with session.' };
-    }
+    await dbSaveUserData(user.id, {
+      watchProgress,
+      episodeProgress,
+      collections,
+      activeCollectionId,
+      unlockedAchievements,
+      quizAttempts
+    });
+    return { success: true, message: 'Data saved successfully to your database account!' };
   };
 
   const recordQuizAttempt = (attempt: Omit<QuizAttemptRecord, 'id' | 'date'>) => {
