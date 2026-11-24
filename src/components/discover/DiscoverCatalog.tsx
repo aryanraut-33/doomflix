@@ -230,35 +230,29 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Discover Header & Search Bar */}
-      <div className="doom-metallic-card rounded-3xl p-6 md:p-10 border border-border shadow-card">
+      <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
         <div className="max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-emerald/40 px-3 py-1 rounded-full text-xs font-mono text-doom-emerald">
-            <Sparkles size={12} />
-            <span>TMDB-POWERED MARVEL CATALOGUE</span>
-          </div>
-
-          <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider ">
-            DISCOVER & EXPAND
+          <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider">
+            Discover
           </h2>
-
           <p className="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed">
-            Search across the Multiverse. Explore verified Marvel cinematic releases, add essential canon to your custom watchlists, and inspect character arcs.
+            Search movies, series, characters, and sagas across the Marvel Cinematic Universe.
           </p>
 
           {/* Search Input Bar */}
-          <div className="relative pt-2">
-            <Search className="absolute left-4 top-5 text-gray-400" size={18} />
+          <div className="relative pt-1">
+            <Search className="absolute left-4 top-4 text-gray-400" size={18} />
             <input
               type="text"
-              placeholder="Search by title, character (e.g. Wolverine, Loki), or actor..."
+              placeholder="Search by title, character (e.g. Loki, Wolverine), or actor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-doom-950 border border-border focus:border-doom-emerald rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none transition-colors shadow-inner"
+              className="w-full bg-[#121620] border border-white/10 focus:border-emerald-500/50 rounded-2xl pl-12 pr-12 py-3 text-sm text-white focus:outline-none transition-all shadow-inner"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-5 text-xs text-gray-500 hover:text-white"
+                className="absolute right-4 top-4 text-xs text-gray-500 hover:text-white"
               >
                 Clear
               </button>
@@ -268,23 +262,23 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
       </div>
 
       {/* 2. Category Pills & Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 doom-metallic-card p-4 rounded-2xl border border-border">
+      <div className="flex flex-wrap items-center justify-between gap-4 doom-glass p-3 sm:p-4 rounded-2xl border border-white/10">
         {/* Curated Category Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {[
-            { id: 'All', label: 'All Catalog' },
-            { id: 'Trending', label: 'Trending / Modern' },
-            { id: 'Multiverse', label: 'Multiverse Arc' },
-            { id: 'Avengers', label: 'Avengers Saga' },
-            { id: 'Mutants', label: 'Mutants & X-Men' },
+            { id: 'All', label: 'All' },
+            { id: 'Trending', label: 'Trending' },
+            { id: 'Multiverse', label: 'Multiverse' },
+            { id: 'Avengers', label: 'Avengers' },
+            { id: 'Mutants', label: 'X-Men & Mutants' },
           ].map((tag) => (
             <button
               key={tag.id}
               onClick={() => setSelectedTag(tag.id as any)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                 selectedTag === tag.id
-                  ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm'
-                  : 'bg-doom-900 text-gray-400 hover:text-white border border-border'
+                  ? 'bg-zinc-800 text-white border border-emerald-500/50 shadow-[0_2px_10px_rgba(16,185,129,0.25)]'
+                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/5'
               }`}
             >
               {tag.label}
@@ -297,17 +291,17 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           <select
             value={selectedMediaType}
             onChange={(e) => setSelectedMediaType(e.target.value as any)}
-            className="bg-doom-900 border border-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-emerald"
+            className="bg-[#121620] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-emerald-500"
           >
-            <option value="all">All Media Types</option>
-            <option value="movie">Movies Only</option>
-            <option value="tv">TV Series Only</option>
+            <option value="all">All Types</option>
+            <option value="movie">Movies</option>
+            <option value="tv">TV Series</option>
           </select>
 
           <select
             value={selectedGenre}
             onChange={(e) => setSelectedGenre(e.target.value)}
-            className="bg-doom-900 border border-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-emerald"
+            className="bg-[#121620] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-emerald-500"
           >
             <option value="All">All Genres</option>
             <option value="Action">Action</option>
