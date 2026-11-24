@@ -3,20 +3,14 @@ import {
   X, 
   Play, 
   CheckCircle2, 
-  Clock, 
   Star, 
-  Tv, 
-  Film, 
   ExternalLink, 
-  RefreshCw, 
-  FileText, 
+  Plus, 
   Check, 
-  Compass, 
-  Layers, 
   Sparkles,
-  ShieldCheck,
-  AlertTriangle,
-  UserCheck
+  Bookmark,
+  Tv,
+  Film
 } from 'lucide-react';
 import { MarvelTitle } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
@@ -37,19 +31,15 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
     watchProgress, 
     updateWatchStatus, 
     updatePersonalNotes,
-    episodeProgress,
     toggleEpisodeWatched,
     isEpisodeWatched,
-    getSeriesEpisodeStats
   } = useAppStore();
 
-  const [activeTab, setActiveTab] = useState<'lore' | 'episodes' | 'streaming' | 'notes'>('lore');
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
+  const [showNotes, setShowNotes] = useState<boolean>(false);
   const [personalNotesInput, setPersonalNotesInput] = useState<string>('');
-  const [isRefreshingStreaming, setIsRefreshingStreaming] = useState(false);
-  const [streamRefreshMsg, setStreamRefreshMsg] = useState('');
 
-  // Sync notes when opening
+  // Sync state on open
   React.useEffect(() => {
     if (title) {
       setPersonalNotesInput(watchProgress[title.id]?.personalNotes || '');
@@ -73,28 +63,25 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
   if (!isOpen || !title) return null;
 
   const currentStatus = watchProgress[title.id]?.status || 'not_started';
-  const epStats = title.mediaType === 'tv' ? getSeriesEpisodeStats(title.id) : null;
   const primaryStream = title.streamingIndia?.[0];
   const streamUrl = primaryStream?.directUrl || primaryStream?.searchUrl;
 
   const handleSaveNotes = () => {
     updatePersonalNotes(title.id, personalNotesInput);
-  };
-
-  const handleRefreshStreaming = () => {
-    setIsRefreshingStreaming(true);
-    setStreamRefreshMsg('');
-    setTimeout(() => {
-      setIsRefreshingStreaming(false);
-      setStreamRefreshMsg('Verified with India streaming catalogs (JioHotstar, Prime Video, Netflix). All links confirmed.');
-    }, 900);
+    setShowNotes(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-4xl bg-doom-900 border border-doom-border rounded-3xl overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col">
-        {/* Backdrop Image Hero Header */}
-        <div className="relative h-64 sm:h-80 w-full overflow-hidden shrink-0 bg-doom-950">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto no-scrollbar"
+      onClick={onClose}
+    >
+      <div 
+        className="relative w-full max-w-2xl bg-[#0e1219] border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl my-auto max-h-[90vh] flex flex-col no-scrollbar"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Backdrop Image Header */}
+        <div className="relative h-56 sm:h-72 w-full overflow-hidden shrink-0 bg-doom-950">
           <CinematicImage
             src={title.backdropPath || title.posterPath}
             alt={title.title}
@@ -102,83 +89,74 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             fallbackSubtitle={title.releaseYear?.toString()}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-doom-900 via-doom-900/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-doom-900/90 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0e1219] via-[#0e1219]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0e1219]/80 via-transparent to-transparent" />
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition-all"
+            aria-label="Close"
+            className="absolute top-4 right-4 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all"
           >
             <X size={18} />
           </button>
 
-          {/* Overlaid Title & Meta */}
-          <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row items-start sm:items-end gap-6 z-10">
-            {/* Poster Thumbnail */}
-            <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden border-2 border-white/10 shadow-2xl shrink-0 hidden sm:block bg-doom-950">
-              <CinematicImage
-                src={title.posterPath}
-                alt={title.title}
-                fallbackTitle={title.title}
-                fallbackSubtitle={title.releaseYear?.toString()}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="space-y-1.5 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="marvel-badge px-2 py-0.5 text-[10px] rounded">
-                  {title.mediaType === 'tv' ? 'TV SERIES' : 'MOVIE'}
-                </span>
-                <span className={`text-[10px] font-marvel uppercase px-2 py-0.5 rounded font-bold ${
-                  title.canonStatus === 'Confirmed Canon'
-                    ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                    : 'bg-amber-950 text-amber-400 border border-amber-800'
-                }`}>
-                  {title.canonStatus}
-                </span>
-                <span className="text-[10px] text-gray-300 font-mono">
-                  {title.releaseYear} • {title.mediaType === 'tv' ? `${title.seasons?.length || 1} Seasons` : `${title.runtime} mins`}
-                </span>
-                <div className="flex items-center gap-1 text-[10px] text-doom-gold font-mono ml-auto">
-                  <Star size={12} fill="currentColor" />
-                  <span>{title.rating.toFixed(1)} / 10</span>
-                </div>
+          {/* Overlaid Title & Essential Info */}
+          <div className="absolute bottom-4 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 flex flex-col gap-2 z-10">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-white/10 text-white">
+                {title.mediaType === 'tv' ? 'Series' : 'Movie'}
+              </span>
+              <span className="text-xs text-gray-300 font-mono">
+                {title.releaseYear} • {title.mediaType === 'tv' ? `${title.seasons?.length || 1} Seasons` : `${title.runtime} min`}
+              </span>
+              <div className="flex items-center gap-1 text-xs text-amber-400 font-medium ml-auto">
+                <Star size={13} fill="currentColor" />
+                <span>{title.rating.toFixed(1)}</span>
               </div>
-
-              <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider ">
-                {title.title}
-              </h2>
-
-              <p className="text-xs text-gray-300 line-clamp-2 max-w-2xl font-sans">
-                {title.synopsis}
-              </p>
             </div>
+
+            <h2 className="font-cinematic text-2xl sm:text-4xl text-white uppercase tracking-wider drop-shadow-md">
+              {title.title}
+            </h2>
           </div>
         </div>
 
-        {/* Status Bar / Direct Controls */}
-        <div className="bg-doom-950 px-6 py-3 border-y border-doom-border/80 flex flex-wrap items-center justify-between gap-4 shrink-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 font-mono">Viewing Status:</span>
-              <div className="flex items-center bg-doom-900 border border-doom-border rounded-lg p-0.5">
+        {/* Content Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5 no-scrollbar">
+          {/* Action Bar: Direct Streaming & Watchlist Toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10">
+            <div className="flex items-center gap-2.5">
+              {streamUrl && (
+                <a
+                  href={streamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-lg font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95"
+                >
+                  <Play size={14} fill="currentColor" />
+                  <span>Watch on {primaryStream?.provider || 'Platform'}</span>
+                  <ExternalLink size={12} className="opacity-70" />
+                </a>
+              )}
+
+              {/* Status Toggle Buttons */}
+              <div className="flex items-center bg-white/5 border border-white/10 rounded-lg p-0.5">
                 <button
                   onClick={() => updateWatchStatus(title.id, 'not_started')}
-                  className={`px-3 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
                     currentStatus === 'not_started'
-                      ? 'bg-doom-800 text-white font-bold'
+                      ? 'bg-white/15 text-white font-semibold'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  Not Started
+                  Plan to watch
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'in_progress')}
-                  className={`px-3 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
                     currentStatus === 'in_progress'
-                      ? 'bg-doom-gold text-doom-950 font-bold'
+                      ? 'bg-amber-500/20 text-amber-300 font-semibold'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -186,9 +164,9 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'completed')}
-                  className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
                     currentStatus === 'completed'
-                      ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow'
+                      ? 'bg-emerald-500 text-white font-semibold shadow'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -198,239 +176,102 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Direct Streaming CTA in status bar */}
-            {streamUrl && (
-              <a
-                href={streamUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-3.5 py-1 rounded-lg font-bold text-xs shadow transition-all border border-doom-emerald/40 hover:scale-[1.02]"
-              >
-                <Play size={12} fill="white" />
-                <span>{primaryStream?.directUrl ? `Stream on ${primaryStream.provider}` : `Find on ${primaryStream?.provider}`}</span>
-                <ExternalLink size={11} className="opacity-80" />
-              </a>
+            {primaryStream && (
+              <span className="text-[11px] text-gray-400 flex items-center gap-1.5 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>Streaming in India 🇮🇳</span>
+              </span>
             )}
           </div>
 
-          {/* Quick Tab Selector */}
-          <div className="flex items-center gap-1 bg-doom-900 border border-doom-border rounded-lg p-1 text-xs">
-            <button
-              onClick={() => setActiveTab('lore')}
-              className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'lore' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Cinematic Lore
-            </button>
-            {title.mediaType === 'tv' && (
-              <button
-                onClick={() => setActiveTab('episodes')}
-                className={`px-3 py-1 rounded-md transition-all ${
-                  activeTab === 'episodes' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Episodes ({epStats?.watched}/{epStats?.total})
-              </button>
-            )}
-            <button
-              onClick={() => setActiveTab('streaming')}
-              className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'streaming' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Streaming (India)
-            </button>
-            <button
-              onClick={() => setActiveTab('notes')}
-              className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'notes' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Notes
-            </button>
+          {/* Synopsis */}
+          <div>
+            <p className="text-sm text-gray-300 leading-relaxed font-sans">
+              {title.synopsis}
+            </p>
           </div>
-        </div>
 
-        {/* Tab Content Body (Scrollable) */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
-          {/* TAB 1: CINEMATIC LORE & CONTEXT */}
-          {activeTab === 'lore' && (
-            <div className="space-y-6">
-              {/* Prominent Direct Streaming Banner */}
-              {primaryStream && (
-                <div className="bg-doom-950 p-4 rounded-2xl border border-doom-emerald/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-doom-emerald/10 border border-doom-emerald/30 text-doom-emerald flex items-center justify-center shrink-0">
-                      <Play size={16} fill="currentColor" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-white flex items-center gap-2">
-                        <span>Streaming in India on {primaryStream.provider} 🇮🇳</span>
-                        <span className="text-[10px] text-doom-emerald font-mono uppercase bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
-                          {primaryStream.availabilityStatus}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-gray-400 font-sans mt-0.5">
-                        {primaryStream.notes || `Direct streaming available for ${title.title}`}
-                      </div>
-                    </div>
-                  </div>
-
-                  <a
-                    href={streamUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition-all border border-doom-emerald/40 hover:scale-[1.02] shrink-0"
-                  >
-                    <span>{primaryStream.directUrl ? `Watch on ${primaryStream.provider}` : `Search on ${primaryStream.provider}`}</span>
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-              )}
-
-              {/* Why This Matters */}
-              <div className="bg-gradient-to-r from-doom-950 via-doom-900 to-doom-950 p-5 rounded-2xl border border-doom-emerald/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles size={16} className="text-doom-emerald" />
-                  <span className="text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
-                    Why This Matters to Avengers: Doomsday
-                  </span>
-                </div>
-                <p className="text-sm text-gray-200 leading-relaxed font-sans">
-                  {title.whyItMatters}
-                </p>
-              </div>
-
-              {/* Multiverse Significance & Canon */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-doom-950 p-4 rounded-xl border border-doom-border space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-marvel uppercase tracking-wider text-doom-gold font-bold">
-                    <Compass size={14} />
-                    <span>Multiverse Significance</span>
-                  </div>
-                  <p className="text-xs text-gray-300 leading-relaxed font-sans">
-                    {title.multiverseSignificance}
-                  </p>
-                </div>
-
-                <div className="bg-doom-950 p-4 rounded-xl border border-doom-border space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
-                    <ShieldCheck size={14} />
-                    <span>Canon Verification</span>
-                  </div>
-                  <div className="text-xs text-gray-300 font-sans space-y-1">
-                    <div>Status: <strong className="text-white">{title.canonStatus}</strong></div>
-                    <div className="text-[11px] text-gray-400">
-                      Distinguished strictly between official Marvel Studios releases, multiverse legacy variants, and speculative theories.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Characters Introduced */}
-              <div className="space-y-2">
-                <div className="text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold">
-                  Important Characters Introduced
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {title.charactersIntroduced.map((char, idx) => (
-                    <span
-                      key={idx}
-                      className="bg-doom-950 text-white border border-doom-border px-3 py-1 rounded-lg text-xs font-medium"
-                    >
-                      {char}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Key Plot Developments */}
-              <div className="space-y-2">
-                <div className="text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold">
-                  Crucial Plot Developments
-                </div>
-                <ul className="space-y-1.5 text-xs text-gray-300 font-sans list-disc list-inside">
-                  {title.relevantPlotPoints.map((point, idx) => (
-                    <li key={idx} className="leading-relaxed">
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Cast and Director */}
-              <div className="pt-2 border-t border-doom-border text-xs text-gray-400 space-y-1">
-                <div><span className="text-gray-500">Director:</span> <strong className="text-gray-200">{title.director}</strong></div>
-                <div><span className="text-gray-500">Cast:</span> {title.cast.join(', ')}</div>
-                <div><span className="text-gray-500">Genres:</span> {title.genres.join(', ')}</div>
-              </div>
+          {/* Essential Context (Why it matters) — Clean Minimal Callout */}
+          {title.whyItMatters && (
+            <div className="p-3.5 rounded-xl bg-emerald-950/20 border-l-2 border-emerald-500 text-xs text-gray-300 space-y-1">
+              <span className="text-emerald-400 font-semibold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <Sparkles size={13} />
+                <span>Road to Doomsday</span>
+              </span>
+              <p className="leading-relaxed text-gray-200">
+                {title.whyItMatters}
+              </p>
             </div>
           )}
 
-          {/* TAB 2: EPISODES (FOR TV) */}
-          {activeTab === 'episodes' && title.seasons && (
-            <div className="space-y-4">
-              {/* Season Tabs */}
-              <div className="flex items-center gap-2">
-                {title.seasons.map(s => (
-                  <button
-                    key={s.seasonNumber}
-                    onClick={() => setSelectedSeason(s.seasonNumber)}
-                    className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
-                      selectedSeason === s.seasonNumber
-                        ? 'bg-doom-gold text-doom-950 shadow-md'
-                        : 'bg-doom-950 text-gray-400 border border-doom-border hover:text-white'
-                    }`}
-                  >
-                    Season {s.seasonNumber} ({s.episodes.length} Episodes)
-                  </button>
-                ))}
+          {/* Cast & Details in a Clean Row */}
+          <div className="text-xs text-gray-400 space-y-1.5 pt-2">
+            <div>
+              <span className="text-gray-500">Director: </span>
+              <span className="text-gray-200 font-medium">{title.director}</span>
+            </div>
+            <div>
+              <span className="text-gray-500">Cast: </span>
+              <span className="text-gray-300">{title.cast.join(', ')}</span>
+            </div>
+            <div>
+              <span className="text-gray-500">Genres: </span>
+              <span className="text-gray-400">{title.genres.join(', ')}</span>
+            </div>
+          </div>
+
+          {/* TV Episodes List (if series) — Clean & Compact */}
+          {title.mediaType === 'tv' && title.seasons && (
+            <div className="space-y-3 pt-3 border-t border-white/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-semibold text-white">Episodes</h4>
+                {title.seasons.length > 1 && (
+                  <div className="flex items-center gap-1">
+                    {title.seasons.map(s => (
+                      <button
+                        key={s.seasonNumber}
+                        onClick={() => setSelectedSeason(s.seasonNumber)}
+                        className={`px-2.5 py-1 rounded text-xs font-mono transition-all ${
+                          selectedSeason === s.seasonNumber
+                            ? 'bg-white text-black font-semibold'
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        S{s.seasonNumber}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Episodes List */}
               {title.seasons
                 .filter(s => s.seasonNumber === selectedSeason)
                 .map(s => (
-                  <div key={s.seasonNumber} className="space-y-2">
+                  <div key={s.seasonNumber} className="space-y-1.5">
                     {s.episodes.map(ep => {
                       const watched = isEpisodeWatched(title.id, s.seasonNumber, ep.episodeNumber);
                       return (
                         <div
                           key={ep.episodeNumber}
                           onClick={() => toggleEpisodeWatched(title.id, s.seasonNumber, ep.episodeNumber)}
-                          className={`flex items-start justify-between gap-4 p-4 rounded-xl border transition-all cursor-pointer ${
+                          className={`flex items-center justify-between gap-3 p-2.5 rounded-lg border transition-all cursor-pointer ${
                             watched 
-                              ? 'bg-doom-950/60 border-doom-emerald/30' 
-                              : 'bg-doom-950 border-doom-border hover:border-doom-border-light'
+                              ? 'bg-emerald-950/15 border-emerald-500/30' 
+                              : 'bg-white/[0.02] border-white/5 hover:border-white/15'
                           }`}
                         >
-                          <div className="flex items-start gap-3 flex-1">
-                            <div className={`w-5 h-5 rounded flex items-center justify-center border mt-0.5 shrink-0 ${
-                              watched ? 'bg-doom-emerald border-doom-emerald text-white' : 'border-doom-border bg-doom-900'
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <div className={`w-4 h-4 rounded flex items-center justify-center border shrink-0 ${
+                              watched ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-white/20'
                             }`}>
-                              {watched && <Check size={13} />}
+                              {watched && <Check size={11} />}
                             </div>
-
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-mono font-bold text-doom-gold">
-                                  EP {ep.episodeNumber}
-                                </span>
-                                <h4 className={`text-sm font-semibold ${watched ? 'text-gray-400 line-through' : 'text-white'}`}>
-                                  {ep.title}
-                                </h4>
-                                <span className="text-[10px] text-gray-500 font-mono">{ep.runtime} mins</span>
-                              </div>
-                              <p className="text-xs text-gray-400 font-sans line-clamp-2">
-                                {ep.overview}
-                              </p>
-                            </div>
+                            <span className="text-xs text-gray-400 font-mono shrink-0">E{ep.episodeNumber}</span>
+                            <span className={`text-xs font-medium truncate ${watched ? 'text-gray-400 line-through' : 'text-white'}`}>
+                              {ep.title}
+                            </span>
                           </div>
-
-                          <span className="text-[10px] text-gray-500 font-mono shrink-0">
-                            {ep.airDate}
-                          </span>
+                          <span className="text-[10px] text-gray-500 font-mono shrink-0">{ep.runtime}m</span>
                         </div>
                       );
                     })}
@@ -439,129 +280,41 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             </div>
           )}
 
-          {/* TAB 3: STREAMING AVAILABILITY (INDIA FOCUS) */}
-          {activeTab === 'streaming' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-marvel text-lg text-white font-bold tracking-wide">
-                    Streaming Availability in India 🇮🇳
-                  </h4>
-                  <p className="text-xs text-gray-400 font-sans">
-                    Verified platform listings. Prioritizes JioHotstar / Disney+ Hotstar, Netflix, and Prime Video.
-                  </p>
+          {/* Minimal Notes Toggle */}
+          <div className="pt-2">
+            {!showNotes ? (
+              <button
+                onClick={() => setShowNotes(true)}
+                className="text-xs text-gray-400 hover:text-white transition-colors"
+              >
+                {personalNotesInput ? 'Edit personal notes' : '+ Add personal notes'}
+              </button>
+            ) : (
+              <div className="space-y-2 pt-2">
+                <textarea
+                  rows={3}
+                  placeholder="Add personal notes..."
+                  value={personalNotesInput}
+                  onChange={(e) => setPersonalNotesInput(e.target.value)}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl p-3 text-xs text-gray-100 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => setShowNotes(false)}
+                    className="px-3 py-1 rounded text-xs text-gray-400 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveNotes}
+                    className="px-3 py-1 rounded text-xs font-medium bg-emerald-500 text-white"
+                  >
+                    Save
+                  </button>
                 </div>
-
-                <button
-                  onClick={handleRefreshStreaming}
-                  disabled={isRefreshingStreaming}
-                  className="p-2 rounded-lg bg-doom-950 border border-doom-border text-gray-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors"
-                >
-                  <RefreshCw size={14} className={isRefreshingStreaming ? 'animate-spin' : ''} />
-                  <span>Refresh Availability</span>
-                </button>
               </div>
-
-              {streamRefreshMsg && (
-                <div className="p-3 bg-doom-950 border border-doom-emerald text-doom-emerald rounded-xl text-xs font-sans">
-                  {streamRefreshMsg}
-                </div>
-              )}
-
-              {title.streamingIndia && title.streamingIndia.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {title.streamingIndia.map((provider, idx) => (
-                    <div
-                      key={idx}
-                      className="metallic-card p-5 rounded-2xl border border-doom-border space-y-3 flex flex-col justify-between"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="font-marvel text-lg font-bold text-white tracking-wide">
-                            {provider.provider}
-                          </span>
-                          <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
-                            provider.availabilityStatus === 'available'
-                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                              : 'bg-amber-950 text-amber-400 border border-amber-800'
-                          }`}>
-                            {provider.availabilityStatus}
-                          </span>
-                        </div>
-                        {provider.notes && (
-                          <p className="text-xs text-gray-400 font-sans">
-                            {provider.notes}
-                          </p>
-                        )}
-                        <div className="text-[10px] text-gray-500 font-mono">
-                          Last verified: {provider.lastVerifiedAt}
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        {provider.directUrl ? (
-                          <a
-                            href={provider.directUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 border border-doom-emerald/40"
-                          >
-                            <span>Stream Directly on {provider.provider}</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        ) : (
-                          <a
-                            href={provider.searchUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full bg-doom-950 hover:bg-doom-800 border border-doom-border text-gray-200 py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
-                          >
-                            <span>Search on {provider.provider}</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-8 text-center bg-doom-950 border border-doom-border rounded-2xl text-gray-400 text-xs font-sans">
-                  Streaming availability for this title in India could not be automatically verified.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 4: PERSONAL NOTES */}
-          {activeTab === 'notes' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-marvel text-lg text-white font-bold tracking-wide">
-                    Personal Notes & Observations
-                  </h4>
-                  <p className="text-xs text-gray-400 font-sans">
-                    Keep your own notes, continuity questions, and review observations for this title.
-                  </p>
-                </div>
-                <button
-                  onClick={handleSaveNotes}
-                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
-                >
-                  <Check size={14} />
-                  <span>Save Notes</span>
-                </button>
-              </div>
-
-              <textarea
-                rows={8}
-                placeholder="Write your personal notes for this title..."
-                value={personalNotesInput}
-                onChange={(e) => setPersonalNotesInput(e.target.value)}
-                className="w-full bg-doom-950 border border-doom-border rounded-xl p-4 text-sm text-gray-100 focus:outline-none focus:border-doom-emerald transition-colors resize-none leading-relaxed"
-              />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
