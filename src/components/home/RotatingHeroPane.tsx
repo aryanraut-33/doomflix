@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Play, 
   CheckCircle2, 
@@ -101,6 +101,8 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   // Reset index when movies array changes
   useEffect(() => {
@@ -120,14 +122,47 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
     return () => clearInterval(timer);
   }, [isPaused, currentMovies.length, currentIndex]);
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePrev = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setCurrentIndex(prev => (prev - 1 + currentMovies.length) % currentMovies.length);
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setCurrentIndex(prev => (prev + 1) % currentMovies.length);
+  };
+
+  // Mobile Touch Swipe Handlers (Zero-latency synchronous tracking with refs)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) {
+      setIsPaused(false);
+      return;
+    }
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaX = touchEndX - touchStartXRef.current;
+    const deltaY = touchEndY - touchStartYRef.current;
+
+    // Minimum swipe threshold of 30px, with horizontal dominance over vertical scroll
+    if (Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY) * 1.1) {
+      if (deltaX < 0) {
+        // Swiped left -> next
+        handleNext();
+      } else {
+        // Swiped right -> prev
+        handlePrev();
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+    setIsPaused(false);
   };
 
   if (!activeMovie) return null;
@@ -207,8 +242,10 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
         {/* Mobile Hero Billboard Card */}
         <div className="px-4 pt-1">
           <div 
-            className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.85)] bg-doom-950 group"
+            className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.85)] bg-doom-950 group cursor-grab active:cursor-grabbing touch-pan-y"
             onClick={() => onOpenTitleDetails(activeMovie)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {/* Background Image */}
             <CinematicImage
@@ -326,7 +363,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
       {/* 2. DESKTOP FORMAT ONLY (lg:block): Wide Cinematic Layout       */}
       {/* ============================================================== */}
       <section 
-        className="hidden lg:block relative w-screen -ml-[50vw] left-1/2 overflow-hidden bg-doom-950 select-none"
+        className="hidden lg:block relative w-screen -ml-[50vw] left-1/2 overflow-hidden bg-doom-950 select-none group"
         style={{ minHeight: 'calc(100vh - 56px)' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -424,20 +461,20 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           </div>
         </div>
 
-        {/* Side navigation arrows */}
+        {/* Side navigation arrows — Prime Video hover fade style */}
         <button
-          onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/70 hover:text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-          aria-label="Previous"
+          onClick={() => handlePrev()}
+          className="absolute left-[108px] top-1/2 -translate-y-1/2 z-30 p-2 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+          aria-label="Previous slide"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={36} strokeWidth={2.2} />
         </button>
         <button
-          onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/70 hover:text-white transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-          aria-label="Next"
+          onClick={() => handleNext()}
+          className="absolute right-6 sm:right-8 top-1/2 -translate-y-1/2 z-30 p-2 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+          aria-label="Next slide"
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={36} strokeWidth={2.2} />
         </button>
       </section>
     </>
