@@ -71,11 +71,11 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
       />
 
       {/* Everything below hero gets constrained padding */}
-      <div className="px-4 sm:px-6 md:px-10 lg:px-12 max-w-7xl mx-auto w-full space-y-10 pt-10">
+      <div className="px-4 sm:px-6 md:px-10 lg:px-12 max-w-7xl mx-auto w-full space-y-8 sm:space-y-10 pt-6 sm:pt-10">
 
         {/* 2. Numbered Phase Movies Sequence (Netflix Top-10 Style) */}
         <section>
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
             <h2 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
               {activePhaseData.name.split('—')[1]?.trim() || activePhaseData.name}
             </h2>
@@ -88,7 +88,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
           </div>
 
           {/* Horizontal Scrolling Rail with Giant Netflix Outlined Numbers */}
-          <div className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-6 scrollbar-none pl-4 sm:pl-8">
+          <div className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-4 scrollbar-none no-scrollbar pl-4 sm:pl-8">
             {activePhaseData.titles.map((title, idx) => {
               const rank = idx + 1;
               const isWatched = watchProgress[title.id]?.status === 'completed';
