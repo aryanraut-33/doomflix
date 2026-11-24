@@ -194,70 +194,76 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
       </div>
 
       {/* 3. Original Achievement Badges Gallery */}
-      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-doom-border/80 pb-4">
+      <div className="doom-metallic-card rounded-2xl p-4 sm:p-6 border border-border space-y-4 shadow-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
           <div>
-            <h3 className="font-cinematic text-3xl uppercase tracking-wider text-white flex items-center gap-2">
-              <Award size={24} className="text-doom-gold" />
+            <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+              <Award size={22} className="text-emerald-400" />
               <span>Operative Badges & Achievements</span>
             </h3>
-            <p className="text-xs text-gray-400 font-sans">
+            <p className="text-xs text-gray-400 font-sans mt-0.5">
               Original emblems unlocked through confirmed movie-watching, series completion, and Knowledge Arena battles.
             </p>
           </div>
-          <div className="text-xs font-mono text-doom-gold font-bold">
+          <div className="text-xs font-mono text-emerald-400 font-semibold shrink-0">
             {unlockedAchievements.length} / {ACHIEVEMENTS.length} Unlocked
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Responsive Grid: 2-3 Badges per row on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {ACHIEVEMENTS.map(ach => {
             const unlocked = isAchievementUnlocked(ach.id);
             const unlockedDate = getUnlockedDate(ach.id);
 
-            let borderGlow = 'border-doom-border/60 bg-doom-950/40 text-gray-500';
+            let borderGlow = 'border-white/5 bg-white/[0.02] text-gray-500';
             if (unlocked) {
-              if (ach.badgeColor === 'red') borderGlow = 'border-doom-red bg-doom-950 shadow-sm text-doom-red';
-              else if (ach.badgeColor === 'gold') borderGlow = 'border-doom-gold bg-doom-950 shadow-sm text-doom-gold';
-              else if (ach.badgeColor === 'emerald') borderGlow = 'border-doom-emerald bg-doom-950 shadow-sm text-doom-emerald';
-              else if (ach.badgeColor === 'blue') borderGlow = 'border-doom-blue bg-doom-950 shadow-sm text-doom-blue';
-              else borderGlow = 'border-doom-gold bg-doom-950 text-doom-gold';
+              if (ach.badgeColor === 'red') borderGlow = 'border-rose-500/30 bg-rose-950/20 text-rose-400 shadow-sm';
+              else if (ach.badgeColor === 'gold') borderGlow = 'border-amber-500/30 bg-amber-950/20 text-amber-400 shadow-sm';
+              else if (ach.badgeColor === 'emerald') borderGlow = 'border-emerald-500/30 bg-emerald-950/20 text-emerald-400 shadow-sm';
+              else if (ach.badgeColor === 'blue') borderGlow = 'border-sky-500/30 bg-sky-950/20 text-sky-400 shadow-sm';
+              else borderGlow = 'border-emerald-500/30 bg-emerald-950/20 text-emerald-400';
             }
 
             return (
               <div
                 key={ach.id}
-                className={`p-4 rounded-2xl border transition-all flex items-start gap-3 ${borderGlow}`}
+                className={`p-3 sm:p-4 rounded-xl border transition-all flex flex-col justify-between ${borderGlow}`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${
-                  unlocked
-                    ? 'bg-doom-900 border-current shadow-md'
-                    : 'bg-doom-950 border-doom-border text-gray-600'
-                }`}>
-                  {unlocked ? <Award size={24} /> : <Lock size={20} />}
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-1">
-                    <h4 className={`font-marvel text-base font-bold tracking-wide truncate ${unlocked ? 'text-white' : 'text-gray-500'}`}>
-                      {ach.name}
-                    </h4>
-                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-doom-900 border border-white/5">
+                <div>
+                  <div className="flex items-center justify-between gap-1 mb-2">
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 border ${
+                      unlocked
+                        ? 'bg-black/50 border-current shadow'
+                        : 'bg-black/30 border-white/10 text-gray-600'
+                    }`}>
+                      {unlocked ? <Award size={18} /> : <Lock size={15} />}
+                    </div>
+                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-black/50 border border-white/5 text-gray-400">
                       {ach.rarity}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-gray-400 font-sans line-clamp-2 mt-0.5">
+                  <h4 className={`text-xs sm:text-sm font-semibold tracking-wide truncate ${unlocked ? 'text-white' : 'text-gray-500'}`}>
+                    {ach.name}
+                  </h4>
+
+                  <p className="text-[10px] sm:text-[11px] text-gray-400 font-sans line-clamp-2 mt-1 leading-tight">
                     {ach.description}
                   </p>
+                </div>
 
-                  <div className="text-[10px] font-mono mt-2">
-                    {unlocked ? (
-                      <span className="text-doom-emerald">Unlocked on {unlockedDate}</span>
-                    ) : (
-                      <span className="text-gray-600">Locked • {ach.unlockCondition}</span>
-                    )}
-                  </div>
+                <div className="text-[9px] sm:text-[10px] font-mono mt-2.5 pt-1.5 border-t border-white/5 truncate">
+                  {unlocked ? (
+                    <span className="text-emerald-400 flex items-center gap-1">
+                      <CheckCircle2 size={10} />
+                      <span className="truncate">{unlockedDate}</span>
+                    </span>
+                  ) : (
+                    <span className="text-gray-600 truncate block" title={ach.unlockCondition}>
+                      {ach.unlockCondition}
+                    </span>
+                  )}
                 </div>
               </div>
             );
