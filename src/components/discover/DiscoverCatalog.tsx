@@ -228,43 +228,43 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
   };
 
   return (
-    <div className="space-y-8 pb-20">
-      {/* 1. Discover Header & Search Bar */}
-      <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
-        <div className="max-w-2xl space-y-3">
-          <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider">
+    <div className="space-y-5 pb-20">
+      {/* 1. Discover Header & Search Bar — Minimal & Subtle */}
+      <div className="pb-3 border-b border-white/5 space-y-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             Discover
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed">
+          <p className="text-xs text-gray-400 font-sans mt-0.5">
             Search movies, series, characters, and sagas across the Marvel Cinematic Universe.
           </p>
+        </div>
 
-          {/* Search Input Bar */}
-          <div className="relative pt-1">
-            <Search className="absolute left-4 top-4 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search by title, character (e.g. Loki, Wolverine), or actor..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#121620] border border-white/10 focus:border-emerald-500/50 rounded-2xl pl-12 pr-12 py-3 text-sm text-white focus:outline-none transition-all shadow-inner"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-4 text-xs text-gray-500 hover:text-white"
-              >
-                Clear
-              </button>
-            )}
-          </div>
+        {/* Search Input Bar - Sleek & Compact */}
+        <div className="relative max-w-xl">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+          <input
+            type="text"
+            placeholder="Search titles, characters, actors..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white/[0.03] border border-white/10 focus:border-emerald-500/40 rounded-xl pl-9 pr-9 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none transition-all shadow-inner"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-gray-400 hover:text-white px-1 py-0.5"
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
-      {/* 2. Category Pills & Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 doom-glass p-3 sm:p-4 rounded-2xl border border-white/10">
+      {/* 2. Category Pills & Filter Toolbar — Minimal & Subtle */}
+      <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
         {/* Curated Category Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
           {[
             { id: 'All', label: 'All' },
             { id: 'Trending', label: 'Trending' },
@@ -275,10 +275,10 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
             <button
               key={tag.id}
               onClick={() => setSelectedTag(tag.id as any)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                 selectedTag === tag.id
-                  ? 'bg-zinc-800 text-white border border-emerald-500/50 shadow-[0_2px_10px_rgba(16,185,129,0.25)]'
-                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/5'
+                  ? 'bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               {tag.label}
@@ -287,11 +287,11 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
         </div>
 
         {/* Media & Genre Selectors */}
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 md:flex items-center gap-2">
           <select
             value={selectedMediaType}
             onChange={(e) => setSelectedMediaType(e.target.value as any)}
-            className="bg-[#121620] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-emerald-500"
+            className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500/40"
           >
             <option value="all">All Types</option>
             <option value="movie">Movies</option>
@@ -301,7 +301,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           <select
             value={selectedGenre}
             onChange={(e) => setSelectedGenre(e.target.value)}
-            className="bg-[#121620] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-emerald-500"
+            className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500/40"
           >
             <option value="All">All Genres</option>
             <option value="Action">Action</option>
@@ -314,16 +314,16 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
       </div>
 
       {/* 3. Results Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between text-xs text-gray-400 font-mono">
-          <span>Showing {filteredTitles.length} Titles</span>
-          <span>Target Destination: <strong className="text-white">{activeCol?.name}</strong></span>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-xs text-gray-400 font-mono px-0.5 gap-2">
+          <span className="whitespace-nowrap">{filteredTitles.length} Titles</span>
+          <span className="truncate text-right">Target: <strong className="text-white">{activeCol?.name}</strong></span>
         </div>
 
         {filteredTitles.length === 0 ? (
-          <div className="doom-metallic-card rounded-2xl p-12 text-center space-y-3 border border-border">
-            <Film size={32} className="mx-auto text-gray-500" />
-            <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white">
+          <div className="rounded-2xl p-12 text-center space-y-3 bg-white/[0.02] border border-white/5">
+            <Film size={28} className="mx-auto text-gray-500" />
+            <h3 className="text-lg font-semibold uppercase tracking-wider text-white">
               No Titles Found
             </h3>
             <p className="text-xs text-gray-400 max-w-sm mx-auto font-sans">
@@ -331,89 +331,87 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
             {filteredTitles.map((title) => {
               const inCollection = isInActiveCollection(title.id);
               return (
                 <div
                   key={title.id}
-                  className="group doom-metallic-card rounded-2xl overflow-hidden border border-border hover:border-doom-emerald/50 transition-all flex flex-col justify-between"
+                  className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all flex flex-col justify-between group"
                 >
-                  {/* Poster Image */}
-                  <div 
-                    onClick={() => onOpenTitleDetails(title)}
-                    className="relative aspect-[2/3] w-full overflow-hidden bg-doom-950 cursor-pointer"
-                  >
-                    <CinematicImage
-                      src={title.posterPath}
-                      alt={title.title}
-                      fallbackTitle={title.title}
-                      fallbackSubtitle={String(title.releaseYear)}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-doom-950 via-transparent to-transparent opacity-60" />
+                  <div>
+                    {/* Poster Image */}
+                    <div 
+                      onClick={() => onOpenTitleDetails(title)}
+                      className="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-doom-950 cursor-pointer"
+                    >
+                      <CinematicImage
+                        src={title.posterPath}
+                        alt={title.title}
+                        fallbackTitle={title.title}
+                        fallbackSubtitle={String(title.releaseYear)}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent opacity-60" />
 
-                    {/* Media Type Badge */}
-                    <span className="absolute top-2.5 left-2.5 marvel-badge px-1.5 py-0.5 text-[9px] rounded">
-                      {title.mediaType === 'tv' ? 'TV' : 'MOVIE'}
-                    </span>
+                      {/* Media Type Badge */}
+                      <span className="absolute top-2 left-2 px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-black/60 text-white/90 backdrop-blur-sm border border-white/10 uppercase">
+                        {title.mediaType === 'tv' ? 'TV' : 'MOVIE'}
+                      </span>
 
-                    {/* Rating Pill */}
-                    <div className="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-sm border border-white/10 px-1.5 py-0.5 rounded text-[10px] text-doom-gold font-mono flex items-center gap-1">
-                      <Star size={10} fill="currentColor" />
-                      <span>{title.rating.toFixed(1)}</span>
+                      {/* Rating Pill */}
+                      <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm border border-white/10 px-1.5 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1">
+                        <Star size={9} fill="currentColor" />
+                        <span>{title.rating.toFixed(1)}</span>
+                      </div>
+
+                      {/* In Watchlist Indicator Pill */}
+                      {inCollection && (
+                        <div className="absolute bottom-2 left-2 bg-emerald-500/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm backdrop-blur-sm">
+                          <Check size={9} />
+                          <span>In List</span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* In Watchlist Indicator Pill */}
-                    {inCollection && (
-                      <div className="absolute bottom-2.5 left-2.5 bg-doom-emerald/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
-                        <Check size={10} />
-                        <span>In Watchlist</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Body Info */}
-                  <div className="p-3.5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="text-[10px] text-gray-500 font-mono mb-0.5">
-                        {title.releaseYear} • {title.genres[0]}
-                      </div>
+                    {/* Title & Metadata */}
+                    <div className="pt-2">
                       <h4 
                         onClick={() => onOpenTitleDetails(title)}
-                        className="font-marvel text-sm sm:text-base font-bold text-white tracking-wide truncate cursor-pointer hover:text-doom-emerald transition-colors"
+                        className="text-xs sm:text-sm font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors leading-tight"
+                        title={title.title}
                       >
                         {title.title}
                       </h4>
-                      <p className="text-[11px] text-gray-400 line-clamp-2 mt-1 font-sans">
-                        {title.synopsis}
-                      </p>
+                      <div className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">
+                        {title.releaseYear} • {title.genres[0]}
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Action buttons */}
-                    <div className="pt-3 mt-3 border-t border-border flex items-center gap-2">
-                      <button
-                        onClick={() => setModalTitle(title)}
-                        className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
-                          inCollection
-                            ? 'bg-doom-950 text-gray-400 hover:text-white border border-border'
-                            : 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white shadow-sm border border-doom-emerald/40'
-                        }`}
-                        title={inCollection ? 'Add to another collection' : 'Add to collection'}
-                      >
-                        <Plus size={13} />
-                        <span className="truncate">{inCollection ? 'Add to Other' : 'Add to List'}</span>
-                      </button>
+                  {/* Compact Action Buttons */}
+                  <div className="pt-2 mt-1.5 border-t border-white/5 flex items-center gap-1.5">
+                    <button
+                      onClick={() => setModalTitle(title)}
+                      className={`flex-1 py-1 px-2 rounded-md font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all truncate ${
+                        inCollection
+                          ? 'bg-white/5 text-gray-300 hover:text-white border border-white/10'
+                          : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
+                      }`}
+                      title={inCollection ? 'Add to another collection' : `Add to ${activeCol?.name || 'List'}`}
+                    >
+                      <Plus size={11} />
+                      <span className="truncate">{inCollection ? 'Add Other' : 'Add to List'}</span>
+                    </button>
 
-                      <button
-                        onClick={() => onOpenTitleDetails(title)}
-                        className="p-1.5 rounded-lg bg-doom-950 hover:bg-doom-800 border border-border text-gray-300 hover:text-white transition-colors"
-                        title="View Full Cinematic Lore & Details"
-                      >
-                        <Info size={14} />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => onOpenTitleDetails(title)}
+                      className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors shrink-0"
+                      title="View Details"
+                    >
+                      <Info size={12} />
+                    </button>
                   </div>
                 </div>
               );
