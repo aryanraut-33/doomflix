@@ -219,28 +219,8 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           </div>
         </header>
 
-        {/* Category Filter Chips Bar */}
-        <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto no-scrollbar scrollbar-none">
-          {MOBILE_CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
-                  isActive
-                    ? 'bg-zinc-800 text-white border border-emerald-500/50 shadow-[0_2px_10px_rgba(16,185,129,0.25)]'
-                    : 'bg-white/5 text-gray-400 hover:text-white border border-white/5'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Mobile Hero Billboard Card */}
-        <div className="px-4 pt-1">
+        <div className="px-4 pt-2">
           <div 
             className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.85)] bg-doom-950 group cursor-grab active:cursor-grabbing touch-pan-y"
             onClick={() => onOpenTitleDetails(activeMovie)}
