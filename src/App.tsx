@@ -42,7 +42,7 @@ const AppContent: React.FC = () => {
         )}
 
         {currentTab !== 'home' && (
-          <main className="flex-1 px-4 sm:px-6 md:px-10 lg:px-12 py-6 pt-16 max-w-7xl mx-auto w-full">
+          <main className="flex-1 px-4 sm:px-6 md:px-8 lg:pl-32 lg:pr-12 py-6 pt-8 lg:pt-10 max-w-7xl mx-auto w-full">
             {currentTab === 'watchlist' && (
               <WatchlistManager
                 onOpenTitleDetails={(t) => setDetailsModalTitle(t)}
