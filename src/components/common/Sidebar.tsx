@@ -163,7 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
         style={{ opacity: isExpanded ? 1 : 0 }}
       />
 
-      {/* 3. Top Logo Slot: 36x36, centered at x = 48px, top offset 40px */}
+      {/* 3. Top Logo Slot: 40x40 Doctor Doom Mask with Doom Green Smoke & Flame Aura */}
       <a
         href="#home"
         onClick={(e) => {
@@ -184,6 +184,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
           className="doom-logo-img w-[40px] h-[40px] object-cover"
         />
       </a>
+
+      {/* Expanded Sidebar Brand Name 'Doomflix' on the right side of the logo */}
+      <div
+        className="absolute left-[78px] top-[36px] h-[40px] flex items-center pointer-events-none overflow-hidden"
+        style={{
+          opacity: isExpanded ? 1 : 0,
+          transform: isExpanded ? 'translateX(0px)' : 'translateX(-8px)',
+          transition: isExpanded
+            ? 'opacity 220ms cubic-bezier(0.4, 0, 0.2, 1) 40ms, transform 220ms cubic-bezier(0.4, 0, 0.2, 1) 40ms'
+            : 'opacity 120ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 120ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+        }}
+      >
+        <span className="font-cinematic text-2xl font-black tracking-wider text-white select-none whitespace-nowrap">
+          DOOM<span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">FLIX</span>
+        </span>
+      </div>
 
       {/* 4. Item List: Vertically Centered in Viewport, Pitch 52px (44px height + 8px gap) */}
       <div className="absolute top-0 left-0 h-full w-full flex flex-col justify-center gap-[8px] z-10 pointer-events-auto">
