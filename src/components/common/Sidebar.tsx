@@ -146,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
       onMouseLeave={handleMouseLeave}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className="fixed top-0 left-0 h-screen select-none z-50 transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      className="hidden lg:block fixed top-0 left-0 h-screen select-none z-50 transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
       style={{
         width: isExpanded ? '280px' : '96px',
       }}
