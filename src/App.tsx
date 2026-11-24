@@ -28,12 +28,21 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-doom-950 text-gray-100 font-sans selection:bg-doom-red selection:text-white">
-      {/* 1. Desktop Persistent Sidebar */}
-      <Sidebar
+    <div className="relative flex flex-col min-h-screen bg-doom-950 text-gray-100 font-sans selection:bg-doom-emerald selection:text-white overflow-x-hidden">
+      {/* Ambient Glassmorphism Luminous Glow Orbs (Behind content) */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-40 left-1/4 w-[650px] h-[650px] bg-emerald-600/[0.08] rounded-full blur-[140px]" />
+        <div className="absolute top-1/3 -right-32 w-[550px] h-[550px] bg-teal-500/[0.06] rounded-full blur-[160px]" />
+        <div className="absolute bottom-10 left-10 w-[600px] h-[600px] bg-emerald-800/[0.07] rounded-full blur-[150px]" />
+      </div>
+
+      {/* 1. Sticky Top Navigation Bar Header */}
+      <Header
         currentTab={currentTab}
         onSelectTab={handleSelectTab}
         onOpenAuth={() => setAuthModalOpen(true)}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
 
       {/* Mobile Drawer (When Hamburger is clicked) */}
@@ -43,12 +52,12 @@ const AppContent: React.FC = () => {
           onClick={() => setMobileMenuOpen(false)}
         >
           <div 
-            className="w-72 bg-doom-950 h-full p-4 border-r border-doom-border"
+            className="w-72 bg-doom-950 h-full p-4 border-r border-border doom-glass"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-doom-border mb-4">
+            <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-doom-red flex items-center justify-center font-cinematic font-black text-xl text-white">
+                <div className="w-8 h-8 rounded bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center font-cinematic font-black text-xl text-white shadow-sm border border-emerald-400/40">
                   D
                 </div>
                 <span className="font-cinematic text-2xl text-white tracking-wider">DOOMFLIX</span>
@@ -60,7 +69,7 @@ const AppContent: React.FC = () => {
 
             <div className="space-y-1">
               {[
-                { id: 'home' as NavTab, label: 'Command Centre' },
+                { id: 'home' as NavTab, label: 'Home / Command' },
                 { id: 'watchlist' as NavTab, label: 'My Watchlist' },
                 { id: 'discover' as NavTab, label: 'Discover & Add' },
                 { id: 'quiz' as NavTab, label: 'Knowledge Arena' },
@@ -72,8 +81,8 @@ const AppContent: React.FC = () => {
                   onClick={() => handleSelectTab(item.id)}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     currentTab === item.id 
-                      ? 'bg-doom-red text-white' 
-                      : 'text-gray-300 hover:bg-doom-900'
+                      ? 'bg-gradient-to-r from-doom-emerald/20 to-transparent text-white border-l-2 border-doom-emerald font-bold' 
+                      : 'text-gray-300 hover:bg-white/5'
                   }`}
                 >
                   {item.label}
@@ -84,18 +93,10 @@ const AppContent: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Main Content Layout */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
-        <Header
-          onSelectTab={handleSelectTab}
-          onOpenAuth={() => setAuthModalOpen(true)}
-          mobileMenuOpen={mobileMenuOpen}
-          setMobileMenuOpen={setMobileMenuOpen}
-        />
-
+      {/* 2. Main Content Layout (Full Width Cinematic) */}
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Viewport Content */}
-        <main className="flex-1 px-4 sm:px-6 md:px-10 py-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 px-4 sm:px-6 md:px-10 lg:px-12 py-6 max-w-7xl mx-auto w-full">
           {currentTab === 'home' && (
             <CommandCentre
               onSelectTab={handleSelectTab}

@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
               className="flex items-center gap-3 cursor-pointer overflow-hidden" 
               onClick={() => onSelectTab('home')}
             >
-              <div className="w-9 h-9 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider shrink-0">
                 D
               </div>
               <div className="truncate">
@@ -74,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
                   <span className="font-cinematic text-2xl tracking-widest text-white uppercase font-black">
                     DOOMFLIX
                   </span>
-                  <span className="text-[9px] bg-doom-red/20 text-doom-red border border-doom-red/40 px-1 py-0.2 rounded font-mono font-bold">
+                  <span className="text-[9px] bg-doom-emerald/20 text-doom-emerald border border-doom-emerald/40 px-1 py-0.2 rounded font-mono font-bold">
                     MCU
                   </span>
                 </div>
@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
           <div className="flex flex-col items-center gap-2.5">
             <div 
               onClick={() => onSelectTab('home')}
-              className="w-10 h-10 rounded-lg bg-doom-red flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider cursor-pointer transition-transform hover:scale-105"
+              className="w-10 h-10 rounded-lg bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center font-cinematic font-black text-2xl text-white shadow-sm tracking-wider cursor-pointer transition-transform hover:scale-105"
               title="DOOMFLIX Home"
             >
               D
@@ -133,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
                   onClick={() => onSelectTab(item.id)}
                   className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
                     isActive
-                      ? 'bg-doom-red text-white shadow-sm'
+                      ? 'bg-gradient-to-br from-doom-emerald-dark to-doom-emerald text-white shadow-sm'
                       : 'text-gray-400 hover:text-white hover:bg-doom-900'
                   }`}
                   title={item.label}
@@ -141,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
                 >
                   <Icon size={19} />
                   {item.badge && (
-                    <span className="absolute top-1 right-2 w-2 h-2 bg-doom-gold rounded-full border border-doom-950" />
+                    <span className="absolute top-1 right-2 w-2 h-2 bg-doom-emerald rounded-full border border-doom-950" />
                   )}
                 </button>
               </div>
@@ -154,17 +154,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
               onClick={() => onSelectTab(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-doom-red/20 to-doom-red/5 text-white border-l-2 border-doom-red shadow-inner'
+                  ? 'bg-gradient-to-r from-doom-emerald/20 to-transparent text-white border-l-2 border-doom-emerald shadow-inner'
                   : 'text-gray-400 hover:text-gray-200 hover:bg-doom-900/60'
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon size={18} className={isActive ? 'text-doom-red' : 'text-gray-400'} />
+                <Icon size={18} className={isActive ? 'text-doom-emerald' : 'text-gray-400'} />
                 <span className="tracking-wide">{item.label}</span>
               </div>
               {item.badge && (
                 <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  isActive ? 'bg-doom-red text-white' : 'bg-doom-800 text-gray-400'
+                  isActive ? 'bg-doom-emerald text-doom-950' : 'bg-doom-800 text-gray-400'
                 }`}>
                   {item.badge}
                 </span>
@@ -235,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
           </div>
           <div className="w-full bg-doom-950 h-2 rounded-full overflow-hidden border border-white/5">
             <div
-              className="h-full bg-gradient-to-r from-doom-red to-doom-gold transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-doom-emerald to-doom-gold transition-all duration-500 rounded-full"
               style={{ width: `${overallStats.completionPercentage}%` }}
             />
           </div>

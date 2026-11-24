@@ -81,10 +81,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
       {/* 1. Operative Header Card */}
-      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
+      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border shadow-card">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-doom-red to-doom-red-dark flex items-center justify-center text-white font-cinematic font-black text-3xl shadow-sm">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center text-white font-cinematic font-black text-3xl shadow-[0_0_20px_rgba(16,185,129,0.25)] border border-doom-emerald/40">
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -93,7 +93,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
                   {user.username}
                 </h2>
                 {user.isGuest ? (
-                  <span className="text-[10px] bg-doom-950 text-gray-400 border border-doom-border px-2 py-0.5 rounded font-mono">
+                  <span className="text-[10px] bg-doom-950 text-gray-400 border border-border px-2 py-0.5 rounded font-mono">
                     GUEST OPERATIVE
                   </span>
                 ) : (
@@ -113,7 +113,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             {user.isGuest ? (
               <button
                 onClick={onOpenAuth}
-                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02]"
               >
                 <Database size={14} />
                 <span>Create Cloud Account & Sync</span>
@@ -122,7 +122,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               <button
                 onClick={handleManualSync}
                 disabled={syncLoading}
-                className="w-full sm:w-auto bg-doom-900 hover:bg-doom-850 border border-doom-border text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-doom-900 hover:bg-doom-850 border border-border text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
                 <span>Sync with Cloud</span>
@@ -140,10 +140,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
 
       {/* 2. Overall Tracking Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border space-y-1">
+        <div className="doom-metallic-card p-5 rounded-2xl border border-border space-y-1 shadow-card">
           <div className="text-gray-400 text-xs font-marvel uppercase tracking-wider flex items-center justify-between">
             <span>Overall Progress</span>
-            <Sparkles size={14} className="text-doom-red" />
+            <Sparkles size={14} className="text-doom-emerald" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
             {overallStats.completionPercentage}%
@@ -153,10 +153,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
           </div>
         </div>
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border space-y-1">
+        <div className="doom-metallic-card p-5 rounded-2xl border border-border space-y-1 shadow-card">
           <div className="text-gray-400 text-xs font-marvel uppercase tracking-wider flex items-center justify-between">
             <span>Movies Tracked</span>
-            <Film size={14} className="text-doom-gold" />
+            <Film size={14} className="text-doom-emerald" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
             {overallStats.moviesWatched}
@@ -166,7 +166,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
           </div>
         </div>
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border space-y-1">
+        <div className="doom-metallic-card p-5 rounded-2xl border border-border space-y-1 shadow-card">
           <div className="text-gray-400 text-xs font-marvel uppercase tracking-wider flex items-center justify-between">
             <span>Series Complete</span>
             <Tv size={14} className="text-doom-emerald" />
@@ -179,7 +179,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
           </div>
         </div>
 
-        <div className="metallic-card p-5 rounded-2xl border border-doom-border space-y-1">
+        <div className="doom-metallic-card p-5 rounded-2xl border border-border space-y-1 shadow-card">
           <div className="text-gray-400 text-xs font-marvel uppercase tracking-wider flex items-center justify-between">
             <span>Collections</span>
             <Layers size={14} className="text-doom-gold" />
@@ -194,7 +194,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
       </div>
 
       {/* 3. Original Achievement Badges Gallery */}
-      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border space-y-6">
+      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-doom-border/80 pb-4">
           <div>
             <h3 className="font-cinematic text-3xl uppercase tracking-wider text-white flex items-center gap-2">
@@ -309,14 +309,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
       </div>
 
       {/* 5. Platform Settings & Doomsday Configurator */}
-      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border space-y-6">
+      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
         <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white flex items-center gap-2">
-          <Sliders size={20} className="text-doom-red" />
+          <Sliders size={20} className="text-doom-emerald" />
           <span>Platform Settings & Timeline Target</span>
         </h3>
 
         {/* Configurable Avengers: Doomsday Release Date */}
-        <form onSubmit={handleSaveDate} className="space-y-3 bg-doom-950 p-5 rounded-2xl border border-doom-border">
+        <form onSubmit={handleSaveDate} className="space-y-3 bg-doom-950 p-5 rounded-2xl border border-border">
           <div>
             <label className="block text-xs font-marvel uppercase tracking-wider text-gray-300 font-bold mb-1">
               Avengers: Doomsday Release Countdown Target
@@ -331,12 +331,12 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               type="date"
               value={inputDate}
               onChange={(e) => setInputDate(e.target.value)}
-              className="bg-doom-900 border border-doom-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-doom-red"
+              className="bg-doom-900 border border-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-doom-emerald"
             />
 
             <button
               type="submit"
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 border border-doom-emerald/40"
             >
               <Check size={14} />
               <span>Save Release Date</span>

@@ -56,7 +56,9 @@ export default {
           'red-bright': '#ff2a35',
           gold: '#d8a63f',
           'gold-dark': '#b45309',
-          emerald: '#1bc775',
+          emerald: '#10b981',
+          'emerald-dark': '#064e3b',
+          'emerald-light': '#34d399',
           blue: '#0284c7',
         }
       },

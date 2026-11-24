@@ -28,11 +28,11 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab })
             onClick={() => onSelectTab(tab.id)}
             className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-lg transition-all ${
               isActive
-                ? 'text-doom-red font-bold'
+                ? 'text-doom-emerald font-bold'
                 : 'text-gray-400 hover:text-gray-200'
             }`}
           >
-            <Icon size={20} className={isActive ? 'text-doom-red' : ''} />
+            <Icon size={20} className={isActive ? 'text-doom-emerald' : ''} />
             <span className="text-[10px] mt-1 font-sans">{tab.label}</span>
           </button>
         );

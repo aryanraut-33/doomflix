@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Play, 
   CheckCircle2, 
   Clock, 
-  Sparkles, 
   ChevronLeft, 
   ChevronRight, 
   Star, 
-  Layers, 
   Info, 
-  Film,
-  Tv
+  ExternalLink
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
@@ -18,15 +15,13 @@ import { CinematicImage } from '../common/CinematicImage';
 import { NavTab } from '../common/Sidebar';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { ShimmerButton } from '../magicui/shimmer-button';
 
 interface RotatingHeroPaneProps {
   onSelectTab: (tab: NavTab) => void;
   onOpenTitleDetails: (title: MarvelTitle) => void;
 }
 
-// 6 Default Showcase Movies requested:
-// Infinity War, Endgame, Fantastic 4 2025, The Avengers, Dr Strange Multiverse of Madness, Loki S1
+// 6 Default Curated Showcase Titles for Guests / Logged-out users:
 const DEFAULT_SHOWCASE_IDS = [
   'avengers-infinity-war',
   'avengers-endgame',
@@ -40,16 +35,16 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
   onSelectTab, 
   onOpenTitleDetails 
 }) => {
-  const { watchProgress, updateWatchStatus, getSeriesEpisodeStats } = useAppStore();
+  const { watchProgress, updateWatchStatus, getSeriesEpisodeStats, user } = useAppStore();
 
-  // Resolve the 6 default movies
+  // Curated showcase list
   const defaultTitles: MarvelTitle[] = React.useMemo(() => {
     return DEFAULT_SHOWCASE_IDS
       .map(id => MARVEL_TITLES.find(t => t.id === id))
       .filter((t): t is MarvelTitle => Boolean(t));
   }, []);
 
-  // Determine user's current active phase based on watch progress
+  // Determine user's active phase based on watch progress
   const userCurrentPhase = React.useMemo(() => {
     for (const phaseName of PHASE_ORDER) {
       const titlesInPhase = MARVEL_TITLES.filter(t => t.defaultPhaseGroup === phaseName);
@@ -65,26 +60,26 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
     return PHASE_ORDER[0];
   }, [watchProgress]);
 
-  // Mode: 'default' (the 6 curated movies) or 'active_phase' (movies from user's current phase)
-  const [rotationMode, setRotationMode] = useState<'default' | 'active_phase'>('default');
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [slideProgress, setSlideProgress] = useState<number>(0);
-
-  // Active movie list according to mode
+  // Mode is strictly automatic based on auth status:
+  // If user is logged in (!user.isGuest), show active phase movies.
+  // Else (guest/logged out), show curated showcase movies.
   const currentMovies = React.useMemo(() => {
-    if (rotationMode === 'active_phase') {
+    if (!user.isGuest) {
       const phaseMovies = MARVEL_TITLES.filter(t => t.defaultPhaseGroup === userCurrentPhase);
       return phaseMovies.length > 0 ? phaseMovies : defaultTitles;
     }
     return defaultTitles;
-  }, [rotationMode, userCurrentPhase, defaultTitles]);
+  }, [user.isGuest, userCurrentPhase, defaultTitles]);
 
-  // Reset index when mode or movie list changes
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [slideProgress, setSlideProgress] = useState<number>(0);
+
+  // Reset index when movies array changes
   useEffect(() => {
     setCurrentIndex(0);
     setSlideProgress(0);
-  }, [rotationMode, currentMovies.length]);
+  }, [currentMovies.length, user.isGuest]);
 
   const activeMovie = currentMovies[currentIndex] || currentMovies[0];
 
@@ -130,6 +125,9 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
   const currentStatus = watchProgress[activeMovie.id]?.status || 'not_started';
   const epStats = activeMovie.mediaType === 'tv' ? getSeriesEpisodeStats(activeMovie.id) : null;
+  const primaryStream = activeMovie.streamingIndia?.[0];
+  const streamUrl = primaryStream?.directUrl || primaryStream?.searchUrl;
+  const isDirect = Boolean(primaryStream?.directUrl);
 
   return (
     <section 
@@ -145,244 +143,132 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           alt={activeMovie.title}
           fallbackTitle={activeMovie.title}
           fallbackSubtitle={`${activeMovie.releaseYear} • Marvel Cinematic Universe`}
-          className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out filter brightness-[0.72] contrast-105"
+          className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out filter brightness-[0.70] contrast-105"
         />
 
-        {/* Cinematic Vignettes & Matte Gradients (No purple tints) */}
+        {/* Netflix-style Vignette Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-doom-950 via-doom-950/70 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-doom-950/95 via-doom-950/75 to-transparent" />
         <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-20" />
       </div>
 
-      {/* 2. Top Header HUD: Mode Switcher & Auto-rotation Progress Indicator */}
-      <div className="relative z-10 p-4 sm:p-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/5 backdrop-blur-sm bg-black/30">
-        <div className="flex items-center gap-2">
-          {/* Engine indicator */}
-          <div className="inline-flex items-center gap-2 bg-doom-950/90 border border-doom-red/50 px-3 py-1 rounded-full text-[11px] font-mono">
-            <span className="w-2 h-2 rounded-full bg-doom-red" />
-            <span className="text-gray-200 uppercase tracking-wider font-semibold font-marvel">
-              CINEMATIC MULTIVERSE MARQUEE
-            </span>
-          </div>
-
-          {/* Pause indicator */}
-          {isPaused && (
-            <span className="text-[10px] font-mono text-gray-400 bg-black/60 px-2 py-0.5 rounded border border-white/10">
-              PAUSED
-            </span>
-          )}
-        </div>
-
-        {/* Mode Selector Tabs: Curated Showcase (Default) vs Active Phase */}
-        <div className="flex items-center gap-1 bg-doom-950/90 border border-doom-border p-1 rounded-xl shadow-sm">
-          <button
-            onClick={() => setRotationMode('default')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              rotationMode === 'default'
-                ? 'bg-doom-red text-white font-bold'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <Sparkles size={12} className={rotationMode === 'default' ? 'text-white' : 'text-doom-red'} />
-            <span>Curated Showcase (Default)</span>
-          </button>
-
-          <button
-            onClick={() => setRotationMode('active_phase')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-              rotationMode === 'active_phase'
-                ? 'bg-doom-red text-white font-bold'
-                : 'text-gray-400 hover:text-white'
-            }`}
-            title={`Movies from your current phase: ${userCurrentPhase}`}
-          >
-            <Layers size={12} className={rotationMode === 'active_phase' ? 'text-white' : 'text-doom-gold'} />
-            <span className="hidden sm:inline">Active:</span>
-            <span className="font-mono text-doom-gold text-[11px]">
-              {userCurrentPhase.split('—')[0].trim()}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Auto-rotation Thin Timer Bar */}
-      <div className="relative z-10 w-full bg-black/40 h-1 overflow-hidden">
-        <div 
-          className="h-full bg-gradient-to-r from-doom-red to-doom-gold transition-all duration-75"
-          style={{ width: `${slideProgress}%` }}
-        />
-      </div>
-
-      {/* 3. Main Center Stage: Movie Information & CTAs */}
-      <div className="relative z-10 p-6 sm:p-8 md:p-10 flex-1 flex flex-col justify-end max-w-3xl space-y-4">
-        {/* Phase Pill & Status Badges */}
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="border-doom-red/50 text-white bg-doom-red/20 font-bold px-2.5 py-0.5">
-            {activeMovie.defaultPhaseGroup}
-          </Badge>
-
-          <Badge variant="hud">
-            {activeMovie.mediaType === 'tv' ? 'TV SERIES' : 'FEATURE FILM'}
-          </Badge>
-
-          {/* User Watch Status */}
-          {currentStatus === 'completed' && (
-            <Badge variant="watched" className="flex items-center gap-1">
-              <CheckCircle2 size={12} />
-              <span>Watched</span>
-            </Badge>
-          )}
-          {currentStatus === 'in_progress' && (
-            <Badge variant="watching" className="flex items-center gap-1">
-              <Clock size={12} />
-              <span>Watching</span>
-            </Badge>
-          )}
-        </div>
-
-        {/* Massive Cinematic Title */}
-        <h2 className="font-cinematic text-4xl sm:text-6xl lg:text-7xl text-white uppercase tracking-wider leading-none">
-          {activeMovie.title}
-        </h2>
-
-        {/* Metadata Strip */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-300 font-sans">
-          <span className="font-mono text-white font-semibold">{activeMovie.releaseYear}</span>
-          <span className="text-gray-600">•</span>
-          <span>
-            {activeMovie.mediaType === 'tv' 
-              ? `${activeMovie.seasons?.length || 1} Seasons • ${activeMovie.seasons?.[0]?.episodes.length || 6} Episodes` 
-              : `${activeMovie.runtime} Minutes`}
+      {/* 2. Top Minimal Indicator */}
+      <div className="relative z-10 px-6 sm:px-10 pt-6 flex items-center justify-between pointer-events-none">
+        <div className="inline-flex items-center gap-2 doom-glass px-3 py-1 rounded-full text-[11px] font-mono pointer-events-auto">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent font-marvel uppercase tracking-wider font-bold">
+            {!user.isGuest ? activeMovie.defaultPhaseGroup : 'FEATURED MULTIVERSE SHOWCASE'}
           </span>
-          <span className="text-gray-600">•</span>
+        </div>
+
+        {/* Minimal Slide Dots Indicator */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          {currentMovies.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleSelectMovie(idx)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex 
+                  ? 'w-6 bg-gradient-to-r from-emerald-400 to-teal-300' 
+                  : 'w-1.5 bg-white/30 hover:bg-white/60'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 3. Main Center Stage: Minimal Information Billboard */}
+      <div className="relative z-10 px-6 sm:px-10 md:px-12 pb-6 pt-12 flex-1 flex flex-col justify-end max-w-2xl space-y-4">
+        {/* Massive Cinematic Title */}
+        <h1 className="font-cinematic text-5xl sm:text-7xl lg:text-8xl text-white uppercase tracking-wider leading-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+          {activeMovie.title}
+        </h1>
+
+        {/* Minimal Metadata Strip */}
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-300 font-sans">
+          <span className="font-mono text-emerald-400 font-bold">
+            {activeMovie.mediaType === 'tv' ? 'TV SERIES' : 'MOVIE'}
+          </span>
+          <span className="text-gray-500">•</span>
+          <span className="font-mono text-white font-semibold">{activeMovie.releaseYear}</span>
+          <span className="text-gray-500">•</span>
+          <span>{activeMovie.mediaType === 'tv' ? `${activeMovie.seasons?.length || 1} Seasons` : `${activeMovie.runtime} mins`}</span>
+          <span className="text-gray-500">•</span>
           <div className="flex items-center gap-1 text-doom-gold font-mono font-bold">
             <Star size={13} fill="currentColor" />
-            <span>{activeMovie.rating.toFixed(1)} / 10</span>
+            <span>{activeMovie.rating.toFixed(1)}</span>
           </div>
-          <span className="text-gray-600">•</span>
-          <span className="text-emerald-400 font-mono text-[11px] uppercase">
-            {activeMovie.canonStatus}
-          </span>
-        </div>
-
-        {/* Why this matters to Doomsday Lore Callout */}
-        <div className="bg-black/60 backdrop-blur-md p-3.5 rounded-2xl border border-border max-w-2xl shadow-card">
-          <div className="text-[10px] font-marvel uppercase tracking-wider text-doom-red font-bold flex items-center gap-1.5 mb-1">
-            <Sparkles size={12} />
-            <span>Why This Matters to Avengers: Doomsday</span>
-          </div>
-          <p className="text-xs sm:text-sm text-gray-200 line-clamp-2 font-sans leading-relaxed">
-            {activeMovie.whyItMatters}
-          </p>
-        </div>
-
-        {/* TV Series Episode Progress Bar (if applicable) */}
-        {activeMovie.mediaType === 'tv' && epStats && (
-          <div className="max-w-md bg-doom-950/80 border border-doom-border p-2.5 rounded-xl space-y-1">
-            <div className="flex justify-between text-[11px] text-gray-300 font-mono">
-              <span>Episode Progress</span>
-              <span className="text-doom-gold font-bold">
-                {epStats.watched} / {epStats.total} Episodes ({epStats.percentage}%)
+          {currentStatus === 'completed' && (
+            <>
+              <span className="text-gray-500">•</span>
+              <span className="inline-flex items-center gap-1 text-emerald-400 font-mono text-[11px] font-bold">
+                <CheckCircle2 size={11} /> Watched
               </span>
-            </div>
-            <div className="w-full bg-doom-900 h-1.5 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-doom-red to-doom-gold rounded-full"
-                style={{ width: `${epStats.percentage}%` }}
-              />
-            </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
 
-        {/* Action Controls using Magic UI ShimmerButton & shadcn Buttons */}
+        {/* Clean 2-line Synopsis */}
+        <p className="text-xs sm:text-sm text-gray-200 line-clamp-2 font-sans leading-relaxed drop-shadow max-w-xl">
+          {activeMovie.synopsis}
+        </p>
+
+        {/* Action Controls: Direct Streaming Link + View Info */}
         <div className="flex flex-wrap items-center gap-3 pt-2">
-          {/* Primary CTA: Magic UI ShimmerButton */}
-          <ShimmerButton
+          {/* Primary Play / Stream Button */}
+          {streamUrl && (
+            <a
+              href={streamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 hover:brightness-110 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all border border-emerald-400/40 hover:scale-[1.03]"
+              title={`Stream ${activeMovie.title} on ${primaryStream.provider}`}
+            >
+              <Play size={17} fill="white" />
+              <span>{isDirect ? `Stream on ${primaryStream.provider}` : `Find on ${primaryStream.provider}`}</span>
+              <ExternalLink size={13} className="opacity-80" />
+            </a>
+          )}
+
+          {/* Secondary Info Button */}
+          <button
             onClick={() => onOpenTitleDetails(activeMovie)}
-            className="flex items-center gap-2"
+            className="rounded-2xl px-5 py-3 text-sm font-semibold flex items-center gap-2 doom-glass hover:bg-white/10 text-white border border-white/15 transition-all hover:scale-[1.02]"
           >
-            <Info size={16} />
-            <span>Inspect Intelligence Dossier</span>
-          </ShimmerButton>
-
-          {/* Quick Watch Status Toggle */}
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => {
-              if (currentStatus === 'completed') {
-                updateWatchStatus(activeMovie.id, 'not_started');
-              } else if (currentStatus === 'in_progress') {
-                updateWatchStatus(activeMovie.id, 'completed');
-              } else {
-                updateWatchStatus(activeMovie.id, 'in_progress');
-              }
-            }}
-          >
-            {currentStatus === 'completed' ? (
-              <>
-                <CheckCircle2 size={16} className="text-doom-emerald" />
-                <span>Mark Not Watched</span>
-              </>
-            ) : currentStatus === 'in_progress' ? (
-              <>
-                <CheckCircle2 size={16} className="text-doom-emerald" />
-                <span>Mark as Watched</span>
-              </>
-            ) : (
-              <>
-                <Play size={16} className="text-doom-gold" />
-                <span>Start Watching</span>
-              </>
-            )}
-          </Button>
-
-          {/* Watchlist Hub CTA */}
-          <Button
-            variant="ghost"
-            size="lg"
-            onClick={() => onSelectTab('watchlist')}
-            className="text-gray-400 hover:text-white"
-          >
-            <span>View Full Watchlist</span>
-            <ChevronRight size={14} />
-          </Button>
+            <Info size={17} />
+            <span>More Info</span>
+          </button>
         </div>
       </div>
 
-      {/* 4. Bottom Rail: Left/Right Arrows & Interactive Movie Thumbnails */}
-      <div className="relative z-10 p-4 sm:p-6 bg-gradient-to-t from-doom-950 via-doom-950/90 to-transparent border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* 4. Bottom Rail: Minimalist Movie Thumbnails Carousel */}
+      <div className="relative z-10 px-6 sm:px-10 py-4 bg-gradient-to-t from-doom-950 via-doom-950/80 to-transparent flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Navigation Arrows */}
-        <div className="flex items-center gap-2 order-2 sm:order-1">
-          <Button
-            variant="outline"
-            size="icon"
+        <div className="flex items-center gap-2">
+          <button
             onClick={handlePrev}
-            className="rounded-full bg-black/60 hover:bg-doom-red hover:text-white"
+            className="w-8 h-8 rounded-full doom-glass hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all text-gray-300"
             title="Previous Movie"
             aria-label="Previous Movie"
           >
-            <ChevronLeft size={18} />
-          </Button>
-
-          <span className="font-mono text-xs text-gray-400 px-2">
+            <ChevronLeft size={16} />
+          </button>
+          <span className="font-mono text-xs text-gray-400 px-1">
             <span className="text-white font-bold">{currentIndex + 1}</span> / {currentMovies.length}
           </span>
-
-          <Button
-            variant="outline"
-            size="icon"
+          <button
             onClick={handleNext}
-            className="rounded-full bg-black/60 hover:bg-doom-red hover:text-white"
+            className="w-8 h-8 rounded-full doom-glass hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all text-gray-300"
             title="Next Movie"
             aria-label="Next Movie"
           >
-            <ChevronRight size={18} />
-          </Button>
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Thumbnail Carousel Track */}
-        <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1 sm:pb-0 order-1 sm:order-2 scrollbar-none">
+        <div className="flex items-center gap-2.5 overflow-x-auto max-w-full pb-1 sm:pb-0 scrollbar-none">
           {currentMovies.map((movie, idx) => {
             const isSelected = idx === currentIndex;
             const isWatched = watchProgress[movie.id]?.status === 'completed';
@@ -393,7 +279,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 onClick={() => handleSelectMovie(idx)}
                 className={`group relative shrink-0 rounded-xl overflow-hidden transition-all duration-300 text-left ${
                   isSelected
-                    ? 'ring-2 ring-doom-red scale-105 w-28 sm:w-36 h-14 sm:h-16 shadow-card'
+                    ? 'ring-2 ring-emerald-400 scale-105 w-28 sm:w-36 h-14 sm:h-16 shadow-[0_0_20px_rgba(16,185,129,0.35)]'
                     : 'opacity-60 hover:opacity-100 w-24 sm:w-28 h-12 sm:h-14 border border-white/10'
                 }`}
                 title={movie.title}

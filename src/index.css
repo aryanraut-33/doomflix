@@ -78,11 +78,86 @@
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
 }
 
+/* Doctor Doom Emerald Metallic Surface */
+.doom-metallic-card {
+  background: linear-gradient(145deg, rgba(16, 23, 27, 0.96), rgba(8, 14, 16, 0.98));
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Glassmorphism Classes */
+.doom-glass {
+  background: rgba(9, 13, 16, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+.doom-glass-header {
+  background: rgba(9, 10, 15, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+}
+
+.doom-glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.doom-glass-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(52, 211, 153, 0.4);
+  box-shadow: 0 14px 40px -8px rgba(16, 185, 129, 0.22);
+  transform: translateY(-3px);
+}
+
+.doom-glass-panel {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(9, 15, 18, 0.82) 50%, rgba(6, 78, 59, 0.2) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Netflix Style Giant Hollow Ranking Number */
+.netflix-rank-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 8.5rem;
+  line-height: 0.78;
+  font-weight: 900;
+  color: #090a0f;
+  -webkit-text-stroke: 3.5px #94a3b8;
+  user-select: none;
+  letter-spacing: -0.04em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
+}
+
+@media (min-width: 640px) {
+  .netflix-rank-number {
+    font-size: 11rem;
+    line-height: 0.78;
+    -webkit-text-stroke: 4px #cbd5e1;
+  }
+}
+
+.group:hover .netflix-rank-number {
+  -webkit-text-stroke-color: #34d399;
+  filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.6));
+}
+
 .metallic-card-hover {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .metallic-card-hover:hover {
-  border-color: rgba(226, 27, 36, 0.4);
+  border-color: rgba(16, 185, 129, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.75);
 }

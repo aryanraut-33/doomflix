@@ -59,10 +59,23 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
     }
   }, [title, watchProgress]);
 
+  // Support closing modal with Escape key
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !title) return null;
 
   const currentStatus = watchProgress[title.id]?.status || 'not_started';
   const epStats = title.mediaType === 'tv' ? getSeriesEpisodeStats(title.id) : null;
+  const primaryStream = title.streamingIndia?.[0];
+  const streamUrl = primaryStream?.directUrl || primaryStream?.searchUrl;
 
   const handleSaveNotes = () => {
     updatePersonalNotes(title.id, personalNotesInput);
@@ -147,41 +160,57 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
 
         {/* Status Bar / Direct Controls */}
         <div className="bg-doom-950 px-6 py-3 border-y border-doom-border/80 flex flex-wrap items-center justify-between gap-4 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400 font-mono">Viewing Status:</span>
-            <div className="flex items-center bg-doom-900 border border-doom-border rounded-lg p-0.5">
-              <button
-                onClick={() => updateWatchStatus(title.id, 'not_started')}
-                className={`px-3 py-1 rounded text-xs transition-colors ${
-                  currentStatus === 'not_started'
-                    ? 'bg-doom-800 text-white font-bold'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Not Started
-              </button>
-              <button
-                onClick={() => updateWatchStatus(title.id, 'in_progress')}
-                className={`px-3 py-1 rounded text-xs transition-colors ${
-                  currentStatus === 'in_progress'
-                    ? 'bg-doom-gold text-doom-950 font-bold'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Watching
-              </button>
-              <button
-                onClick={() => updateWatchStatus(title.id, 'completed')}
-                className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
-                  currentStatus === 'completed'
-                    ? 'bg-doom-emerald text-white font-bold'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <CheckCircle2 size={12} />
-                <span>Watched</span>
-              </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 font-mono">Viewing Status:</span>
+              <div className="flex items-center bg-doom-900 border border-doom-border rounded-lg p-0.5">
+                <button
+                  onClick={() => updateWatchStatus(title.id, 'not_started')}
+                  className={`px-3 py-1 rounded text-xs transition-colors ${
+                    currentStatus === 'not_started'
+                      ? 'bg-doom-800 text-white font-bold'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Not Started
+                </button>
+                <button
+                  onClick={() => updateWatchStatus(title.id, 'in_progress')}
+                  className={`px-3 py-1 rounded text-xs transition-colors ${
+                    currentStatus === 'in_progress'
+                      ? 'bg-doom-gold text-doom-950 font-bold'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Watching
+                </button>
+                <button
+                  onClick={() => updateWatchStatus(title.id, 'completed')}
+                  className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
+                    currentStatus === 'completed'
+                      ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <CheckCircle2 size={12} />
+                  <span>Watched</span>
+                </button>
+              </div>
             </div>
+
+            {/* Direct Streaming CTA in status bar */}
+            {streamUrl && (
+              <a
+                href={streamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-3.5 py-1 rounded-lg font-bold text-xs shadow transition-all border border-doom-emerald/40 hover:scale-[1.02]"
+              >
+                <Play size={12} fill="white" />
+                <span>{primaryStream?.directUrl ? `Stream on ${primaryStream.provider}` : `Find on ${primaryStream?.provider}`}</span>
+                <ExternalLink size={11} className="opacity-80" />
+              </a>
+            )}
           </div>
 
           {/* Quick Tab Selector */}
@@ -189,7 +218,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             <button
               onClick={() => setActiveTab('lore')}
               className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'lore' ? 'bg-doom-red text-white font-bold' : 'text-gray-400 hover:text-white'
+                activeTab === 'lore' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
               }`}
             >
               Cinematic Lore
@@ -198,7 +227,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               <button
                 onClick={() => setActiveTab('episodes')}
                 className={`px-3 py-1 rounded-md transition-all ${
-                  activeTab === 'episodes' ? 'bg-doom-red text-white font-bold' : 'text-gray-400 hover:text-white'
+                  activeTab === 'episodes' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 Episodes ({epStats?.watched}/{epStats?.total})
@@ -207,7 +236,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             <button
               onClick={() => setActiveTab('streaming')}
               className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'streaming' ? 'bg-doom-red text-white font-bold' : 'text-gray-400 hover:text-white'
+                activeTab === 'streaming' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
               }`}
             >
               Streaming (India)
@@ -215,7 +244,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             <button
               onClick={() => setActiveTab('notes')}
               className={`px-3 py-1 rounded-md transition-all ${
-                activeTab === 'notes' ? 'bg-doom-red text-white font-bold' : 'text-gray-400 hover:text-white'
+                activeTab === 'notes' ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm' : 'text-gray-400 hover:text-white'
               }`}
             >
               Notes
@@ -228,11 +257,43 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
           {/* TAB 1: CINEMATIC LORE & CONTEXT */}
           {activeTab === 'lore' && (
             <div className="space-y-6">
+              {/* Prominent Direct Streaming Banner */}
+              {primaryStream && (
+                <div className="bg-doom-950 p-4 rounded-2xl border border-doom-emerald/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-doom-emerald/10 border border-doom-emerald/30 text-doom-emerald flex items-center justify-center shrink-0">
+                      <Play size={16} fill="currentColor" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold text-white flex items-center gap-2">
+                        <span>Streaming in India on {primaryStream.provider} 🇮🇳</span>
+                        <span className="text-[10px] text-doom-emerald font-mono uppercase bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
+                          {primaryStream.availabilityStatus}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-gray-400 font-sans mt-0.5">
+                        {primaryStream.notes || `Direct streaming available for ${title.title}`}
+                      </div>
+                    </div>
+                  </div>
+
+                  <a
+                    href={streamUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition-all border border-doom-emerald/40 hover:scale-[1.02] shrink-0"
+                  >
+                    <span>{primaryStream.directUrl ? `Watch on ${primaryStream.provider}` : `Search on ${primaryStream.provider}`}</span>
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
+              )}
+
               {/* Why This Matters */}
-              <div className="bg-gradient-to-r from-doom-950 via-doom-900 to-doom-950 p-5 rounded-2xl border border-doom-red/30">
+              <div className="bg-gradient-to-r from-doom-950 via-doom-900 to-doom-950 p-5 rounded-2xl border border-doom-emerald/30">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles size={16} className="text-doom-red" />
-                  <span className="text-xs font-marvel uppercase tracking-wider text-doom-red font-bold">
+                  <Sparkles size={16} className="text-doom-emerald" />
+                  <span className="text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
                     Why This Matters to Avengers: Doomsday
                   </span>
                 </div>
@@ -443,7 +504,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                             href={provider.directUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full bg-doom-red hover:bg-doom-red-bright text-white py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5"
+                            className="w-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white py-2 px-3 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 border border-doom-emerald/40"
                           >
                             <span>Stream Directly on {provider.provider}</span>
                             <ExternalLink size={12} />
@@ -477,7 +538,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-marvel text-lg text-white font-bold tracking-wide">
-                    Operative Field Notes
+                    Personal Notes & Observations
                   </h4>
                   <p className="text-xs text-gray-400 font-sans">
                     Keep your own notes, continuity questions, and review observations for this title.
@@ -485,7 +546,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </div>
                 <button
                   onClick={handleSaveNotes}
-                  className="bg-doom-red hover:bg-doom-red-bright text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
                 >
                   <Check size={14} />
                   <span>Save Notes</span>
@@ -497,7 +558,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 placeholder="Write your personal notes for this title..."
                 value={personalNotesInput}
                 onChange={(e) => setPersonalNotesInput(e.target.value)}
-                className="w-full bg-doom-950 border border-doom-border rounded-xl p-4 text-sm text-gray-100 focus:outline-none focus:border-doom-red transition-colors resize-none leading-relaxed"
+                className="w-full bg-doom-950 border border-doom-border rounded-xl p-4 text-sm text-gray-100 focus:outline-none focus:border-doom-emerald transition-colors resize-none leading-relaxed"
               />
             </div>
           )}

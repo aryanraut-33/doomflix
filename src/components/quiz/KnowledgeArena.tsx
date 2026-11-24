@@ -208,10 +208,10 @@ export const KnowledgeArena: React.FC = () => {
       {gameState === 'lobby' && (
         <div className="space-y-8">
           {/* Header Banner */}
-          <div className="metallic-card rounded-3xl p-6 md:p-10 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
+          <div className="doom-metallic-card rounded-3xl p-6 md:p-10 border border-border shadow-card">
             <div className="max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-gold/40 px-3 py-1 rounded-full text-xs font-mono text-doom-gold">
-                <Flame size={13} className="text-doom-red" />
+              <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-emerald/40 px-3 py-1 rounded-full text-xs font-mono text-doom-emerald">
+                <Flame size={13} className="text-doom-emerald" />
                 <span>INTERACTIVE LORE BATTLE ARENA</span>
               </div>
 
@@ -226,9 +226,9 @@ export const KnowledgeArena: React.FC = () => {
           </div>
 
           {/* Configuration Card */}
-          <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border space-y-6">
+          <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
             <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white flex items-center gap-2">
-              <Filter size={18} className="text-doom-red" />
+              <Filter size={18} className="text-doom-emerald" />
               <span>Configure Challenge Parameters</span>
             </h3>
 
@@ -329,8 +329,8 @@ export const KnowledgeArena: React.FC = () => {
                       onClick={() => setQuestionCount(cnt)}
                       className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all border ${
                         questionCount === cnt
-                          ? 'bg-doom-red text-white border-doom-red shadow-sm'
-                          : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
+                          ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white border-doom-emerald/40 shadow-sm'
+                          : 'bg-doom-950 text-gray-400 border-border hover:text-white'
                       }`}
                     >
                       {cnt}
@@ -347,8 +347,8 @@ export const KnowledgeArena: React.FC = () => {
                   onClick={() => setTimerEnabled(!timerEnabled)}
                   className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-all ${
                     timerEnabled
-                      ? 'bg-doom-950 border-doom-gold text-doom-gold'
-                      : 'bg-doom-950 border-doom-border text-gray-500'
+                      ? 'bg-doom-950 border-doom-emerald text-doom-emerald'
+                      : 'bg-doom-950 border-border text-gray-500'
                   }`}
                 >
                   <Clock size={14} />
@@ -358,7 +358,7 @@ export const KnowledgeArena: React.FC = () => {
             </div>
 
             {/* Pool availability status & Launch */}
-            <div className="pt-4 border-t border-doom-border/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-xs text-gray-400 font-mono">
                 Available Questions in Pool: <strong className="text-white">{availableQuestions.length}</strong>
                 {quizMode === 'watched_only' && watchedMovieIds.length === 0 && (
@@ -371,7 +371,7 @@ export const KnowledgeArena: React.FC = () => {
               <button
                 onClick={handleStartQuiz}
                 disabled={availableQuestions.length === 0}
-                className="w-full sm:w-auto bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02]"
               >
                 <span>Enter Arena</span>
                 <ChevronRight size={18} />
@@ -416,13 +416,13 @@ export const KnowledgeArena: React.FC = () => {
           {/* Progress Bar */}
           <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-doom-red to-doom-gold transition-all duration-300"
+              className="h-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald transition-all duration-300"
               style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
             />
           </div>
 
           {/* Question Box */}
-          <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border space-y-6">
+          <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
             <h3 className="font-marvel text-2xl md:text-3xl text-white font-bold tracking-wide leading-relaxed">
               {currentQ.question}
             </h3>
@@ -433,18 +433,18 @@ export const KnowledgeArena: React.FC = () => {
                 const isSelected = selectedAnswer === option;
                 const isCorrect = option === currentQ.correctAnswer;
                 
-                let optionClasses = 'bg-doom-950/80 border-doom-border hover:border-doom-border-light text-gray-200';
+                let optionClasses = 'bg-doom-950/80 border-border hover:border-white/20 text-gray-200';
 
                 if (isAnswerSubmitted) {
                   if (isCorrect) {
-                    optionClasses = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold shadow-sm';
+                    optionClasses = 'bg-emerald-950/80 border-doom-emerald text-emerald-200 font-bold shadow-[0_0_15px_rgba(16,185,129,0.15)]';
                   } else if (isSelected && !isCorrect) {
                     optionClasses = 'bg-red-950/80 border-red-500 text-red-200 line-through';
                   } else {
-                    optionClasses = 'bg-doom-950/40 border-doom-border/40 text-gray-600';
+                    optionClasses = 'bg-doom-950/40 border-border/40 text-gray-600';
                   }
                 } else if (isSelected) {
-                  optionClasses = 'bg-doom-900 border-doom-gold text-white font-semibold shadow-sm';
+                  optionClasses = 'bg-doom-emerald/10 border-doom-emerald text-white font-semibold shadow-[0_0_15px_rgba(16,185,129,0.15)]';
                 }
 
                 return (
@@ -474,8 +474,8 @@ export const KnowledgeArena: React.FC = () => {
 
             {/* Explanation Drawer when submitted */}
             {isAnswerSubmitted && (
-              <div className="p-4 rounded-xl bg-doom-950 border border-doom-border space-y-2 animate-fadeIn">
-                <div className="flex items-center gap-2 text-xs font-marvel uppercase tracking-wider text-doom-gold font-bold">
+              <div className="p-4 rounded-xl bg-doom-950 border border-border space-y-2 animate-fadeIn">
+                <div className="flex items-center gap-2 text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
                   <BookOpen size={14} />
                   <span>Canonical Lore Explanation</span>
                 </div>
@@ -486,19 +486,19 @@ export const KnowledgeArena: React.FC = () => {
             )}
 
             {/* Actions: Submit or Next */}
-            <div className="pt-4 border-t border-doom-border flex justify-end">
+            <div className="pt-4 border-t border-border flex justify-end">
               {!isAnswerSubmitted ? (
                 <button
                   onClick={() => handleSubmitAnswer()}
                   disabled={!selectedAnswer}
-                  className="bg-doom-red hover:bg-doom-red-bright disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm"
+                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md border border-doom-emerald/40"
                 >
                   Confirm Answer
                 </button>
               ) : (
                 <button
                   onClick={handleNextQuestion}
-                  className="bg-doom-gold hover:bg-amber-400 text-doom-950 font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2"
+                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border border-doom-emerald/40"
                 >
                   <span>{currentIndex + 1 < activeQuestions.length ? 'Next Question' : 'View Debrief & Results'}</span>
                   <ArrowRight size={14} />
@@ -514,12 +514,12 @@ export const KnowledgeArena: React.FC = () => {
       {/* ==================================================== */}
       {gameState === 'results' && (
         <div className="max-w-2xl mx-auto space-y-6">
-          <div className="metallic-card rounded-3xl p-8 border border-doom-border text-center space-y-4">
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-doom-gold to-doom-red flex items-center justify-center text-white shadow-sm">
+          <div className="doom-metallic-card rounded-3xl p-8 border border-border text-center space-y-4 shadow-card">
+            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.25)]">
               <Award size={40} />
             </div>
 
-            <span className="text-xs font-marvel uppercase tracking-wider text-doom-gold font-bold">
+            <span className="text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
               Challenge Concluded
             </span>
 
@@ -527,7 +527,7 @@ export const KnowledgeArena: React.FC = () => {
               Score: {score} / {activeQuestions.length}
             </h2>
 
-            <div className="font-mono text-2xl text-doom-gold font-bold">
+            <div className="font-mono text-2xl text-doom-emerald font-bold">
               {Math.round((score / activeQuestions.length) * 100)}% Accuracy
             </div>
 
@@ -540,7 +540,7 @@ export const KnowledgeArena: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <button
                 onClick={() => setGameState('lobby')}
-                className="bg-doom-red hover:bg-doom-red-bright text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2"
+                className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 border border-doom-emerald/40"
               >
                 <RotateCcw size={14} />
                 <span>Return to Arena Lobby</span>

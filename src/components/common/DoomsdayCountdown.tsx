@@ -53,8 +53,8 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
   // Header compact pill
   if (variant === 'header') {
     return (
-      <div className="flex items-center gap-2 bg-doom-900 border border-doom-border hover:border-doom-red/50 transition-colors px-3 py-1.5 rounded-md text-xs font-mono">
-        <span className="w-2 h-2 rounded-full bg-doom-red" />
+      <div className="flex items-center gap-2 bg-doom-950/90 border border-doom-emerald/30 hover:border-doom-emerald/60 transition-colors px-3 py-1.5 rounded-lg text-xs font-mono shadow-sm">
+        <span className="w-2 h-2 rounded-full bg-doom-emerald animate-pulse" />
         <span className="text-gray-400 font-sans uppercase tracking-wider text-[10px]">Doomsday:</span>
         <span className="text-white font-semibold">
           {timeLeft.isPast ? 'IN THEATRES' : `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m`}
@@ -118,14 +118,14 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
   // Hero Full Display Variant
   return (
     <div className="relative group">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-900 border border-doom-border p-6 md:p-8 rounded-2xl shadow-card backdrop-blur-md">
+      <div className="doom-metallic-card flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 rounded-3xl shadow-card backdrop-blur-md">
         {/* Left Side Info */}
         <div className="space-y-2 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-3">
-            <Badge variant="marvel" className="px-2.5 py-0.5 text-xs rounded-sm">
+            <span className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white px-2.5 py-0.5 text-xs font-marvel tracking-wider uppercase font-bold rounded">
               OFFICIAL COUNTDOWN
-            </Badge>
-            <span className="text-doom-gold text-xs font-mono uppercase tracking-widest flex items-center gap-1 font-semibold">
+            </span>
+            <span className="text-doom-emerald text-xs font-mono uppercase tracking-widest flex items-center gap-1 font-semibold">
               <Clock size={12} /> Phase Six Nexus
             </span>
           </div>
@@ -139,11 +139,11 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
           </p>
 
           <div className="flex items-center justify-center md:justify-start gap-2 pt-1 text-xs text-gray-400">
-            <Calendar size={13} className="text-doom-red" />
+            <Calendar size={13} className="text-doom-emerald" />
             <span>Target Release: <strong className="text-white">{new Date(doomsdayDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong></span>
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="text-gray-400 hover:text-doom-gold ml-2 underline flex items-center gap-1 transition-colors"
+              className="text-gray-400 hover:text-doom-emerald ml-2 underline flex items-center gap-1 transition-colors"
               title="Change release date"
             >
               <Edit2 size={11} /> Config Date
@@ -156,9 +156,9 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
                 type="date"
                 value={inputDate}
                 onChange={(e) => setInputDate(e.target.value)}
-                className="bg-doom-950 border border-doom-border rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-doom-red"
+                className="bg-doom-950 border border-doom-border rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-doom-emerald"
               />
-              <Button type="submit" size="sm" variant="default">
+              <Button type="submit" size="sm" variant="default" className="bg-doom-emerald hover:bg-doom-emerald-dark text-doom-950 font-bold">
                 <Check size={12} /> Save
               </Button>
               <Button
@@ -176,8 +176,8 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
         {/* Right Side Countdown Blocks */}
         <div className="w-full md:w-auto">
           {timeLeft.isPast ? (
-            <div className="bg-doom-red/20 border border-doom-red/50 text-white p-6 rounded-2xl text-center">
-              <div className="font-cinematic text-3xl uppercase tracking-wider">
+            <div className="bg-emerald-950/40 border border-doom-emerald/50 text-white p-6 rounded-2xl text-center">
+              <div className="font-cinematic text-3xl uppercase tracking-wider text-doom-emerald">
                 IN THEATRES NOW
               </div>
               <div className="text-xs text-gray-300 mt-1 font-mono">
@@ -194,9 +194,9 @@ export const DoomsdayCountdown: React.FC<{ variant?: 'hero' | 'compact' | 'heade
               ].map((unit, idx) => (
                 <div
                   key={idx}
-                  className="bg-doom-950 p-3 sm:p-4 rounded-xl border border-doom-border min-w-[70px] sm:min-w-[90px] flex flex-col justify-center shadow-subtle"
+                  className="bg-doom-950/90 p-3 sm:p-4 rounded-2xl border border-doom-emerald/20 min-w-[70px] sm:min-w-[90px] flex flex-col justify-center shadow-subtle"
                 >
-                  <div className="font-cinematic text-3xl sm:text-5xl text-white tracking-wider font-black">
+                  <div className="font-cinematic text-3xl sm:text-5xl text-emerald-400 tracking-wider font-black">
                     <NumberTicker value={unit.val} />
                   </div>
                   <div className="text-[9px] sm:text-[10px] text-gray-400 font-mono tracking-widest uppercase mt-1">

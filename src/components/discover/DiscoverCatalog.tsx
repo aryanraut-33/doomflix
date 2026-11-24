@@ -230,9 +230,9 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Discover Header & Search Bar */}
-      <div className="metallic-card rounded-3xl p-6 md:p-10 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950">
+      <div className="doom-metallic-card rounded-3xl p-6 md:p-10 border border-border shadow-card">
         <div className="max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-gold/40 px-3 py-1 rounded-full text-xs font-mono text-doom-gold">
+          <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-emerald/40 px-3 py-1 rounded-full text-xs font-mono text-doom-emerald">
             <Sparkles size={12} />
             <span>TMDB-POWERED MARVEL CATALOGUE</span>
           </div>
@@ -253,7 +253,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
               placeholder="Search by title, character (e.g. Wolverine, Loki), or actor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-doom-950 border border-doom-border/80 focus:border-doom-red rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none transition-colors shadow-inner"
+              className="w-full bg-doom-950 border border-border focus:border-doom-emerald rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none transition-colors shadow-inner"
             />
             {searchQuery && (
               <button
@@ -268,7 +268,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
       </div>
 
       {/* 2. Category Pills & Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-doom-950/80 p-4 rounded-2xl border border-doom-border">
+      <div className="flex flex-wrap items-center justify-between gap-4 doom-metallic-card p-4 rounded-2xl border border-border">
         {/* Curated Category Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {[
@@ -283,8 +283,8 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
               onClick={() => setSelectedTag(tag.id as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all ${
                 selectedTag === tag.id
-                  ? 'bg-doom-red text-white font-bold shadow-sm'
-                  : 'bg-doom-900 text-gray-400 hover:text-white border border-doom-border'
+                  ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm'
+                  : 'bg-doom-900 text-gray-400 hover:text-white border border-border'
               }`}
             >
               {tag.label}
@@ -297,7 +297,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           <select
             value={selectedMediaType}
             onChange={(e) => setSelectedMediaType(e.target.value as any)}
-            className="bg-doom-900 border border-doom-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-red"
+            className="bg-doom-900 border border-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-emerald"
           >
             <option value="all">All Media Types</option>
             <option value="movie">Movies Only</option>
@@ -307,7 +307,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           <select
             value={selectedGenre}
             onChange={(e) => setSelectedGenre(e.target.value)}
-            className="bg-doom-900 border border-doom-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-red"
+            className="bg-doom-900 border border-border rounded-lg px-2.5 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-doom-emerald"
           >
             <option value="All">All Genres</option>
             <option value="Action">Action</option>
@@ -327,7 +327,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
         </div>
 
         {filteredTitles.length === 0 ? (
-          <div className="metallic-card rounded-2xl p-12 text-center space-y-3 border border-doom-border">
+          <div className="doom-metallic-card rounded-2xl p-12 text-center space-y-3 border border-border">
             <Film size={32} className="mx-auto text-gray-500" />
             <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white">
               No Titles Found
@@ -343,7 +343,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
               return (
                 <div
                   key={title.id}
-                  className="group metallic-card rounded-2xl overflow-hidden border border-doom-border hover:border-doom-red/50 transition-all flex flex-col justify-between"
+                  className="group doom-metallic-card rounded-2xl overflow-hidden border border-border hover:border-doom-emerald/50 transition-all flex flex-col justify-between"
                 >
                   {/* Poster Image */}
                   <div 
@@ -388,7 +388,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                       </div>
                       <h4 
                         onClick={() => onOpenTitleDetails(title)}
-                        className="font-marvel text-sm sm:text-base font-bold text-white tracking-wide truncate cursor-pointer hover:text-doom-red transition-colors"
+                        className="font-marvel text-sm sm:text-base font-bold text-white tracking-wide truncate cursor-pointer hover:text-doom-emerald transition-colors"
                       >
                         {title.title}
                       </h4>
@@ -398,13 +398,13 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                     </div>
 
                     {/* Action buttons */}
-                    <div className="pt-3 mt-3 border-t border-doom-border/60 flex items-center gap-2">
+                    <div className="pt-3 mt-3 border-t border-border flex items-center gap-2">
                       <button
                         onClick={() => setModalTitle(title)}
                         className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
                           inCollection
-                            ? 'bg-doom-950 text-gray-400 hover:text-white border border-doom-border'
-                            : 'bg-doom-red hover:bg-doom-red-bright text-white shadow-sm'
+                            ? 'bg-doom-950 text-gray-400 hover:text-white border border-border'
+                            : 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white shadow-sm border border-doom-emerald/40'
                         }`}
                         title={inCollection ? 'Add to another collection' : 'Add to collection'}
                       >
@@ -414,7 +414,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
 
                       <button
                         onClick={() => onOpenTitleDetails(title)}
-                        className="p-1.5 rounded-lg bg-doom-950 hover:bg-doom-800 border border-doom-border text-gray-300 hover:text-white transition-colors"
+                        className="p-1.5 rounded-lg bg-doom-950 hover:bg-doom-800 border border-border text-gray-300 hover:text-white transition-colors"
                         title="View Full Cinematic Lore & Details"
                       >
                         <Info size={14} />

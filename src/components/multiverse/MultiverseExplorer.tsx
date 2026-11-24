@@ -55,9 +55,9 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Explorer Header Banner */}
-      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border/90 bg-gradient-to-r from-doom-900 via-doom-850 to-doom-950 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-card">
         <div className="max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-red/40 px-3 py-1 rounded-full text-xs font-mono text-doom-red">
+          <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-emerald/40 px-3 py-1 rounded-full text-xs font-mono text-doom-emerald">
             <Compass size={13} />
             <span>INTERACTIVE MULTIVERSE ATLAS & INCURSION NEXUS</span>
           </div>
@@ -73,14 +73,14 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
 
         <div className="shrink-0 flex flex-col items-center">
           <GeometricCube size={140} />
-          <span className="text-[9px] font-mono tracking-widest text-doom-gold uppercase bg-doom-950/80 px-2 py-0.5 rounded-full border border-doom-gold/30 mt-1">
+          <span className="text-[9px] font-mono tracking-widest text-doom-emerald uppercase bg-doom-950/80 px-2.5 py-0.5 rounded-full border border-doom-emerald/40 mt-1 font-bold">
             ✦ Chronal Core
           </span>
         </div>
       </div>
 
       {/* 2. Filter Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-doom-950/80 p-4 rounded-2xl border border-doom-border">
+      <div className="flex flex-wrap items-center justify-between gap-4 doom-metallic-card p-4 rounded-2xl border border-border">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[10px] font-marvel uppercase tracking-wider text-gray-400 font-bold mr-1">
             Category Filter:
@@ -96,8 +96,8 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
               onClick={() => setFilterCategory(opt.id as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-marvel uppercase tracking-wider transition-all ${
                 filterCategory === opt.id
-                  ? 'bg-doom-red text-white font-bold shadow-sm'
-                  : 'bg-doom-900 text-gray-400 hover:text-white border border-doom-border'
+                  ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white font-bold shadow-sm'
+                  : 'bg-doom-900 text-gray-400 hover:text-white border border-border'
               }`}
             >
               {opt.label}
@@ -106,14 +106,14 @@ export const MultiverseExplorer: React.FC<MultiverseExplorerProps> = ({ onOpenTi
         </div>
 
         <div className="text-xs text-gray-400 font-mono">
-          Click any node below to inspect intelligence dossier
+          Select any node below to inspect timeline details
         </div>
       </div>
 
       {/* 3. Interactive Multiverse Map & Dossier Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Interactive Graph Canvas (7 cols on Desktop) */}
-        <div className="lg:col-span-7 metallic-card rounded-3xl p-6 border border-doom-border relative min-h-[460px] flex flex-col justify-between overflow-hidden bg-doom-950">
+        <div className="lg:col-span-7 doom-metallic-card rounded-3xl p-6 border border-border relative min-h-[460px] flex flex-col justify-between overflow-hidden bg-doom-950 shadow-card">
           <div className="absolute inset-0 bg-subtle-grid pointer-events-none opacity-50" />
 
           {/* SVG Line Connections */}
