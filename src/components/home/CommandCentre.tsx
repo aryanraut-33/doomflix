@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { 
   Play, 
   CheckCircle2, 
   ChevronRight, 
+  ChevronLeft,
   HelpCircle, 
   ExternalLink,
   ArrowRight
@@ -25,6 +26,14 @@ interface CommandCentreProps {
 }
 
 export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpenTitleDetails }) => {
+  const railRef = useRef<HTMLDivElement>(null);
+
+  const scrollRail = (direction: 'left' | 'right') => {
+    if (!railRef.current) return;
+    const scrollAmount = direction === 'left' ? -350 : 350;
+    railRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
+
   const { 
     watchProgress, 
     updateWatchStatus, 
@@ -71,24 +80,64 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
       />
 
       {/* Everything below hero gets constrained padding */}
-      <div className="px-4 sm:px-6 md:px-10 lg:px-12 max-w-7xl mx-auto w-full space-y-8 sm:space-y-10 pt-6 sm:pt-10">
+      <div className="px-4 sm:px-6 md:px-8 lg:pl-32 lg:pr-12 max-w-7xl mx-auto w-full space-y-8 sm:space-y-10 pt-6 sm:pt-10">
 
         {/* 2. Numbered Phase Movies Sequence (Netflix Top-10 Style) */}
-        <section>
+        <section className="relative group/rail">
           <div className="flex items-center justify-between mb-4 sm:mb-5">
             <h2 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
               {activePhaseData.name.split('—')[1]?.trim() || activePhaseData.name}
             </h2>
-            <button
-              onClick={() => onSelectTab('watchlist')}
-              className="text-xs text-gray-400 hover:text-white font-medium flex items-center gap-1 transition-colors"
-            >
-              View all <ChevronRight size={14} />
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onSelectTab('watchlist')}
+                className="text-xs text-gray-400 hover:text-white font-medium flex items-center gap-1 transition-colors mr-1"
+              >
+                View all <ChevronRight size={14} />
+              </button>
+
+              <div className="hidden sm:flex items-center gap-1.5">
+                <button
+                  onClick={() => scrollRail('left')}
+                  className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all cursor-pointer"
+                  aria-label="Scroll left"
+                  title="Previous titles"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => scrollRail('right')}
+                  className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all cursor-pointer"
+                  aria-label="Scroll right"
+                  title="Next titles"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
           </div>
 
+          {/* Left / Right Hover Buttons for desktop rail */}
+          <button
+            onClick={() => scrollRail('left')}
+            className="hidden lg:flex absolute left-0 top-1/2 translate-y-2 z-20 w-9 h-9 rounded-full bg-black/80 hover:bg-black border border-white/20 text-white items-center justify-center shadow-xl opacity-0 group-hover/rail:opacity-100 transition-opacity cursor-pointer"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={() => scrollRail('right')}
+            className="hidden lg:flex absolute right-0 top-1/2 translate-y-2 z-20 w-9 h-9 rounded-full bg-black/80 hover:bg-black border border-white/20 text-white items-center justify-center shadow-xl opacity-0 group-hover/rail:opacity-100 transition-opacity cursor-pointer"
+            aria-label="Scroll right"
+          >
+            <ChevronRight size={18} />
+          </button>
+
           {/* Horizontal Scrolling Rail with Giant Netflix Outlined Numbers */}
-          <div className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-4 scrollbar-none no-scrollbar pl-4 sm:pl-8">
+          <div 
+            ref={railRef}
+            className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-4 scrollbar-none no-scrollbar pl-4 sm:pl-8 scroll-smooth"
+          >
             {activePhaseData.titles.map((title, idx) => {
               const rank = idx + 1;
               const isWatched = watchProgress[title.id]?.status === 'completed';
