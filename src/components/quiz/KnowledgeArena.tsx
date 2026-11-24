@@ -208,71 +208,60 @@ export const KnowledgeArena: React.FC = () => {
       {gameState === 'lobby' && (
         <div className="space-y-8">
           {/* Header Banner */}
-          <div className="doom-metallic-card rounded-3xl p-6 md:p-10 border border-border shadow-card">
-            <div className="max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 bg-doom-950 border border-doom-emerald/40 px-3 py-1 rounded-full text-xs font-mono text-doom-emerald">
-                <Flame size={13} className="text-doom-emerald" />
-                <span>INTERACTIVE LORE BATTLE ARENA</span>
-              </div>
-
-              <h2 className="font-cinematic text-4xl sm:text-6xl text-white uppercase tracking-wider ">
-                KNOWLEDGE ARENA
+          <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
+            <div className="max-w-2xl space-y-2">
+              <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider">
+                Marvel Lore Quiz
               </h2>
-
               <p className="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed">
-                Test your knowledge of the Marvel Cinematic Multiverse with factually verified questions. Choose strict spoiler protection or challenge the full multiversal library.
+                Test your knowledge of the Marvel Cinematic Universe with spoiler-safe questions.
               </p>
             </div>
           </div>
 
           {/* Configuration Card */}
-          <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
-            <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white flex items-center gap-2">
-              <Filter size={18} className="text-doom-emerald" />
-              <span>Configure Challenge Parameters</span>
-            </h3>
-
+          <div className="doom-glass rounded-3xl p-6 md:p-8 border border-white/10 space-y-6 shadow-card">
             {/* Mode Selector */}
             <div className="space-y-2">
-              <label className="block text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold">
-                Quiz Mode & Spoiler Protection
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Spoiler Protection
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div
                   onClick={() => setQuizMode('watched_only')}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     quizMode === 'watched_only'
-                      ? 'bg-doom-950 border-doom-emerald shadow-sm'
-                      : 'bg-doom-950/60 border-doom-border hover:border-doom-border-light'
+                      ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
+                      : 'bg-white/[0.02] border-white/5 hover:border-white/15'
                   }`}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <ShieldCheck size={20} className="text-doom-emerald" />
-                    <span className="font-marvel text-lg font-bold text-white tracking-wide">
-                      Mode A: Watched Content Only
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <ShieldCheck size={18} className="text-emerald-400" />
+                    <span className="font-semibold text-sm text-white">
+                      Watched Titles Only (Zero Spoilers)
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 font-sans leading-relaxed">
-                    Zero Spoilers guaranteed. Generates questions exclusively from movies and TV episodes you have marked as watched.
+                    Questions are exclusively from movies and series you have watched.
                   </p>
                 </div>
 
                 <div
                   onClick={() => setQuizMode('full_collection')}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     quizMode === 'full_collection'
-                      ? 'bg-doom-950 border-doom-red shadow-sm'
-                      : 'bg-doom-950/60 border-doom-border hover:border-doom-border-light'
+                      ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
+                      : 'bg-white/[0.02] border-white/5 hover:border-white/15'
                   }`}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <AlertTriangle size={20} className="text-doom-red" />
-                    <span className="font-marvel text-lg font-bold text-white tracking-wide">
-                      Mode B: Full Multiverse Pool
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <AlertTriangle size={18} className="text-amber-400" />
+                    <span className="font-semibold text-sm text-white">
+                      All Titles (Full Multiverse)
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 font-sans leading-relaxed">
-                    Full Lore Access. Questions pulled from all titles across the Multiverse. Contains potential spoilers for unwatched titles.
+                    Questions from all Marvel Cinematic Universe titles.
                   </p>
                 </div>
               </div>
