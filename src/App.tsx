@@ -18,66 +18,24 @@ const AppContent: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
   const [detailsModalTitle, setDetailsModalTitle] = useState<MarvelTitle | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  
 
   const handleSelectTab = (tab: NavTab) => {
     setCurrentTab(tab);
-    setMobileMenuOpen(false);
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="relative flex flex-col min-h-screen bg-doom-950 text-gray-100 font-sans selection:bg-doom-emerald selection:text-white overflow-x-hidden">
       {/* Fixed Translucent Navigation Bar — overlays content */}
-      <Header
+      <Sidebar
         currentTab={currentTab}
         onSelectTab={handleSelectTab}
         onOpenAuth={() => setAuthModalOpen(true)}
-        mobileMenuOpen={mobileMenuOpen}
-        setMobileMenuOpen={setMobileMenuOpen}
       />
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-md lg:hidden flex"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <div 
-            className="w-72 bg-doom-950/95 backdrop-blur-xl h-full p-4 border-r border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-              <span className="font-cinematic text-xl text-white tracking-wider">DOOMFLIX</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="text-gray-400 p-1 hover:text-white">
-                ✕
-              </button>
-            </div>
 
-            <div className="space-y-1">
-              {[
-                { id: 'home' as NavTab, label: 'Home' },
-                { id: 'watchlist' as NavTab, label: 'My List' },
-                { id: 'discover' as NavTab, label: 'Discover' },
-                { id: 'quiz' as NavTab, label: 'Quiz' },
-                { id: 'profile' as NavTab, label: 'Profile' },
-              ].map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => handleSelectTab(item.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    currentTab === item.id 
-                      ? 'text-white bg-white/5' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
