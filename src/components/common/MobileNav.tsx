@@ -77,7 +77,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab })
   return (
     <nav 
       aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center rounded-full p-1.5 bg-[#12161f]/92 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(16,185,129,0.15)] transition-all"
+      className="lg:hidden fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm sm:max-w-md flex items-center justify-around rounded-full p-2 bg-[#12161f]/95 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.85),0_0_24px_rgba(16,185,129,0.2)] transition-all"
     >
       {NAV_ITEMS.map((item) => {
         const isActive = currentTab === item.id;
@@ -89,16 +89,16 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab })
             onClick={() => onSelectTab(item.id)}
             aria-label={item.label}
             aria-current={isActive ? 'page' : undefined}
-            className={`flex flex-col items-center justify-center transition-all duration-200 select-none ${
+            className={`flex-1 flex flex-col items-center justify-center transition-all duration-200 select-none py-1.5 rounded-full ${
               isActive
-                ? 'bg-zinc-900 border border-emerald-500/40 text-white rounded-full px-4 sm:px-5 py-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.6),0_0_12px_rgba(16,185,129,0.3)]'
-                : 'text-gray-400 hover:text-white px-3.5 sm:px-4 py-1.5 rounded-full'
+                ? 'bg-zinc-900 border border-emerald-500/40 text-white shadow-[0_2px_12px_rgba(0,0,0,0.7),0_0_14px_rgba(16,185,129,0.35)]'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             <div className="w-5 h-5 flex items-center justify-center">
               {isActive ? iconConfig?.fill : iconConfig?.regular}
             </div>
-            <span className={`text-[10px] sm:text-[11px] font-sans mt-0.5 tracking-tight ${isActive ? 'font-semibold text-white' : 'font-medium'}`}>
+            <span className={`text-[11px] font-sans mt-0.5 tracking-tight ${isActive ? 'font-semibold text-white' : 'font-medium'}`}>
               {item.label}
             </span>
           </button>
