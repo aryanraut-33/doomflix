@@ -75,9 +75,12 @@ const PhosphorIcons: Record<string, { regular: React.ReactNode; fill: React.Reac
 
 export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab }) => {
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-doom-950/95 backdrop-blur-xl border-t border-white/10 px-2 py-2 flex items-center justify-around">
+    <nav 
+      aria-label="Mobile Navigation"
+      className="lg:hidden fixed bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center rounded-full p-1.5 bg-[#12161f]/92 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(16,185,129,0.15)] transition-all"
+    >
       {NAV_ITEMS.map((item) => (
-        <button key={item.id} onClick={() => onSelectTab(item.id)} className="text-gray-400">
+        <button key={item.id} onClick={() => onSelectTab(item.id)} className="text-gray-400 px-3 py-1">
           {item.label}
         </button>
       ))}
