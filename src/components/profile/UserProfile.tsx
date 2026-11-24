@@ -80,25 +80,25 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
 
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto">
-      {/* 1. Operative Header Card */}
-      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border shadow-card">
+      {/* 1. Profile Header Card */}
+      <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center text-white font-cinematic font-black text-3xl shadow-[0_0_20px_rgba(16,185,129,0.25)] border border-doom-emerald/40">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-400 flex items-center justify-center text-white font-cinematic font-black text-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-white/20">
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-cinematic text-3xl md:text-4xl text-white uppercase tracking-wider">
+                <h2 className="font-cinematic text-2xl md:text-3xl text-white uppercase tracking-wider">
                   {user.username}
                 </h2>
                 {user.isGuest ? (
-                  <span className="text-[10px] bg-doom-950 text-gray-400 border border-border px-2 py-0.5 rounded font-mono">
-                    GUEST OPERATIVE
+                  <span className="text-[10px] bg-white/10 text-gray-400 border border-white/10 px-2 py-0.5 rounded-full font-mono">
+                    Guest Account
                   </span>
                 ) : (
-                  <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded font-mono flex items-center gap-1">
-                    <CheckCircle2 size={10} /> CLOUD SYNCED
+                  <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-mono flex items-center gap-1">
+                    <CheckCircle2 size={10} /> Synced
                   </span>
                 )}
               </div>
@@ -113,26 +113,26 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             {user.isGuest ? (
               <button
                 onClick={onOpenAuth}
-                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02]"
+                className="w-full sm:w-auto bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
               >
                 <Database size={14} />
-                <span>Create Cloud Account & Sync</span>
+                <span>Sign in / Sync Progress</span>
               </button>
             ) : (
               <button
                 onClick={handleManualSync}
                 disabled={syncLoading}
-                className="w-full sm:w-auto bg-doom-900 hover:bg-doom-850 border border-border text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
-                <span>Sync with Cloud</span>
+                <span>Sync Progress</span>
               </button>
             )}
           </div>
         </div>
 
         {syncMessage && (
-          <div className="mt-4 p-3 bg-doom-950 border border-doom-emerald text-doom-emerald rounded-xl text-xs font-sans">
+          <div className="mt-4 p-3 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 rounded-xl text-xs font-sans">
             {syncMessage}
           </div>
         )}
