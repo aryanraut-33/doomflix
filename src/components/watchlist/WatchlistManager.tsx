@@ -66,10 +66,6 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
   const [phaseFilter, setPhaseFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('phase');
 
-  // Expanded TV Series Accordion State
-  const [expandedSeriesId, setExpandedSeriesId] = useState<string | null>(null);
-  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState<number>(1);
-
   // Build items combined with catalogue metadata
   const enrichedItems = useMemo(() => {
     if (!activeCol) return [];
@@ -175,15 +171,12 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
   const collectionTotalCount = enrichedItems.length;
   const collectionPercent = collectionTotalCount > 0 ? Math.round((collectionCompletedCount / collectionTotalCount) * 100) : 0;
 
-  // Render a single minimalist card
+  // Render a compact, subtle portrait card (fitting 2-3 per row on mobile, 5-6 on desktop)
   const renderCard = (item: (typeof enrichedItems)[0]) => {
     const title = item.details;
     const progress = watchProgress[title.id]?.status || 'not_started';
     const isCompleted = progress === 'completed';
     const isWatching = progress === 'in_progress';
-    const epStats = title.mediaType === 'tv' ? getSeriesEpisodeStats(title.id) : null;
-    const isExpanded = expandedSeriesId === title.id;
-    const hasNotes = !!watchProgress[title.id]?.personalNotes;
     const isEssential = item.priority === 'essential';
     const isMenuOpen = activeMenuTitleId === title.id;
     const streamInfo = title.streamingIndia?.[0];
@@ -192,254 +185,182 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
     return (
       <div
         key={title.id}
-        className={`doom-glass-card rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col justify-between group shadow-card ${
-          isCompleted
-            ? 'border-emerald-500/30 bg-emerald-950/15'
-            : isWatching
-            ? 'border-amber-500/30 bg-amber-950/10'
-            : 'border-white/10 hover:border-white/20'
-        }`}
+        className="group relative flex flex-col justify-between rounded-xl overflow-hidden bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/15 transition-all p-2"
       >
-        {/* 1. Card Poster / Backdrop */}
-        <div 
-          onClick={() => onOpenTitleDetails(title)}
-          className="relative aspect-[16/10] w-full overflow-hidden bg-doom-950 cursor-pointer"
-        >
-          <CinematicImage
-            src={title.backdropPath || title.posterPath}
-            alt={title.title}
-            fallbackTitle={title.title}
-            fallbackSubtitle={String(title.releaseYear)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-doom-950 via-doom-950/40 to-transparent" />
+        <div>
+          {/* 1. Portrait Poster: aspect-[2/3] */}
+          <div 
+            onClick={() => onOpenTitleDetails(title)}
+            className="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-doom-950 cursor-pointer shadow-md"
+          >
+            <CinematicImage
+              src={title.posterPath || title.backdropPath}
+              alt={title.title}
+              fallbackTitle={title.title}
+              fallbackSubtitle={String(title.releaseYear)}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70 group-hover:opacity-40 transition-opacity" />
 
-          {/* Top Indicators: Minimal & Clean */}
-          <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between pointer-events-none">
-            {/* Sequence tag or essential pill */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-white/90 border border-white/15">
+            {/* Top Indicators */}
+            <div className="absolute top-1.5 inset-x-1.5 flex items-center justify-between pointer-events-none">
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm text-white/90">
                 #{String(item.sequenceNumber).padStart(2, '0')}
               </span>
-              {isEssential && (
-                <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-md font-semibold bg-emerald-600/90 text-white shadow-sm">
-                  Essential
+              {isCompleted && (
+                <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
+                  <CheckCircle2 size={11} />
+                </span>
+              )}
+              {isWatching && (
+                <span className="w-5 h-5 rounded-full bg-amber-500 text-black flex items-center justify-center shadow font-bold text-[9px]">
+                  <Clock size={11} />
                 </span>
               )}
             </div>
 
-            {/* Status Indicator */}
-            {isCompleted && (
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-md border border-emerald-500/30">
-                <CheckCircle2 size={11} />
-                <span>Watched</span>
-              </span>
-            )}
-            {isWatching && (
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-amber-400 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-md border border-amber-500/30">
-                <Clock size={11} />
-                <span>Watching</span>
-              </span>
-            )}
+            {/* Rating pill bottom-right */}
+            <div className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] text-amber-400 font-mono flex items-center gap-0.5">
+              <Star size={9} fill="currentColor" />
+              <span>{title.rating.toFixed(1)}</span>
+            </div>
+
+            {/* Center hover play */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
+              <div className="w-8 h-8 rounded-full bg-white/90 text-doom-950 flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                <Play size={13} fill="currentColor" className="ml-0.5" />
+              </div>
+            </div>
           </div>
 
-          {/* Rating tag bottom-right */}
-          <div className="absolute bottom-2 right-2.5 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1 border border-white/10">
-            <Star size={10} fill="currentColor" />
-            <span>{title.rating.toFixed(1)}</span>
-          </div>
-
-          {/* Center Play Icon on Hover */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 pointer-events-none">
-            <div className="w-10 h-10 rounded-full bg-white/90 text-doom-950 flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-              <Play size={16} fill="currentColor" className="ml-0.5" />
+          {/* 2. Title & Metadata */}
+          <div className="pt-2">
+            <h4 
+              onClick={() => onOpenTitleDetails(title)}
+              className="text-xs sm:text-sm font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors leading-tight"
+              title={title.title}
+            >
+              {title.title}
+            </h4>
+            <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono mt-0.5">
+              <span>{title.releaseYear} • {title.mediaType === 'tv' ? 'Series' : `${title.runtime}m`}</span>
+              {isEssential && (
+                <span className="text-[9px] text-emerald-400/90 font-medium">Essential</span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* 2. Card Content */}
-        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-          <div>
-            {/* Meta Row: Year, Runtime/Media, Category */}
-            <div className="flex items-center justify-between text-xs text-gray-400 font-sans mb-1">
-              <span>{title.releaseYear} • {title.mediaType === 'tv' ? 'Series' : `${title.runtime}m`}</span>
-              {hasNotes && (
-                <span className="text-[10px] text-emerald-400 flex items-center gap-0.5 font-medium" title="Has personal notes">
-                  <FileText size={10} /> Notes
-                </span>
-              )}
-            </div>
-
-            {/* Clean Title */}
-            <h3 
-              onClick={() => onOpenTitleDetails(title)}
-              className="text-base font-semibold text-white tracking-wide cursor-pointer hover:text-emerald-300 transition-colors line-clamp-1"
-              title={title.title}
+        {/* 3. Compact Action & Status Controls */}
+        <div className="pt-2 mt-1.5 border-t border-white/5 flex items-center gap-1.5">
+          {streamUrl ? (
+            <a
+              href={streamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all truncate"
+              title={`Stream on ${streamInfo?.provider || 'Platform'}`}
             >
-              {title.title}
-            </h3>
+              <Play size={10} fill="currentColor" />
+              <span className="truncate">Watch</span>
+            </a>
+          ) : (
+            <button
+              onClick={() => onOpenTitleDetails(title)}
+              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all"
+            >
+              <Info size={10} />
+              <span>Info</span>
+            </button>
+          )}
 
-            {/* TV Episode Progress bar & accordion trigger */}
-            {title.mediaType === 'tv' && epStats && (
-              <div className="mt-2.5 pt-2 border-t border-white/10">
-                <div className="flex items-center justify-between text-xs font-mono mb-1">
-                  <button
-                    onClick={() => {
-                      setExpandedSeriesId(isExpanded ? null : title.id);
-                      if (title.seasons?.[0]) setSelectedSeasonNumber(title.seasons[0].seasonNumber);
-                    }}
-                    className="text-gray-400 hover:text-white flex items-center gap-1 text-[11px]"
-                  >
-                    <span>Episodes ({epStats.watched}/{epStats.total})</span>
-                    {isExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
-                  </button>
-                  <span className="text-[10px] text-emerald-400 font-bold">{epStats.percentage}%</span>
-                </div>
-                <div className="w-full bg-black/60 h-1 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all"
-                    style={{ width: `${epStats.percentage}%` }}
-                  />
-                </div>
+          {/* Quick Status Advance Button */}
+          <button
+            onClick={() => {
+              const nextStatus = progress === 'not_started' ? 'in_progress' : progress === 'in_progress' ? 'completed' : 'not_started';
+              updateWatchStatus(title.id, nextStatus);
+            }}
+            className={`p-1 rounded-md text-[10px] border transition-colors ${
+              isCompleted
+                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                : isWatching
+                ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+                : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+            }`}
+            title={`Status: ${progress === 'completed' ? 'Watched' : progress === 'in_progress' ? 'Watching' : 'Not Started'}. Click to toggle`}
+          >
+            {isCompleted ? <CheckCircle2 size={13} /> : isWatching ? <Clock size={13} /> : <Check size={13} />}
+          </button>
+
+          {/* More options menu */}
+          <div className="relative">
+            <button
+              onClick={() => setActiveMenuTitleId(isMenuOpen ? null : title.id)}
+              className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors"
+              title="More options"
+            >
+              <MoreVertical size={13} />
+            </button>
+
+            {isMenuOpen && (
+              <div 
+                className="absolute right-0 bottom-full mb-1 w-36 rounded-lg bg-doom-950 border border-white/20 shadow-2xl py-1 z-30 text-xs backdrop-blur-xl"
+                onMouseLeave={() => setActiveMenuTitleId(null)}
+              >
+                <button
+                  onClick={() => {
+                    onOpenTitleDetails(title);
+                    setActiveMenuTitleId(null);
+                  }}
+                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                >
+                  <Info size={11} />
+                  <span>Details</span>
+                </button>
+                <button
+                  onClick={() => {
+                    toggleTitlePriority(activeCol.id, title.id);
+                    setActiveMenuTitleId(null);
+                  }}
+                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                >
+                  <Sparkles size={11} className={isEssential ? 'text-emerald-400' : ''} />
+                  <span>{isEssential ? 'Optional' : 'Essential'}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setNotesModalTitle(title);
+                    setActiveMenuTitleId(null);
+                  }}
+                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                >
+                  <FileText size={11} />
+                  <span>Notes</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setMoveModalTitle(title);
+                    setActiveMenuTitleId(null);
+                  }}
+                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                >
+                  <Layers size={11} />
+                  <span>Move</span>
+                </button>
+                <div className="my-0.5 border-t border-white/10" />
+                <button
+                  onClick={() => {
+                    removeTitleFromCollection(activeCol.id, title.id);
+                    setActiveMenuTitleId(null);
+                  }}
+                  className="w-full px-2.5 py-1 text-left text-red-400 hover:bg-red-950/50 flex items-center gap-1.5"
+                >
+                  <Trash2 size={11} />
+                  <span>Remove</span>
+                </button>
               </div>
             )}
-          </div>
-
-          {/* 3. Actions: Stream Button + Compact Status Toggle + More Menu */}
-          <div className="space-y-2 pt-2 border-t border-white/10">
-            {/* Primary Action Button */}
-            {streamUrl ? (
-              <a
-                href={streamUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-1.5 px-3 rounded-lg bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 hover:brightness-110 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
-              >
-                <Play size={12} fill="white" />
-                <span>Stream on {streamInfo?.provider || 'Platform'}</span>
-                <ExternalLink size={10} className="opacity-80" />
-              </a>
-            ) : (
-              <button
-                onClick={() => onOpenTitleDetails(title)}
-                className="w-full py-1.5 px-3 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-all"
-              >
-                <Info size={12} />
-                <span>View Details</span>
-              </button>
-            )}
-
-            {/* Status Control & More Options */}
-            <div className="flex items-center gap-1.5">
-              {/* Sleek Segmented Status Toggle */}
-              <div className="flex-1 grid grid-cols-3 bg-black/50 p-0.5 rounded-lg border border-white/10 text-center text-[10px]">
-                <button
-                  onClick={() => updateWatchStatus(title.id, 'not_started')}
-                  className={`py-1 rounded transition-colors font-medium truncate ${
-                    progress === 'not_started'
-                      ? 'bg-white/20 text-white font-semibold'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Mark Not Started"
-                >
-                  Unwatched
-                </button>
-                <button
-                  onClick={() => updateWatchStatus(title.id, 'in_progress')}
-                  className={`py-1 rounded transition-colors font-medium truncate ${
-                    progress === 'in_progress'
-                      ? 'bg-amber-500/90 text-doom-950 font-bold'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Mark In Progress"
-                >
-                  Watching
-                </button>
-                <button
-                  onClick={() => updateWatchStatus(title.id, 'completed')}
-                  className={`py-1 rounded transition-colors font-medium flex items-center justify-center gap-0.5 truncate ${
-                    progress === 'completed'
-                      ? 'bg-emerald-500 text-white font-bold'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Mark Watched"
-                >
-                  <Check size={10} />
-                  <span>Done</span>
-                </button>
-              </div>
-
-              {/* Minimal Popover Menu for Secondary Actions */}
-              <div className="relative">
-                <button
-                  onClick={() => setActiveMenuTitleId(isMenuOpen ? null : title.id)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors border border-white/10"
-                  title="More actions"
-                >
-                  <MoreVertical size={13} />
-                </button>
-
-                {isMenuOpen && (
-                  <div 
-                    className="absolute right-0 bottom-full mb-1 w-44 rounded-xl bg-doom-950 border border-white/20 shadow-2xl py-1 z-30 text-xs backdrop-blur-xl"
-                    onMouseLeave={() => setActiveMenuTitleId(null)}
-                  >
-                    <button
-                      onClick={() => {
-                        onOpenTitleDetails(title);
-                        setActiveMenuTitleId(null);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
-                    >
-                      <Info size={13} />
-                      <span>Details & Lore</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        toggleTitlePriority(activeCol.id, title.id);
-                        setActiveMenuTitleId(null);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
-                    >
-                      <Sparkles size={13} className={isEssential ? 'text-emerald-400' : ''} />
-                      <span>{isEssential ? 'Make Optional' : 'Mark Essential'}</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setNotesModalTitle(title);
-                        setActiveMenuTitleId(null);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
-                    >
-                      <FileText size={13} />
-                      <span>{hasNotes ? 'Edit Notes' : 'Add Note'}</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMoveModalTitle(title);
-                        setActiveMenuTitleId(null);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
-                    >
-                      <Layers size={13} />
-                      <span>Move Collection</span>
-                    </button>
-                    <div className="my-1 border-t border-white/10" />
-                    <button
-                      onClick={() => {
-                        removeTitleFromCollection(activeCol.id, title.id);
-                        setActiveMenuTitleId(null);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-red-400 hover:bg-red-950/50 flex items-center gap-2"
-                    >
-                      <Trash2 size={13} />
-                      <span>Remove from List</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -447,130 +368,110 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
   };
 
   return (
-    <div className="space-y-8 pb-20">
-      {/* 1. Collection Header Bar with Switcher */}
-      <div className="doom-glass-panel rounded-2xl p-5 md:p-6 border border-emerald-500/20 shadow-card">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-2xl">
-            {/* Collection Tabs */}
-            <div className="flex flex-wrap items-center gap-2">
-              {collections.map(col => {
-                const isActive = col.id === activeCollectionId;
-                return (
-                  <button
-                    key={col.id}
-                    onClick={() => setActiveCollectionId(col.id)}
-                    className={`px-3.5 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 text-white font-semibold shadow-sm border border-emerald-400/40'
-                        : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
-                    }`}
-                  >
-                    <span>{col.name}</span>
-                    <span className="text-[10px] font-mono opacity-80">({col.items.length})</span>
-                  </button>
-                );
-              })}
+    <div className="space-y-6 pb-20">
+      {/* 1. Collection Header Bar — Minimal, Subtle & Unboxed */}
+      <div className="pb-3 border-b border-white/5 space-y-3">
+        {/* Collection Switcher Pills & Action Tools */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            {collections.map(col => {
+              const isActive = col.id === activeCollectionId;
+              return (
+                <button
+                  key={col.id}
+                  onClick={() => setActiveCollectionId(col.id)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-white/15 text-white font-semibold'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span>{col.name}</span>
+                  <span className="text-[10px] font-mono opacity-70">({col.items.length})</span>
+                </button>
+              );
+            })}
 
-              <button
-                onClick={() => {
-                  setEditingColId(null);
-                  setColModalOpen(true);
-                }}
-                className="px-3 py-1 rounded-full text-xs font-medium border border-dashed border-emerald-400/40 hover:border-emerald-400 text-emerald-400 flex items-center gap-1 transition-all"
-                title="Create a new collection"
-              >
-                <Plus size={12} />
-                <span>New</span>
-              </button>
-            </div>
-
-            {/* Collection Title & Description */}
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-2xl md:text-3xl font-bold text-white tracking-wide">
-                  {activeCol?.name}
-                </h1>
-                {activeCol?.isSystemCollection && (
-                  <span className="bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 uppercase tracking-wider px-2 py-0.5 text-[10px] rounded-md font-semibold">
-                    Curated Prep
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-400 font-sans mt-0.5 max-w-xl">
-                {activeCol?.description}
-              </p>
-            </div>
+            <button
+              onClick={() => {
+                setEditingColId(null);
+                setColModalOpen(true);
+              }}
+              className="px-2.5 py-1 rounded-full text-xs text-gray-400 hover:text-white border border-dashed border-white/20 hover:border-white/40 flex items-center gap-1 transition-all"
+              title="Create a new collection"
+            >
+              <Plus size={11} />
+              <span>New</span>
+            </button>
           </div>
 
-          {/* Right Action Tools for Active Collection */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
-            {/* Progress Meter */}
-            <div className="bg-black/40 px-4 py-2.5 rounded-xl border border-white/10 w-full sm:w-52">
-              <div className="flex justify-between text-xs font-mono mb-1">
-                <span className="text-gray-400">Watched</span>
-                <span className="text-white font-semibold">{collectionCompletedCount} / {collectionTotalCount}</span>
-              </div>
-              <div className="w-full bg-black/60 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
-                  style={{ width: `${collectionPercent}%` }}
-                />
-              </div>
-              <div className="text-[10px] text-emerald-400 font-mono mt-1 text-right font-medium">
-                {collectionPercent}% Complete
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              {activeCol?.isSystemCollection ? (
-                <button
-                  onClick={() => resetCollectionToDefault(activeCol.id)}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors border border-white/10"
-                  title="Reset to recommended order"
-                >
-                  <RotateCcw size={13} />
-                  <span className="hidden sm:inline">Reset</span>
-                </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      setEditingColId(activeCol.id);
-                      setColModalOpen(true);
-                    }}
-                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-medium flex items-center gap-1 transition-colors border border-white/10"
-                    title="Rename collection"
-                  >
-                    <Edit2 size={13} />
-                  </button>
-                  <button
-                    onClick={() => deleteCollection(activeCol.id)}
-                    className="p-2 rounded-lg bg-white/5 hover:bg-red-950/50 text-red-400 text-xs font-medium flex items-center gap-1 transition-colors border border-white/10"
-                    title="Delete collection"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </>
-              )}
-
+          <div className="flex items-center gap-2 shrink-0">
+            {activeCol?.isSystemCollection ? (
               <button
-                onClick={onNavigateDiscover}
-                className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:brightness-110 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm"
+                onClick={() => resetCollectionToDefault(activeCol.id)}
+                className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1"
+                title="Reset to recommended order"
               >
-                <Plus size={14} />
-                <span>Add Titles</span>
+                <RotateCcw size={12} />
+                <span className="hidden sm:inline">Reset</span>
               </button>
-            </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setEditingColId(activeCol.id);
+                    setColModalOpen(true);
+                  }}
+                  className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1"
+                  title="Rename"
+                >
+                  <Edit2 size={12} />
+                </button>
+                <button
+                  onClick={() => deleteCollection(activeCol.id)}
+                  className="text-xs text-red-400/80 hover:text-red-400 flex items-center gap-1 transition-colors px-2 py-1"
+                  title="Delete"
+                >
+                  <Trash2 size={12} />
+                </button>
+              </>
+            )}
+
+            <button
+              onClick={onNavigateDiscover}
+              className="text-xs font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1 rounded-lg transition-all flex items-center gap-1.5"
+            >
+              <Plus size={12} />
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Title & Subtle Inline Progress */}
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
+          <div className="flex items-baseline gap-2.5">
+            <h1 className="text-lg sm:text-xl font-medium text-white tracking-wide">
+              {activeCol?.name}
+            </h1>
+            {activeCol?.isSystemCollection && (
+              <span className="text-[10px] text-gray-400 font-mono">
+                Curated Prep
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
+            <span>{collectionCompletedCount}/{collectionTotalCount} watched</span>
+            <span className="text-gray-600">•</span>
+            <span className="text-emerald-400 font-medium">{collectionPercent}%</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Filter & Sort Toolbar — Minimal & Decluttered */}
-      <div className="bg-black/30 backdrop-blur-md p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 border border-white/10">
+      {/* 2. Filter & Sort Toolbar — Responsive & Minimal (No Clipping on Mobile) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
         {/* Status Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
           {[
             { val: 'all', label: 'All' },
             { val: 'in_progress', label: 'Watching' },
@@ -580,10 +481,10 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             <button
               key={opt.val}
               onClick={() => setStatusFilter(opt.val as any)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                 statusFilter === opt.val
-                  ? 'bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-400 text-white font-semibold shadow-sm'
-                  : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-white/10'
+                  ? 'bg-white/15 text-white font-semibold'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               {opt.label}
@@ -591,24 +492,24 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           ))}
         </div>
 
-        {/* Media & Sorting Controls */}
-        <div className="flex items-center gap-2">
+        {/* Media & Sorting Controls — 3 Equal Grid Cols on Mobile, Inline on Desktop */}
+        <div className="grid grid-cols-3 sm:flex items-center gap-1.5 w-full sm:w-auto">
           {/* Media Filter */}
           <select
             value={mediaFilter}
             onChange={(e) => setMediaFilter(e.target.value as any)}
-            className="bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500"
+            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none"
           >
             <option value="all">All Types</option>
             <option value="movie">Movies</option>
-            <option value="tv">TV Series</option>
+            <option value="tv">Series</option>
           </select>
 
-          {/* Phase Filter (if user wants to isolate one phase) */}
+          {/* Phase Filter */}
           <select
             value={phaseFilter}
             onChange={(e) => setPhaseFilter(e.target.value)}
-            className="bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500 max-w-[150px] truncate"
+            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none truncate"
           >
             <option value="all">All Phases</option>
             {PHASE_ORDER.map(p => (
@@ -616,31 +517,28 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             ))}
           </select>
 
-          {/* Sort By Dropdown — Default is Phase Order */}
-          <div className="flex items-center gap-1.5 pl-2 border-l border-white/10">
-            <ArrowUpDown size={12} className="text-gray-400" />
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500 font-medium"
-            >
-              <option value="phase">Phase Order (Default)</option>
-              <option value="sequence">Custom Sequence</option>
-              <option value="year">Release Year</option>
-              <option value="rating">Rating</option>
-              <option value="title">Title (A-Z)</option>
-            </select>
-          </div>
+          {/* Sort By Dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none"
+          >
+            <option value="phase">Phase Order</option>
+            <option value="sequence">Sequence</option>
+            <option value="year">Year</option>
+            <option value="rating">Rating</option>
+            <option value="title">Title (A-Z)</option>
+          </select>
         </div>
       </div>
 
-      {/* 3. Titles Display: Phase-Grouped by Default or Filtered Grid */}
+      {/* 3. Titles Display: 2-3 per row on Mobile, 5-6 on Desktop */}
       {filteredAndSortedItems.length === 0 ? (
-        <div className="rounded-2xl p-12 text-center space-y-4 border border-white/10 bg-black/20">
-          <div className="w-14 h-14 rounded-full bg-white/5 text-gray-400 flex items-center justify-center mx-auto">
-            <Film size={24} />
+        <div className="rounded-2xl p-10 text-center space-y-3 border border-white/5 bg-white/[0.01]">
+          <div className="w-12 h-12 rounded-full bg-white/5 text-gray-400 flex items-center justify-center mx-auto">
+            <Film size={20} />
           </div>
-          <h3 className="text-xl font-semibold text-white">
+          <h3 className="text-base font-semibold text-white">
             No Titles Match Filters
           </h3>
           <p className="text-xs text-gray-400 max-w-sm mx-auto font-sans">
@@ -652,39 +550,39 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               setMediaFilter('all');
               setPhaseFilter('all');
             }}
-            className="bg-white/10 hover:bg-white/15 text-white px-4 py-2 rounded-lg text-xs font-medium transition-all"
+            className="bg-white/10 hover:bg-white/15 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all"
           >
             Clear Filters
           </button>
         </div>
       ) : phaseGroupSections ? (
         /* Phase-Wise Grouped Display */
-        <div className="space-y-10">
+        <div className="space-y-8">
           {phaseGroupSections.map((group) => {
             const groupWatchedCount = group.items.filter(
               i => watchProgress[i.movieId]?.status === 'completed'
             ).length;
 
             return (
-              <section key={group.phaseName} className="space-y-4">
+              <section key={group.phaseName} className="space-y-3">
                 {/* Phase Section Header */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                    <h2 className="text-lg font-semibold text-white tracking-wide">
+                <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <h2 className="text-sm sm:text-base font-medium text-white tracking-wide">
                       {group.displayName}
                     </h2>
                     <span className="text-xs text-gray-500 font-mono">
                       ({group.items.length})
                     </span>
                   </div>
-                  <span className="text-xs text-emerald-400/80 font-mono font-medium">
+                  <span className="text-[11px] text-gray-400 font-mono">
                     {groupWatchedCount}/{group.items.length} watched
                   </span>
                 </div>
 
-                {/* Grid of Cards for this Phase */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {/* Grid: 2-3 movies per row on mobile, 4 on tablet, 5-6 on desktop */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
                   {group.items.map(item => renderCard(item))}
                 </div>
               </section>
@@ -692,8 +590,8 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           })}
         </div>
       ) : (
-        /* Standard Sorted Grid (when sorting by year, rating, title, or filtered by single phase) */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        /* Standard Sorted Grid: 2-3 movies per row on mobile, 5-6 on desktop */
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
           {filteredAndSortedItems.map(item => renderCard(item))}
         </div>
       )}
