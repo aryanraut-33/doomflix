@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
 import { 
   Award, 
-  Shield, 
   CheckCircle2, 
-  Calendar, 
-  Clock, 
   Film, 
   Tv, 
   RefreshCw, 
   Sparkles, 
   Lock, 
   Layers, 
-  Sliders, 
-  UserCheck, 
-  Check, 
   Database,
   HelpCircle,
-  ExternalLink
+  LogOut
 } from 'lucide-react';
-import { ACHIEVEMENTS, Achievement } from '../../data/achievements';
+import { ACHIEVEMENTS } from '../../data/achievements';
 import { useAppStore } from '../../services/store';
 
 interface UserProfileProps {
@@ -33,12 +27,9 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
     quizAttempts, 
     collections,
     migrateGuestData,
-    doomsdayDate,
-    setDoomsdayDate
+    logout
   } = useAppStore();
 
-  const [inputDate, setInputDate] = useState(doomsdayDate.split('T')[0]);
-  const [dateSaved, setDateSaved] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
   const [syncMessage, setSyncMessage] = useState('');
 
@@ -61,15 +52,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
     ? Math.max(...quizAttempts.map(q => q.percentage))
     : 0;
 
-  const handleSaveDate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputDate) {
-      setDoomsdayDate(`${inputDate}T00:00:00`);
-      setDateSaved(true);
-      setTimeout(() => setDateSaved(false), 2000);
-    }
-  };
-
   const handleManualSync = async () => {
     setSyncLoading(true);
     setSyncMessage('');
@@ -79,7 +61,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
   };
 
   return (
-    <div className="space-y-8 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-6 pb-20 max-w-5xl mx-auto">
       {/* 1. Profile Header Card */}
       <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -110,23 +92,43 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
 
           {/* Account Actions */}
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            {user.isGuest ? (
-              <button
-                onClick={onOpenAuth}
-                className="w-full sm:w-auto bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
-              >
-                <Database size={14} />
-                <span>Sign in / Sync Progress</span>
-              </button>
+            {!user.isGuest ? (
+              <>
+                <button
+                  onClick={handleManualSync}
+                  disabled={syncLoading}
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
+                  <span>Sync Progress</span>
+                </button>
+                <button
+                  onClick={logout}
+                  className="w-full sm:w-auto bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Sign out of your account"
+                >
+                  <LogOut size={13} />
+                  <span>Log Out</span>
+                </button>
+              </>
             ) : (
-              <button
-                onClick={handleManualSync}
-                disabled={syncLoading}
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
-              >
-                <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
-                <span>Sync Progress</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <button
+                  onClick={onOpenAuth}
+                  className="w-full sm:w-auto bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <Database size={14} />
+                  <span>Sign in / Sync Progress</span>
+                </button>
+                <button
+                  onClick={logout}
+                  className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Reset session"
+                >
+                  <LogOut size={13} />
+                  <span>Log Out</span>
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -271,110 +273,55 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
         </div>
       </div>
 
-      {/* 4. Knowledge Arena History & Diagnostics */}
-      <div className="metallic-card rounded-3xl p-6 md:p-8 border border-doom-border space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white flex items-center gap-2">
-            <HelpCircle size={20} className="text-doom-gold" />
-            <span>Lore Battle Diagnostics</span>
-          </h3>
-          <span className="text-xs text-gray-400 font-mono">
+      {/* 4. Lore Battle Diagnostics (Minimal & Compact) */}
+      <div className="doom-metallic-card rounded-2xl p-4 sm:p-5 border border-border space-y-3 shadow-card">
+        <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+          <div className="flex items-center gap-2">
+            <HelpCircle size={16} className="text-amber-400/90" />
+            <h3 className="text-sm sm:text-base font-semibold text-white tracking-wide">
+              Lore Battle Diagnostics
+            </h3>
+          </div>
+          <span className="text-[11px] text-gray-400 font-mono">
             {totalQuizzes} Attempt{totalQuizzes === 1 ? '' : 's'}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-doom-950 p-4 rounded-xl border border-doom-border text-center">
-            <div className="text-xs text-gray-400 font-mono">Average Accuracy</div>
-            <div className="font-cinematic text-3xl text-white font-bold tracking-wider mt-1">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="bg-white/[0.02] p-2.5 sm:p-3 rounded-xl border border-white/5 text-center flex flex-col justify-center">
+            <div className="text-[10px] sm:text-xs text-gray-400 font-mono uppercase tracking-wider truncate">
+              Avg Accuracy
+            </div>
+            <div className="text-lg sm:text-2xl font-bold text-white tracking-tight mt-0.5">
               {avgAccuracy}%
             </div>
           </div>
 
-          <div className="bg-doom-950 p-4 rounded-xl border border-doom-border text-center">
-            <div className="text-xs text-gray-400 font-mono">Highest Score</div>
-            <div className="font-cinematic text-3xl text-doom-gold font-bold tracking-wider mt-1">
+          <div className="bg-white/[0.02] p-2.5 sm:p-3 rounded-xl border border-white/5 text-center flex flex-col justify-center">
+            <div className="text-[10px] sm:text-xs text-gray-400 font-mono uppercase tracking-wider truncate">
+              Top Score
+            </div>
+            <div className="text-lg sm:text-2xl font-bold text-amber-400 tracking-tight mt-0.5">
               {bestScore}%
             </div>
           </div>
 
-          <div className="bg-doom-950 p-4 rounded-xl border border-doom-border text-center">
-            <div className="text-xs text-gray-400 font-mono">Operative Lore Tier</div>
-            <div className="font-cinematic text-3xl text-doom-red font-bold tracking-wider mt-1">
+          <div className="bg-white/[0.02] p-2.5 sm:p-3 rounded-xl border border-white/5 text-center flex flex-col justify-center">
+            <div className="text-[10px] sm:text-xs text-gray-400 font-mono uppercase tracking-wider truncate">
+              Lore Tier
+            </div>
+            <div className="text-[10.5px] sm:text-sm font-bold text-rose-400 tracking-normal uppercase mt-1 truncate">
               {avgAccuracy >= 80 ? 'NEXUS MASTER' : avgAccuracy >= 50 ? 'FIELD AGENT' : 'RECRUIT'}
             </div>
           </div>
         </div>
 
         {quizAttempts.length > 0 && quizAttempts[0].weakTopics.length > 0 && (
-          <div className="p-3 bg-doom-950 rounded-xl border border-doom-border text-xs text-gray-300">
-            <span className="text-doom-gold font-bold">Priority Review Areas: </span>
-            {quizAttempts[0].weakTopics.join(', ')}
+          <div className="px-3 py-2 bg-white/[0.02] rounded-xl border border-white/5 text-[11px] sm:text-xs text-gray-300 flex items-center gap-1.5 flex-wrap">
+            <span className="text-amber-400/90 font-medium">Priority Review:</span>
+            <span className="text-gray-300">{quizAttempts[0].weakTopics.join(', ')}</span>
           </div>
         )}
-      </div>
-
-      {/* 5. Platform Settings & Doomsday Configurator */}
-      <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
-        <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white flex items-center gap-2">
-          <Sliders size={20} className="text-doom-emerald" />
-          <span>Platform Settings & Timeline Target</span>
-        </h3>
-
-        {/* Configurable Avengers: Doomsday Release Date */}
-        <form onSubmit={handleSaveDate} className="space-y-3 bg-doom-950 p-5 rounded-2xl border border-border">
-          <div>
-            <label className="block text-xs font-marvel uppercase tracking-wider text-gray-300 font-bold mb-1">
-              Avengers: Doomsday Release Countdown Target
-            </label>
-            <p className="text-xs text-gray-400 font-sans mb-3">
-              Per product specification, Doomflix allows configuring the target release date rather than hardcoding an unverified date.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <input
-              type="date"
-              value={inputDate}
-              onChange={(e) => setInputDate(e.target.value)}
-              className="bg-doom-900 border border-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-doom-emerald"
-            />
-
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 border border-doom-emerald/40"
-            >
-              <Check size={14} />
-              <span>Save Release Date</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setInputDate('2026-12-18');
-                setDoomsdayDate('2026-12-18T00:00:00');
-              }}
-              className="text-xs text-gray-400 hover:text-white px-2 py-1"
-            >
-              Reset to Default (Dec 18, 2026)
-            </button>
-
-            {dateSaved && (
-              <span className="text-xs text-doom-emerald font-mono">Target date updated!</span>
-            )}
-          </div>
-        </form>
-
-        {/* TMDB Integration Attribution & Info */}
-        <div className="p-4 bg-doom-950/60 rounded-2xl border border-doom-border text-xs text-gray-400 font-sans space-y-2">
-          <div className="flex items-center gap-2 font-marvel uppercase tracking-wider text-white font-bold">
-            <Database size={14} className="text-doom-red" />
-            <span>TMDB Attribution & Infrastructure</span>
-          </div>
-          <p>
-            Movie and TV series metadata, high-resolution official posters, and backdrop artwork are catalogued via The Movie Database (TMDB). This product uses the TMDB API but is not endorsed or certified by TMDB.
-          </p>
-        </div>
       </div>
     </div>
   );
