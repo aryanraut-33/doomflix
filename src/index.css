@@ -45,20 +45,29 @@
   }
 }
 
-/* Custom discreet scrollbar */
+/* Universal Invisible Scrollbars across all browsers */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+*::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  display: none;
+  width: 0px;
+  height: 0px;
+  background: transparent;
 }
-::-webkit-scrollbar-track {
-  background: #090a0f;
+
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
-::-webkit-scrollbar-thumb {
-  background: #23293b;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #e21b24;
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Marvel-style Block Badge */
