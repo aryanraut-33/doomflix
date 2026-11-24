@@ -170,13 +170,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
           e.preventDefault();
           onSelectTab('home');
         }}
-        className="absolute top-[36px] left-[48px] -translate-x-1/2 w-[40px] h-[40px] cursor-pointer z-20 transition-transform active:scale-95 select-none"
+        className="absolute top-[36px] left-[48px] -translate-x-1/2 w-[40px] h-[40px] doom-flame-container cursor-pointer z-20 transition-transform active:scale-95 select-none"
         aria-label="Doomflix Home"
       >
+        {/* Doom Green Smoke & Flame Layers */}
+        <div className="doom-flame-smoke" />
+        <div className="doom-flame-smoke-layer2" />
+
+        {/* Doctor Doom Mask Logo Image */}
         <img
           src="/assets/image.png"
           alt="Doomflix"
-          className="w-[40px] h-[40px] object-cover rounded-lg"
+          className="doom-logo-img w-[40px] h-[40px] object-cover"
         />
       </a>
 
