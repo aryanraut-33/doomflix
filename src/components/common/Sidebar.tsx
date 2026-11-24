@@ -170,10 +170,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
           e.preventDefault();
           onSelectTab('home');
         }}
-        className="absolute top-[40px] left-[48px] -translate-x-1/2 w-[36px] h-[36px] rounded-xl bg-gradient-to-br from-emerald-600 to-teal-400 flex items-center justify-center font-cinematic font-black text-xl text-white shadow-[0_0_15px_rgba(16,185,129,0.35)] border border-emerald-400/30 cursor-pointer z-20 transition-transform active:scale-95 select-none"
+        className="absolute top-[36px] left-[48px] -translate-x-1/2 w-[40px] h-[40px] cursor-pointer z-20 transition-transform active:scale-95 select-none"
         aria-label="Doomflix Home"
       >
-        D
+        <img
+          src="/assets/image.png"
+          alt="Doomflix"
+          className="w-[40px] h-[40px] object-cover rounded-lg"
+        />
       </a>
 
       {/* 4. Item List: Vertically Centered in Viewport, Pitch 52px (44px height + 8px gap) */}
