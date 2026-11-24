@@ -444,37 +444,57 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
             </div>
           )}
 
-          {/* Bottom: Slide indicators */}
-          <div className="flex items-center gap-2 mt-8">
-            {currentMovies.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`h-0.5 rounded-full transition-all duration-500 ${
-                  idx === currentIndex 
-                    ? 'w-8 bg-white' 
-                    : 'w-4 bg-white/30 hover:bg-white/50'
-                }`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
+          {/* Bottom: Slide indicators with Navigation Arrows */}
+          <div className="flex items-center gap-3 mt-8">
+            <button
+              onClick={(e) => handlePrev(e)}
+              className="p-1.5 -ml-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              aria-label="Previous slide"
+              title="Previous movie"
+            >
+              <ChevronLeft size={18} strokeWidth={2.5} />
+            </button>
+
+            <div className="flex items-center gap-2">
+              {currentMovies.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`h-0.5 rounded-full transition-all duration-500 ${
+                    idx === currentIndex 
+                      ? 'w-8 bg-white' 
+                      : 'w-4 bg-white/30 hover:bg-white/50'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={(e) => handleNext(e)}
+              className="p-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              aria-label="Next slide"
+              title="Next movie"
+            >
+              <ChevronRight size={18} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
 
         {/* Side navigation arrows — Prime Video hover fade style */}
         <button
-          onClick={() => handlePrev()}
-          className="absolute left-[108px] top-1/2 -translate-y-1/2 z-30 p-2 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+          onClick={(e) => handlePrev(e)}
+          className="absolute left-28 lg:left-32 top-1/2 -translate-y-1/2 z-40 p-3 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
           aria-label="Previous slide"
         >
-          <ChevronLeft size={36} strokeWidth={2.2} />
+          <ChevronLeft size={40} strokeWidth={2.5} />
         </button>
         <button
-          onClick={() => handleNext()}
-          className="absolute right-6 sm:right-8 top-1/2 -translate-y-1/2 z-30 p-2 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+          onClick={(e) => handleNext(e)}
+          className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 p-3 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
           aria-label="Next slide"
         >
-          <ChevronRight size={36} strokeWidth={2.2} />
+          <ChevronRight size={40} strokeWidth={2.5} />
         </button>
       </section>
     </>
