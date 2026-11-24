@@ -107,7 +107,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                   </div>
 
                   {/* Movie Poster Card */}
-                  <div className="-ml-6 sm:-ml-10 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-all">
+                  <div className="-ml-1 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-all">
                     <CinematicImage
                       src={title.posterPath}
                       alt={title.title}
