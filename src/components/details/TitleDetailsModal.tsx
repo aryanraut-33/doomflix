@@ -125,14 +125,14 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
         {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5 no-scrollbar">
           {/* Action Bar: Direct Streaming & Watchlist Toggle */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
               {streamUrl && (
                 <a
                   href={streamUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-lg font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 shrink-0"
                 >
                   <Play size={14} fill="currentColor" />
                   <span>Watch on {primaryStream?.provider || 'Platform'}</span>
@@ -141,20 +141,20 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               )}
 
               {/* Status Toggle Buttons */}
-              <div className="flex items-center bg-white/5 border border-white/10 rounded-lg p-0.5">
+              <div className="inline-flex items-center bg-white/5 border border-white/10 rounded-lg p-0.5 shrink-0">
                 <button
                   onClick={() => updateWatchStatus(title.id, 'not_started')}
-                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
                     currentStatus === 'not_started'
                       ? 'bg-white/15 text-white font-semibold'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  Plan to watch
+                  Not Started
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'in_progress')}
-                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
                     currentStatus === 'in_progress'
                       ? 'bg-amber-500/20 text-amber-300 font-semibold'
                       : 'text-gray-400 hover:text-white'
@@ -164,7 +164,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'completed')}
-                  className={`px-2.5 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors flex items-center gap-1 ${
                     currentStatus === 'completed'
                       ? 'bg-emerald-500 text-white font-semibold shadow'
                       : 'text-gray-400 hover:text-white'
@@ -177,7 +177,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
             </div>
 
             {primaryStream && (
-              <span className="text-[11px] text-gray-400 flex items-center gap-1.5 font-medium">
+              <span className="text-[11px] text-gray-400 flex items-center gap-1.5 font-medium shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 <span>Streaming in India 🇮🇳</span>
               </span>
@@ -193,12 +193,12 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
 
           {/* Essential Context (Why it matters) — Clean Minimal Callout */}
           {title.whyItMatters && (
-            <div className="p-3.5 rounded-xl bg-emerald-950/20 border-l-2 border-emerald-500 text-xs text-gray-300 space-y-1">
-              <span className="text-emerald-400 font-semibold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <Sparkles size={13} />
+            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-gray-300 space-y-1">
+              <span className="text-gray-400 font-medium uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <Sparkles size={12} className="text-emerald-400/80" />
                 <span>Road to Doomsday</span>
               </span>
-              <p className="leading-relaxed text-gray-200">
+              <p className="leading-relaxed text-gray-300 font-sans">
                 {title.whyItMatters}
               </p>
             </div>
