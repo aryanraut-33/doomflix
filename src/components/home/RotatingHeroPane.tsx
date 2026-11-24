@@ -481,21 +481,25 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           </div>
         </div>
 
-        {/* Side navigation arrows — Prime Video hover fade style */}
-        <button
-          onClick={(e) => handlePrev(e)}
-          className="absolute left-28 lg:left-32 top-1/2 -translate-y-1/2 z-40 p-3 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft size={40} strokeWidth={2.5} />
-        </button>
-        <button
-          onClick={(e) => handleNext(e)}
-          className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 p-3 text-white/70 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-125 active:scale-95 cursor-pointer filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
-          aria-label="Next slide"
-        >
-          <ChevronRight size={40} strokeWidth={2.5} />
-        </button>
+        {/* Right side navigation arrows stacked vertically — Left arrow below Right arrow */}
+        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={(e) => handleNext(e)}
+            className="p-2.5 rounded-full text-white/75 hover:text-white hover:bg-white/10 hover:scale-125 active:scale-95 transition-all cursor-pointer filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            aria-label="Next slide"
+            title="Next slide"
+          >
+            <ChevronRight size={38} strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={(e) => handlePrev(e)}
+            className="p-2.5 rounded-full text-white/75 hover:text-white hover:bg-white/10 hover:scale-125 active:scale-95 transition-all cursor-pointer filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            aria-label="Previous slide"
+            title="Previous slide"
+          >
+            <ChevronLeft size={38} strokeWidth={2.5} />
+          </button>
+        </div>
       </section>
     </>
   );
