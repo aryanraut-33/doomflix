@@ -241,55 +241,67 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
           </section>
         )}
 
-        {/* 4. Up Next */}
+        {/* 4. Up Next — Subtle & Compact */}
         {(() => {
           const recStream = recommendedTitle.streamingIndia?.[0];
           const recStreamUrl = recStream?.directUrl || recStream?.searchUrl;
 
           return (
-            <section className="relative rounded-xl overflow-hidden border border-white/10 bg-doom-950">
-              <div className="flex flex-col lg:flex-row">
-                <div className="lg:w-72 shrink-0 relative">
+            <section className="relative rounded-xl overflow-hidden border border-white/5 bg-white/[0.02] hover:border-white/10 transition-colors p-3 sm:p-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                {/* Small compact poster thumbnail */}
+                <div 
+                  onClick={() => onOpenTitleDetails(recommendedTitle)}
+                  className="w-14 sm:w-16 aspect-[2/3] shrink-0 rounded-lg overflow-hidden bg-doom-950 cursor-pointer border border-white/10 shadow-sm"
+                >
                   <CinematicImage
                     src={recommendedTitle.posterPath}
                     alt={recommendedTitle.title}
                     fallbackTitle={recommendedTitle.title}
-                    className="w-full aspect-[2/3] lg:aspect-auto lg:h-full object-cover"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-doom-950 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-doom-950" />
                 </div>
 
-                <div className="flex-1 p-6 lg:p-8 flex flex-col justify-center">
-                  <p className="text-xs text-emerald-400 font-medium uppercase tracking-wider mb-2">Up Next</p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400 font-mono">Up Next</span>
+                    <span className="text-gray-600 text-xs">•</span>
+                    <span className="text-[11px] text-gray-400 font-mono">{recommendedTitle.releaseYear} • {recommendedTitle.mediaType === 'tv' ? 'Series' : `${recommendedTitle.runtime}m`}</span>
+                  </div>
                   
-                  <h3 className="font-cinematic text-3xl sm:text-4xl text-white uppercase tracking-wider">
+                  <h3 
+                    onClick={() => onOpenTitleDetails(recommendedTitle)}
+                    className="text-sm sm:text-base font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors"
+                  >
                     {recommendedTitle.title}
                   </h3>
                   
-                  <p className="text-sm text-gray-400 mt-2 line-clamp-2 max-w-lg">
+                  <p className="text-xs text-gray-400 line-clamp-1 max-w-xl mt-0.5 font-sans hidden sm:block">
                     {recommendedTitle.synopsis}
                   </p>
+                </div>
 
-                  <div className="flex items-center gap-3 mt-5">
-                    {recStreamUrl && (
-                      <a
-                        href={recStreamUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-white hover:bg-gray-200 text-doom-950 px-5 py-2 rounded-md font-semibold text-sm transition-all"
-                      >
-                        <Play size={14} fill="currentColor" />
-                        <span>Watch now</span>
-                      </a>
-                    )}
-
-                    <button
-                      onClick={() => onOpenTitleDetails(recommendedTitle)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-white/10 hover:bg-white/15 transition-all"
+                {/* Compact Actions */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {recStreamUrl && (
+                    <a
+                      href={recStreamUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white text-doom-950 px-3 py-1.5 rounded-lg font-semibold text-xs transition-all shadow-sm"
+                      title={`Stream ${recommendedTitle.title}`}
                     >
-                      <span>More Info</span>
-                    </button>
-                  </div>
+                      <Play size={12} fill="currentColor" />
+                      <span className="hidden sm:inline">Watch</span>
+                    </a>
+                  )}
+
+                  <button
+                    onClick={() => onOpenTitleDetails(recommendedTitle)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                  >
+                    Info
+                  </button>
                 </div>
               </div>
             </section>
