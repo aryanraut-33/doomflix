@@ -2,14 +2,14 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import confetti from 'canvas-confetti';
 import { MARVEL_TITLES, MarvelTitle } from '../data/marvelCatalogue';
 import { ACHIEVEMENTS, Achievement } from '../data/achievements';
-import { 
-  User, 
-  Collection, 
-  CollectionItem, 
-  TitleWatchProgress, 
-  EpisodeProgress, 
-  QuizAttemptRecord, 
-  UnlockedAchievement 
+import {
+  User,
+  Collection,
+  CollectionItem,
+  TitleWatchProgress,
+  EpisodeProgress,
+  QuizAttemptRecord,
+  UnlockedAchievement
 } from './types';
 import {
   dbCreateUser,
@@ -121,7 +121,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           return { id: found.id, username: found.username, email: found.email, isGuest: false };
         }
       }
-    } catch {}
+    } catch { }
     return { id: 'guest_user', username: 'Operative (Guest)', isGuest: true };
   });
 
@@ -131,7 +131,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (activeUserId && activeUserId !== 'guest_user') {
         return `doom_${activeUserId}`;
       }
-    } catch {}
+    } catch { }
     return null;
   });
 
@@ -146,7 +146,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.collections && parsed.collections.length > 0) return parsed.collections;
         }
       }
-    } catch {}
+    } catch { }
     return [INITIAL_MULTIVERSE_ESSENTIALS];
   });
 
@@ -160,7 +160,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.activeCollectionId) return parsed.activeCollectionId;
         }
       }
-    } catch {}
+    } catch { }
     return 'multiverse-essentials';
   });
 
@@ -175,7 +175,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.watchProgress) return parsed.watchProgress;
         }
       }
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -190,7 +190,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.episodeProgress) return parsed.episodeProgress;
         }
       }
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -205,7 +205,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.unlockedAchievements) return parsed.unlockedAchievements;
         }
       }
-    } catch {}
+    } catch { }
     return [];
   });
   const [newUnlockedToast, setNewUnlockedToast] = useState<Achievement | null>(null);
@@ -221,7 +221,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (parsed.quizAttempts) return parsed.quizAttempts;
         }
       }
-    } catch {}
+    } catch { }
     return [];
   });
 
@@ -270,7 +270,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             origin: { y: 0.8 },
             colors: ['#F0141E', '#f59e0b', '#10b981', '#ffffff']
           });
-        } catch {}
+        } catch { }
       }
       return [...prev, { achievementId, unlockedAt: new Date().toISOString() }];
     });
@@ -564,8 +564,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setWatchProgress(userData.watchProgress || {});
       setEpisodeProgress(userData.episodeProgress || {});
       setCollections(
-        userData.collections && userData.collections.length > 0 
-          ? userData.collections 
+        userData.collections && userData.collections.length > 0
+          ? userData.collections
           : [INITIAL_MULTIVERSE_ESSENTIALS]
       );
       setActiveCollectionId(userData.activeCollectionId || 'multiverse-essentials');
@@ -619,8 +619,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setWatchProgress(initialData.watchProgress || {});
       setEpisodeProgress(initialData.episodeProgress || {});
       setCollections(
-        initialData.collections && initialData.collections.length > 0 
-          ? initialData.collections 
+        initialData.collections && initialData.collections.length > 0
+          ? initialData.collections
           : [INITIAL_MULTIVERSE_ESSENTIALS]
       );
       setActiveCollectionId(initialData.activeCollectionId || 'multiverse-essentials');
@@ -658,7 +658,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       localStorage.removeItem(STORAGE_KEYS.ACTIVE_COLLECTION);
       localStorage.removeItem(STORAGE_KEYS.ACHIEVEMENTS);
       localStorage.removeItem(STORAGE_KEYS.QUIZ_ATTEMPTS);
-    } catch {}
+    } catch { }
   };
 
   const migrateGuestData = async (): Promise<{ success: boolean; message?: string }> => {
