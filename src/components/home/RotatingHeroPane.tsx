@@ -444,48 +444,30 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
             </div>
           )}
 
-          {/* Bottom: Slide indicators with Navigation Arrows */}
-          <div className="flex items-center gap-3 mt-8">
-            <button
-              onClick={(e) => handlePrev(e)}
-              className="p-1.5 -ml-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-              aria-label="Previous slide"
-              title="Previous movie"
-            >
-              <ChevronLeft size={18} strokeWidth={2.5} />
-            </button>
-
-            <div className="flex items-center gap-2">
-              {currentMovies.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={`h-0.5 rounded-full transition-all duration-500 ${
-                    idx === currentIndex 
-                      ? 'w-8 bg-white' 
-                      : 'w-4 bg-white/30 hover:bg-white/50'
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={(e) => handleNext(e)}
-              className="p-1.5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-              aria-label="Next slide"
-              title="Next movie"
-            >
-              <ChevronRight size={18} strokeWidth={2.5} />
-            </button>
+          {/* Bottom: Slide indicators */}
+          <div className="flex items-center gap-2 mt-8">
+            {currentMovies.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                onMouseDown={(e) => e.preventDefault()}
+                className={`h-0.5 rounded-full transition-all duration-500 outline-none focus:outline-none focus-visible:outline-none focus:ring-0 select-none ${
+                  idx === currentIndex 
+                    ? 'w-8 bg-white' 
+                    : 'w-4 bg-white/30 hover:bg-white/50'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
           </div>
         </div>
 
         {/* Right side navigation arrows stacked vertically — Left arrow below Right arrow */}
-        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
           <button
             onClick={(e) => handleNext(e)}
-            className="p-2.5 rounded-full text-white/75 hover:text-white hover:bg-white/10 hover:scale-125 active:scale-95 transition-all cursor-pointer filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            onMouseDown={(e) => e.preventDefault()}
+            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-95 transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
             aria-label="Next slide"
             title="Next slide"
           >
@@ -493,7 +475,8 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           </button>
           <button
             onClick={(e) => handlePrev(e)}
-            className="p-2.5 rounded-full text-white/75 hover:text-white hover:bg-white/10 hover:scale-125 active:scale-95 transition-all cursor-pointer filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            onMouseDown={(e) => e.preventDefault()}
+            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-95 transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
             aria-label="Previous slide"
             title="Previous slide"
           >

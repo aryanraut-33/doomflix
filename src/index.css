@@ -58,6 +58,14 @@
   background: transparent;
 }
 
+/* Remove default browser button focus outline and focus glow */
+button:focus,
+button:focus-visible,
+button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .no-scrollbar::-webkit-scrollbar,
 .scrollbar-none::-webkit-scrollbar {
   display: none;
