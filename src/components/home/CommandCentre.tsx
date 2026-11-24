@@ -101,12 +101,12 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                   onClick={() => onOpenTitleDetails(title)}
                   className="group relative flex items-end shrink-0 cursor-pointer select-none transition-transform duration-300 hover:scale-[1.03]"
                 >
-                  {/* Giant Hollow Ranking Number */}
-                  <div className="netflix-rank-number shrink-0 z-0 pointer-events-none pr-1">
+                  {/* Giant Hollow Ranking Number positioned prominently on the left */}
+                  <div className="netflix-rank-number shrink-0 z-0 pointer-events-none select-none">
                     {rank}
                   </div>
 
-                  {/* Movie Poster Card */}
+                  {/* Movie Poster Card slightly overlapping the number on the right */}
                   <div className="-ml-1 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-all shadow-xl">
                     <CinematicImage
                       src={title.posterPath}
