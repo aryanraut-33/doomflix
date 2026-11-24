@@ -98,10 +98,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/captain-america-the-first-avenger/1260017163',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Captain+America',
+        directUrl: 'https://www.hotstar.com/in/movies/captain-america-the-first-avenger/1660000034',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Captain+America+The+First+Avenger',
         notes: 'Stream in 4K HDR & IMAX Enhanced with English & Hindi audio',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -138,10 +138,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/marvels-the-avengers/1260017164',
-        searchUrl: 'https://www.hotstar.com/in/search?q=The+Avengers',
+        directUrl: 'https://www.hotstar.com/in/movies/marvels-the-avengers/1660000015',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Marvels+The+Avengers',
         notes: 'Included in Disney+ Hotstar / JioHotstar Super & Premium plans',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -179,10 +179,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/captain-america-civil-war/1260017166',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Civil+War',
-        notes: 'IMAX Enhanced version available in India',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/captain-america-civil-war/1260016768',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Captain+America+Civil+War',
+        notes: 'IMAX Enhanced version available in India with Dolby Atmos',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -220,10 +220,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/avengers-infinity-war/1260017168',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Infinity+War',
-        notes: 'Includes Dolby Vision & Atmos tracks on supported devices',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/avengers-infinity-war/1660010677',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Avengers+Infinity+War',
+        notes: 'Includes Dolby Vision & Atmos tracks on supported devices in 4K HDR',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -262,10 +262,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/avengers-endgame/1260017169',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Avengers+Endgame',
-        notes: 'IMAX Enhanced version available in India',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/avengers-endgame/1260013556',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Avengers+Endgame',
+        notes: 'IMAX Enhanced version available in India in 4K UHD',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -308,9 +308,9 @@ export const MARVEL_TITLES: MarvelTitle[] = [
         provider: 'JioHotstar',
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/shows/loki/1260063451',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Loki',
-        notes: 'Complete Season 1 (6 Episodes) in 4K HDR',
-        lastVerifiedAt: '2026-11-20'
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Loki',
+        notes: 'Exclusive Disney+ Original streaming with subscription in 4K HDR, Dolby Atmos.',
+        lastVerifiedAt: 'Nov 2026'
       }
     ],
     seasons: [
@@ -367,9 +367,9 @@ export const MARVEL_TITLES: MarvelTitle[] = [
         provider: 'JioHotstar',
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/shows/loki/1260063451',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Loki+Season+2',
-        notes: 'Complete Season 2 (6 Episodes) in 4K HDR & IMAX audio',
-        lastVerifiedAt: '2026-11-20'
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Loki',
+        notes: 'Season 2 complete run streaming with subscription in 4K HDR, Dolby Atmos.',
+        lastVerifiedAt: 'Nov 2026'
       }
     ],
     seasons: [
@@ -423,20 +423,19 @@ export const MARVEL_TITLES: MarvelTitle[] = [
     canonStatus: 'Confirmed Canon',
     streamingIndia: [
       {
-        provider: 'Netflix',
+        provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.netflix.com/title/81436990',
-        searchUrl: 'https://www.netflix.com/search?q=No+Way+Home',
-        notes: 'Streaming on Netflix India in 4K UHD',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/spider-man-no-way-home/1271661204',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Spider-Man+No+Way+Home',
+        notes: 'Streaming on JioHotstar with subscription in 4K UHD',
+        lastVerifiedAt: 'Nov 2026'
       },
       {
         provider: 'Prime Video',
-        availabilityStatus: 'available',
-        directUrl: 'https://www.primevideo.com/detail/Spider-Man-No-Way-Home/0R2J3H8B6W9',
-        searchUrl: 'https://www.primevideo.com/search?phrase=No+Way+Home',
-        notes: 'Available on Prime Video store / rent & stream',
-        lastVerifiedAt: '2026-11-20'
+        availabilityStatus: 'rent',
+        searchUrl: 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=Spider-Man+No+Way+Home',
+        notes: 'Available for digital store rental and purchase on Prime Video India',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -476,10 +475,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/doctor-strange-in-the-multiverse-of-madness/1260103750',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Doctor+Strange',
+        directUrl: 'https://www.hotstar.com/in/movies/doctor-strange-in-the-multiverse-of-madness/1260103761',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Doctor+Strange+in+the+Multiverse+of+Madness',
         notes: 'Available on JioHotstar / Disney+ Hotstar in IMAX Enhanced',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -519,10 +518,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/deadpool-wolverine/1271317589',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Deadpool+and+Wolverine',
+        directUrl: 'https://www.hotstar.com/in/movies/deadpool-and-wolverine/1271305185',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Deadpool+and+Wolverine',
         notes: 'Streaming now in 4K UHD, HDR10, and Dolby Atmos on JioHotstar',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -564,10 +563,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/x-men/1770000858',
-        searchUrl: 'https://www.hotstar.com/in/search?q=X-Men',
+        directUrl: 'https://www.hotstar.com/in/movies/x-men/1770000943',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=X-Men',
         notes: 'Included with JioHotstar / Disney+ Hotstar subscription',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -605,10 +604,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/x2/1770000859',
-        searchUrl: 'https://www.hotstar.com/in/search?q=X2',
+        directUrl: 'https://www.hotstar.com/in/movies/xmen-united/1770000775',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=X2+X-Men+United',
         notes: 'Streaming on JioHotstar with English and Hindi audio',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -646,9 +645,9 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'unverified',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Thunderbolts',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Thunderbolts',
         notes: 'Theatrical release scheduled; streaming release on JioHotstar will follow theatrical run',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -686,9 +685,9 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'unverified',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Fantastic+Four',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Fantastic+Four+First+Steps',
         notes: 'Theatrical release scheduled; JioHotstar streaming release will follow',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -730,10 +729,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/black-panther-wakanda-forever/1260126487',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Wakanda+Forever',
+        directUrl: 'https://www.hotstar.com/in/movies/black-panther-wakanda-forever/1260118821',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Black+Panther+Wakanda+Forever',
         notes: 'IMAX Enhanced available in English, Hindi, Tamil, Telugu, and Malayalam',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -771,9 +770,9 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'unverified',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Captain+America+Brave+New+World',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Captain+America+Brave+New+World',
         notes: 'Theatrical release scheduled; streaming on JioHotstar expected post-theatrical window',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -811,10 +810,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/shang-chi-and-the-legend-of-the-ten-rings/1260072682',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Shang+Chi',
+        directUrl: 'https://www.hotstar.com/in/movies/shangchi-and-the-legend-of-the-ten-rings/1260072682',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Shang-Chi',
         notes: 'IMAX Enhanced on JioHotstar with Dolby Atmos',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -852,10 +851,10 @@ export const MARVEL_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/x-men-days-of-future-past/1770000863',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Days+of+Future+Past',
+        directUrl: 'https://www.hotstar.com/in/movies/xmen-days-of-future-past/1770000446',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=X-Men+Days+of+Future+Past',
         notes: 'Available on JioHotstar / Disney+ Hotstar',
-        lastVerifiedAt: '2026-11-20'
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   }

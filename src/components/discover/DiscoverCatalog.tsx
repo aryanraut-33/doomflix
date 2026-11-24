@@ -50,9 +50,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/iron-man/1260017162',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Iron+Man',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/iron-man/1660000038',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Iron+Man',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -85,9 +85,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/shows/wandavision/1260051318',
-        searchUrl: 'https://www.hotstar.com/in/search?q=WandaVision',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/shows/wandavision/1260051344',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=WandaVision',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -120,9 +120,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/thor-ragnarok/1260017167',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Thor+Ragnarok',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/thor-ragnarok/1660010577',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Thor+Ragnarok',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   },
@@ -155,9 +155,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
       {
         provider: 'JioHotstar',
         availabilityStatus: 'available',
-        directUrl: 'https://www.hotstar.com/in/movies/logan/1770001314',
-        searchUrl: 'https://www.hotstar.com/in/search?q=Logan',
-        lastVerifiedAt: '2026-11-20'
+        directUrl: 'https://www.hotstar.com/in/movies/logan/1770016994',
+        searchUrl: 'https://www.hotstar.com/in/explore?search_query=Logan',
+        lastVerifiedAt: 'Nov 2026'
       }
     ]
   }
