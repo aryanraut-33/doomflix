@@ -88,7 +88,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
           </div>
 
           {/* Horizontal Scrolling Rail with Giant Netflix Outlined Numbers */}
-          <div className="flex items-end gap-5 sm:gap-10 overflow-x-auto pb-6 scrollbar-none">
+          <div className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-6 scrollbar-none pl-4 sm:pl-8">
             {activePhaseData.titles.map((title, idx) => {
               const rank = idx + 1;
               const isWatched = watchProgress[title.id]?.status === 'completed';
@@ -107,7 +107,7 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
                   </div>
 
                   {/* Movie Poster Card */}
-                  <div className="-ml-1 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-all">
+                  <div className="-ml-1 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-all shadow-xl">
                     <CinematicImage
                       src={title.posterPath}
                       alt={title.title}
