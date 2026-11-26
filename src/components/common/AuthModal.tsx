@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Shield, LogIn, UserPlus, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAppStore } from '../../services/store';
 
 interface AuthModalProps {
@@ -28,6 +28,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,34 +48,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     try {
       if (isRegistering) {
         if (!username.trim()) {
-          setErrorMsg('Username is required');
+          setErrorMsg('Username is required.');
           setIsLoading(false);
           return;
         }
         const res = await register(username, email, password);
         if (!res.success) {
-          setErrorMsg(res.error || 'Registration failed');
+          setErrorMsg(res.error || 'Registration failed.');
         } else {
-          setSuccessMsg('Account created successfully! Syncing guest progress...');
+          setSuccessMsg('Account created. Syncing your guest progress...');
           await migrateGuestData();
-          setTimeout(() => {
-            onClose();
-          }, 1200);
+          setTimeout(() => onClose(), 900);
         }
       } else {
         const res = await login(email, password);
         if (!res.success) {
-          setErrorMsg(res.error || 'Invalid credentials');
+          setErrorMsg(res.error || 'Invalid credentials.');
         } else {
-          setSuccessMsg('Logged in successfully!');
+          setSuccessMsg('Signed in.');
           await migrateGuestData();
-          setTimeout(() => {
-            onClose();
-          }, 1200);
+          setTimeout(() => onClose(), 900);
         }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Operation failed');
+      setErrorMsg(err.message || 'Operation failed.');
     } finally {
       setIsLoading(false);
     }
@@ -74,148 +79,182 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const handleManualSync = async () => {
     setIsLoading(true);
+    setErrorMsg('');
     const res = await migrateGuestData();
     if (res.success) {
-      setSuccessMsg(res.message || 'Data synchronized successfully with your cloud account!');
+      setSuccessMsg(res.message || 'Progress synchronized with your account.');
     } else {
-      setErrorMsg(res.message || 'Sync failed');
+      setErrorMsg(res.message || 'Sync failed.');
     }
     setIsLoading(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-md bg-doom-900 border border-doom-border rounded-2xl p-6 md:p-8 shadow-2xl">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg hover:bg-doom-800 transition-colors"
-        >
-          <X size={18} />
-        </button>
-
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 mx-auto rounded-xl bg-doom-red flex items-center justify-center shadow-sm mb-3">
-            <Shield className="text-white" size={24} />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        className="ui-dialog-enter relative w-full max-w-md bg-[#101319] border border-white/12 rounded-2xl p-6 shadow-2xl space-y-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header Keyline */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 id="auth-modal-title" className="text-lg font-semibold text-white">
+              {user.isGuest
+                ? isRegistering
+                  ? 'Create Doomflix Account'
+                  : 'Sign In to Doomflix'
+                : 'Account & Cloud Sync'}
+            </h2>
+            <p className="text-xs text-slate-400 mt-1">
+              {user.isGuest
+                ? 'Sync watchlists, progress, badges, and quiz scores across devices.'
+                : `${user.username} (${user.email || 'Cloud synced'})`}
+            </p>
           </div>
-          <h3 className="font-cinematic text-3xl uppercase tracking-wider text-white">
-            {user.isGuest 
-              ? (isRegistering ? 'Create Doomflix Account' : 'Authenticate Operative') 
-              : 'Operative Credentials'}
-          </h3>
-          <p className="text-xs text-gray-400 mt-1 font-sans">
-            {user.isGuest
-              ? 'Save your watch progress, custom collections, and quiz stats across all your devices with cloud sync.'
-              : `Authenticated as ${user.username} (${user.email || 'Cloud Account'})`}
-          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg bg-white/[0.05] text-slate-300 hover:text-white flex items-center justify-center shrink-0"
+          >
+            <X size={16} aria-hidden="true" />
+          </button>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 bg-red-950/60 border border-red-800/80 rounded-lg text-xs text-red-200 flex items-center gap-2">
-            <AlertCircle size={14} className="shrink-0 text-red-400" />
+          <div
+            role="alert"
+            className="p-3 bg-rose-500/10 border border-rose-500/35 rounded-xl text-xs text-rose-200 flex items-center gap-2"
+          >
+            <AlertCircle size={14} className="shrink-0 text-rose-400" aria-hidden="true" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-xs text-emerald-200 flex items-center gap-2">
-            <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />
+          <div
+            role="status"
+            className="p-3 bg-emerald-500/10 border border-emerald-500/35 rounded-xl text-xs text-emerald-200 flex items-center gap-2"
+          >
+            <CheckCircle2 size={14} className="shrink-0 text-emerald-400" aria-hidden="true" />
             <span>{successMsg}</span>
           </div>
         )}
 
         {!user.isGuest ? (
-          // Authenticated User Panel
           <div className="space-y-4">
-            <div className="bg-doom-950 p-4 rounded-xl border border-doom-border space-y-2">
-              <div className="text-xs text-gray-400">Username</div>
-              <div className="text-sm font-semibold text-white">{user.username}</div>
-              <div className="text-xs text-gray-400 pt-2">Email / Auth ID</div>
-              <div className="text-sm font-mono text-gray-300">{user.email || user.id}</div>
+            <div className="bg-[#090a0f] p-4 rounded-xl border border-white/10 space-y-3 text-xs">
+              <div>
+                <div className="text-slate-400">Username</div>
+                <div className="text-sm font-medium text-white mt-0.5">{user.username}</div>
+              </div>
+              <div>
+                <div className="text-slate-400">Email</div>
+                <div className="text-sm font-mono text-slate-200 mt-0.5">
+                  {user.email || user.id}
+                </div>
+              </div>
             </div>
 
-            <button
-              onClick={handleManualSync}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 bg-doom-800 hover:bg-doom-750 border border-doom-border text-white text-xs py-2.5 rounded-lg font-semibold transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
-            >
-              <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-              <span>Sync All Progress to Cloud</span>
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={handleManualSync}
+                disabled={isLoading}
+                className="ui-press ui-focus h-9 w-full bg-white text-doom-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-2"
+              >
+                <RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} aria-hidden="true" />
+                <span>{isLoading ? 'Syncing...' : 'Sync Progress Now'}</span>
+              </button>
 
-            <button
-              onClick={() => {
-                logout();
-                onClose();
-              }}
-              className="w-full text-center text-xs text-red-400 hover:text-red-300 py-2 transition-colors font-medium"
-            >
-              Log Out (Revert to Guest Mode)
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  onClose();
+                }}
+                className="ui-press ui-press--on-dark ui-focus h-9 w-full rounded-xl text-xs font-medium text-rose-300 bg-rose-500/10 border border-rose-500/25"
+              >
+                Log Out
+              </button>
+            </div>
           </div>
         ) : (
-          // Login / Register Form
           <form onSubmit={handleSubmit} className="space-y-4">
             {isRegistering && (
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Operative Codename</label>
+                <label htmlFor="auth-username" className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Username
+                </label>
                 <input
+                  id="auth-username"
                   type="text"
                   required
-                  placeholder="e.g. CaptainDoom616"
+                  autoComplete="username"
+                  placeholder="CaptainDoom616"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-doom-950 border border-doom-border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-doom-red transition-colors"
+                  className="ui-field w-full h-10 bg-[#090a0f] border border-white/14 rounded-xl px-3.5 text-sm text-white placeholder:text-slate-500"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-gray-300 mb-1">Email Address</label>
+              <label htmlFor="auth-email" className="block text-xs font-medium text-slate-300 mb-1.5">
+                Email address
+              </label>
               <input
+                id="auth-email"
                 type="email"
                 required
-                placeholder="operative@marvel.com"
+                autoComplete="email"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-doom-950 border border-doom-border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-doom-red transition-colors"
+                className="ui-field w-full h-10 bg-[#090a0f] border border-white/14 rounded-xl px-3.5 text-sm text-white placeholder:text-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-300 mb-1">Security Passcode</label>
+              <label htmlFor="auth-password" className="block text-xs font-medium text-slate-300 mb-1.5">
+                Password
+              </label>
               <input
+                id="auth-password"
                 type="password"
                 required
+                autoComplete={isRegistering ? 'new-password' : 'current-password'}
                 placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-doom-950 border border-doom-border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-doom-red transition-colors"
+                className="ui-field w-full h-10 bg-[#090a0f] border border-white/14 rounded-xl px-3.5 text-sm text-white placeholder:text-slate-500"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-doom-red hover:bg-doom-red-bright text-white font-semibold py-2.5 rounded-lg text-sm transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm flex items-center justify-center gap-2 mt-2"
+              className="ui-press ui-focus h-10 w-full bg-white text-doom-950 font-semibold rounded-xl text-sm flex items-center justify-center gap-2"
             >
-              {isLoading ? (
-                <RefreshCw size={16} className="animate-spin" />
-              ) : isRegistering ? (
-                <>
-                  <UserPlus size={16} />
-                  <span>Register & Sync Guest Progress</span>
-                </>
-              ) : (
-                <>
-                  <LogIn size={16} />
-                  <span>Log In to Account</span>
-                </>
-              )}
+              {isLoading && <RefreshCw size={15} className="animate-spin" aria-hidden="true" />}
+              <span>
+                {isLoading
+                  ? isRegistering
+                    ? 'Creating account...'
+                    : 'Signing in...'
+                  : isRegistering
+                  ? 'Create account & sync'
+                  : 'Sign In'}
+              </span>
             </button>
 
-            <div className="text-center pt-2">
+            <div className="text-center pt-1">
               <button
                 type="button"
                 onClick={() => {
@@ -223,11 +262,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   setErrorMsg('');
                   setSuccessMsg('');
                 }}
-                className="text-xs text-doom-gold hover:underline"
+                className="ui-dim ui-focus text-xs text-emerald-400 hover:text-emerald-300 py-1 px-2 rounded-md"
               >
                 {isRegistering
-                  ? 'Already have an operative account? Log in'
-                  : 'New here? Create account to preserve watchlist across devices'}
+                  ? 'Already have an account? Sign in'
+                  : 'New here? Create an account'}
               </button>
             </div>
           </form>
