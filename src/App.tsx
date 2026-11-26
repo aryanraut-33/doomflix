@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useAppStore } from './services/store';
+import { initInteractionKit } from './lib/interactionKit';
 import { Sidebar, NavTab } from './components/common/Sidebar';
 import { MobileNav } from './components/common/MobileNav';
 import { AuthModal } from './components/common/AuthModal';
@@ -18,13 +19,17 @@ const AppContent: React.FC = () => {
   const [detailsModalTitle, setDetailsModalTitle] = useState<MarvelTitle | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    return initInteractionKit(document);
+  }, []);
+
   const handleSelectTab = (tab: NavTab) => {
     setCurrentTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-doom-950 text-gray-100 font-sans selection:bg-doom-emerald selection:text-white overflow-x-hidden">
+    <div className="relative flex flex-col min-h-screen bg-doom-950 text-slate-50 font-sans selection:bg-doom-emerald selection:text-doom-950 overflow-x-hidden">
       {/* 1. Primary Fixed Sidebar (Desktop only, hidden on mobile) */}
       <Sidebar
         currentTab={currentTab}
