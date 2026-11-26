@@ -4,195 +4,172 @@ import {
   CheckCircle2,
   ChevronRight,
   ChevronLeft,
-  HelpCircle,
-  ExternalLink,
-  ArrowRight
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalogue';
-import { ACHIEVEMENTS } from '../../data/achievements';
 import { useAppStore } from '../../services/store';
 import { CinematicImage } from '../common/CinematicImage';
 import { RotatingHeroPane } from './RotatingHeroPane';
 import { NavTab } from '../common/Sidebar';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Progress } from '../ui/progress';
-import { NumberTicker } from '../magicui/number-ticker';
-import { BorderBeam } from '../magicui/border-beam';
 
 interface CommandCentreProps {
   onSelectTab: (tab: NavTab) => void;
   onOpenTitleDetails: (title: MarvelTitle) => void;
 }
 
-export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpenTitleDetails }) => {
+export const CommandCentre: React.FC<CommandCentreProps> = ({
+  onSelectTab,
+  onOpenTitleDetails,
+}) => {
   const railRef = useRef<HTMLDivElement>(null);
 
   const scrollRail = (direction: 'left' | 'right') => {
     if (!railRef.current) return;
-    const scrollAmount = direction === 'left' ? -350 : 350;
+    const scrollAmount = direction === 'left' ? -360 : 360;
     railRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
 
   const {
     watchProgress,
-    updateWatchStatus,
     getSeriesEpisodeStats,
     overallStats,
-    unlockedAchievements,
   } = useAppStore();
 
-  // Find currently watching / in-progress titles
   const inProgressTitles = MARVEL_TITLES.filter(
-    t => watchProgress[t.id]?.status === 'in_progress'
+    (t) => watchProgress[t.id]?.status === 'in_progress'
   );
 
-  // Determine Recommended Next Title
-  const recommendedTitle: MarvelTitle = MARVEL_TITLES.find(
-    t => !watchProgress[t.id] || watchProgress[t.id].status === 'not_started'
-  ) || MARVEL_TITLES[0];
+  const recommendedTitle: MarvelTitle =
+    MARVEL_TITLES.find(
+      (t) => !watchProgress[t.id] || watchProgress[t.id].status === 'not_started'
+    ) || MARVEL_TITLES[0];
 
-  // Calculate phase breakdown metrics
-  const phaseStats = PHASE_ORDER.map(phaseName => {
-    const titlesInPhase = MARVEL_TITLES.filter(t => t.defaultPhaseGroup === phaseName);
-    const completedInPhase = titlesInPhase.filter(t => watchProgress[t.id]?.status === 'completed');
-    const percent = titlesInPhase.length > 0
-      ? Math.round((completedInPhase.length / titlesInPhase.length) * 100)
-      : 0;
+  const phaseStats = PHASE_ORDER.map((phaseName) => {
+    const titlesInPhase = MARVEL_TITLES.filter((t) => t.defaultPhaseGroup === phaseName);
+    const completedInPhase = titlesInPhase.filter(
+      (t) => watchProgress[t.id]?.status === 'completed'
+    );
+    const percent =
+      titlesInPhase.length > 0
+        ? Math.round((completedInPhase.length / titlesInPhase.length) * 100)
+        : 0;
     return {
       name: phaseName,
       total: titlesInPhase.length,
       completed: completedInPhase.length,
       percent,
-      titles: titlesInPhase
+      titles: titlesInPhase,
     };
   });
 
-  // Identify active operational phase
-  const activePhaseData = phaseStats.find(p => p.percent < 100) || phaseStats[0];
+  const activePhaseData = phaseStats.find((p) => p.percent < 100) || phaseStats[0];
 
   return (
     <div className="pb-16">
-      {/* 1. Full-Bleed Hero — no padding, edge-to-edge */}
+      {/* Full-Bleed Cinema Hero */}
       <RotatingHeroPane
         onSelectTab={onSelectTab}
         onOpenTitleDetails={onOpenTitleDetails}
       />
 
-      {/* Everything below hero gets constrained padding */}
-      <div className="px-4 sm:px-6 md:px-8 lg:pl-32 lg:pr-12 max-w-7xl mx-auto w-full space-y-8 sm:space-y-10 pt-6 sm:pt-10">
-
-        {/* 2. Numbered Phase Movies Sequence (Netflix Top-10 Style) */}
-        <section className="relative group/rail">
-          <div className="flex items-center justify-between mb-4 sm:mb-5">
-            <h2 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
+      <div className="px-4 sm:px-6 md:px-8 lg:pl-32 lg:pr-12 max-w-7xl mx-auto w-full space-y-10 pt-8 sm:pt-10">
+        {/* Phase Sequence Rail */}
+        <section className="relative">
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
               {activePhaseData.name.split('—')[1]?.trim() || activePhaseData.name}
             </h2>
-            <div className="flex items-center gap-3">
+
+            <div className="flex items-center gap-2 shrink-0">
               <button
+                type="button"
                 onClick={() => onSelectTab('watchlist')}
-                className="text-xs text-gray-400 hover:text-white font-medium flex items-center gap-1 transition-colors mr-1"
+                className="ui-dim ui-focus h-8 px-2.5 rounded-lg text-xs text-slate-300 hover:text-white font-medium inline-flex items-center gap-1"
               >
-                View all <ChevronRight size={14} />
+                <span>View all</span>
+                <ChevronRight size={14} className="ui-icon-nudge" aria-hidden="true" />
               </button>
 
               <div className="hidden sm:flex items-center gap-1.5">
                 <button
+                  type="button"
                   onClick={() => scrollRail('left')}
-                  className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-[background-color,color] duration-150 ease-out cursor-pointer active:scale-[0.96]"
+                  className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-slate-200"
                   aria-label="Scroll left"
                   title="Previous titles"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={15} aria-hidden="true" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => scrollRail('right')}
-                  className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-[background-color,color] duration-150 ease-out cursor-pointer active:scale-[0.96]"
+                  className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-slate-200"
                   aria-label="Scroll right"
                   title="Next titles"
                 >
-                  <ChevronRight size={16} />
+                  <ChevronRight size={15} aria-hidden="true" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Left / Right Hover Buttons for desktop rail */}
-          <button
-            onClick={() => scrollRail('left')}
-            className="hidden lg:flex absolute left-0 top-1/2 translate-y-2 z-20 w-9 h-9 rounded-full bg-black/80 hover:bg-black border border-white/20 text-white items-center justify-center shadow-xl opacity-0 group-hover/rail:opacity-100 transition-opacity duration-200 ease-out cursor-pointer active:scale-[0.96]"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={() => scrollRail('right')}
-            className="hidden lg:flex absolute right-0 top-1/2 translate-y-2 z-20 w-9 h-9 rounded-full bg-black/80 hover:bg-black border border-white/20 text-white items-center justify-center shadow-xl opacity-0 group-hover/rail:opacity-100 transition-opacity duration-200 ease-out cursor-pointer active:scale-[0.96]"
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={18} />
-          </button>
-
-          {/* Horizontal Scrolling Rail with Giant Netflix Outlined Numbers */}
           <div
             ref={railRef}
-            className="flex items-end gap-6 sm:gap-10 overflow-x-auto pb-4 scrollbar-none no-scrollbar pl-4 sm:pl-8 scroll-smooth"
+            className="scroll-fade-x flex items-end gap-6 sm:gap-9 overflow-x-auto pb-3 pt-1 pl-3 sm:pl-6 pr-8 scrollbar-none no-scrollbar scroll-smooth"
           >
             {activePhaseData.titles.map((title, idx) => {
               const rank = idx + 1;
               const isWatched = watchProgress[title.id]?.status === 'completed';
-              const isWatching = watchProgress[title.id]?.status === 'in_progress';
-              const streamInfo = title.streamingIndia?.[0];
 
               return (
-                <div
+                <button
                   key={title.id}
+                  type="button"
                   onClick={() => onOpenTitleDetails(title)}
-                  className="group relative flex items-end shrink-0 cursor-pointer select-none transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-[0.96] will-change-transform"
+                  aria-label={`#${rank} ${title.title} (${title.releaseYear})`}
+                  className="ui-press ui-press--surface ui-press--on-dark ui-focus group relative flex items-end shrink-0 text-left rounded-xl p-1"
                 >
-                  {/* Giant Hollow Ranking Number positioned prominently on the left */}
                   <div className="netflix-rank-number shrink-0 z-0 pointer-events-none select-none">
                     {rank}
                   </div>
 
-                  {/* Movie Poster Card slightly overlapping the number on the right */}
-                  <div className="-ml-1 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/30 z-10 bg-doom-950 transition-[border-color] duration-200 ease-out shadow-xl">
+                  <div className="-ml-1.5 sm:-ml-2 relative w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 group-hover:border-white/25 z-10 bg-[#0f131b] transition-[border-color] duration-200 shadow-lg">
                     <CinematicImage
                       src={title.posterPath}
                       alt={title.title}
                       fallbackTitle={title.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
 
-                    {/* Status Badge */}
                     {isWatched && (
-                      <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center">
-                        <CheckCircle2 size={12} />
-                      </div>
+                      <span
+                        aria-label="Watched"
+                        className="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-500 text-doom-950 flex items-center justify-center"
+                      >
+                        <CheckCircle2 size={12} aria-hidden="true" />
+                      </span>
                     )}
 
-                    {/* Title & metadata */}
                     <div className="absolute bottom-0 inset-x-0 p-3">
                       <h4 className="text-sm font-semibold text-white leading-tight line-clamp-1">
                         {title.title}
                       </h4>
-                      <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-1">
-                        <span>{title.releaseYear}</span>
-                      </div>
+                      <span className="block text-[11px] text-slate-300 font-mono tabular-nums mt-1">
+                        {title.releaseYear}
+                      </span>
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
         </section>
 
-        {/* 3. Continue Watching */}
+        {/* Continue Watching */}
         {inProgressTitles.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
                 Continue Watching
               </h2>
             </div>
@@ -201,104 +178,109 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
               {inProgressTitles.map((title) => {
                 const epStats = title.mediaType === 'tv' ? getSeriesEpisodeStats(title.id) : null;
                 return (
-                  <div
+                  <button
                     key={title.id}
+                    type="button"
                     onClick={() => onOpenTitleDetails(title)}
-                    className="group relative rounded-lg overflow-hidden border border-white/10 hover:border-white/25 cursor-pointer transition-[border-color] duration-200 ease-out bg-doom-950 active:scale-[0.98]"
+                    className="ui-press ui-press--surface ui-press--on-dark ui-focus group text-left rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 bg-[#0f131b] p-2"
                   >
-                    <div className="relative aspect-video overflow-hidden">
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-doom-950">
                       <CinematicImage
                         src={title.backdropPath || title.posterPath}
                         alt={title.title}
                         fallbackTitle={title.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-doom-950 to-transparent" />
-
-                      <button className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white text-doom-950 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 active:scale-[0.96]">
-                        <Play size={14} fill="currentColor" className="ml-px" />
-                      </button>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+                      <span className="absolute bottom-2.5 right-2.5 w-8 h-8 rounded-full bg-white text-doom-950 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                        <Play size={13} fill="currentColor" className="ml-px" aria-hidden="true" />
+                      </span>
                     </div>
 
-                    <div className="p-3">
+                    <div className="pt-2.5 px-1 pb-1">
                       <h4 className="text-sm font-medium text-white truncate">{title.title}</h4>
                       {epStats && (
                         <div className="mt-2">
-                          <div className="w-full bg-white/10 h-0.5 rounded-full overflow-hidden">
+                          <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-emerald-500 rounded-full"
                               style={{ width: `${epStats.percentage}%` }}
                             />
                           </div>
-                          <p className="text-[10px] text-gray-500 mt-1 tabular-nums">{epStats.watched}/{epStats.total} episodes</p>
+                          <p className="text-[11px] text-slate-400 font-mono tabular-nums mt-1">
+                            {epStats.watched}/{epStats.total} episodes
+                          </p>
                         </div>
                       )}
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </section>
         )}
 
-        {/* 4. Up Next — Subtle & Compact */}
+        {/* Up Next Strip */}
         {(() => {
           const recStream = recommendedTitle.streamingIndia?.[0];
           const recStreamUrl = recStream?.directUrl || recStream?.searchUrl;
 
           return (
-            <section className="relative rounded-xl overflow-hidden border border-white/5 bg-white/[0.02] hover:border-white/10 transition-colors p-3 sm:p-4">
+            <section className="rounded-2xl border border-white/10 bg-[#0f131b] p-3 sm:p-4">
               <div className="flex items-center gap-3 sm:gap-4">
-                {/* Small compact poster thumbnail */}
-                <div
+                <button
+                  type="button"
                   onClick={() => onOpenTitleDetails(recommendedTitle)}
-                  className="w-14 sm:w-16 aspect-[2/3] shrink-0 rounded-lg overflow-hidden bg-doom-950 cursor-pointer border border-white/10 shadow-sm"
+                  aria-label={`Inspect ${recommendedTitle.title}`}
+                  className="ui-press ui-press--on-dark ui-focus w-14 sm:w-16 aspect-[2/3] shrink-0 rounded-lg overflow-hidden bg-doom-950 border border-white/10"
                 >
                   <CinematicImage
                     src={recommendedTitle.posterPath}
                     alt={recommendedTitle.title}
                     fallbackTitle={recommendedTitle.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover"
                   />
-                </div>
+                </button>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400 font-mono">Up Next</span>
-                    <span className="text-gray-600 text-xs">•</span>
-                    <span className="text-[11px] text-gray-400 font-mono">{recommendedTitle.releaseYear} • {recommendedTitle.mediaType === 'tv' ? 'Series' : `${recommendedTitle.runtime}m`}</span>
+                  <div className="flex items-center gap-2 text-[11px] font-mono tabular-nums mb-0.5">
+                    <span className="font-semibold text-emerald-400">Up Next</span>
+                    <span aria-hidden="true" className="text-slate-600">/</span>
+                    <span className="text-slate-400">
+                      {recommendedTitle.releaseYear} ·{' '}
+                      {recommendedTitle.mediaType === 'tv'
+                        ? 'Series'
+                        : `${recommendedTitle.runtime}m`}
+                    </span>
                   </div>
 
-                  <h3
-                    onClick={() => onOpenTitleDetails(recommendedTitle)}
-                    className="text-sm sm:text-base font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors"
-                  >
+                  <h3 className="text-sm sm:text-base font-semibold text-white truncate">
                     {recommendedTitle.title}
                   </h3>
 
-                  <p className="text-xs text-gray-400 line-clamp-1 max-w-xl mt-0.5 font-sans hidden sm:block">
+                  <p className="text-xs text-slate-400 line-clamp-1 max-w-xl mt-0.5 hidden sm:block">
                     {recommendedTitle.synopsis}
                   </p>
                 </div>
 
-                {/* Compact Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   {recStreamUrl && (
                     <a
                       href={recStreamUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white text-doom-950 px-3 py-1.5 rounded-lg font-semibold text-xs transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm"
+                      className="ui-press ui-focus h-8 inline-flex items-center gap-1.5 bg-white text-doom-950 px-3 rounded-lg font-semibold text-xs"
                       title={`Stream ${recommendedTitle.title}`}
                     >
-                      <Play size={12} fill="currentColor" className="ml-px" />
+                      <Play size={13} fill="currentColor" className="ml-px" aria-hidden="true" />
                       <span className="hidden sm:inline">Watch</span>
                     </a>
                   )}
 
                   <button
+                    type="button"
                     onClick={() => onOpenTitleDetails(recommendedTitle)}
-                    className="px-2.5 py-1.5 rounded-lg text-xs text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.96]"
+                    className="ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-lg text-xs font-medium text-slate-200 hover:text-white bg-white/[0.06] border border-white/12 inline-flex items-center justify-center"
                   >
                     Info
                   </button>
@@ -308,13 +290,13 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
           );
         })()}
 
-        {/* 5. Phase Progress — compact */}
+        {/* Phase Progress */}
         <section>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
               Your Progress
             </h2>
-            <span className="text-xs text-gray-500 font-mono tabular-nums">
+            <span className="text-xs text-slate-400 font-mono tabular-nums">
               {overallStats.completedCount}/{overallStats.totalTitles} watched
             </span>
           </div>
@@ -323,47 +305,63 @@ export const CommandCentre: React.FC<CommandCentreProps> = ({ onSelectTab, onOpe
             {phaseStats.map((phase, idx) => {
               const isActive = phase.name === activePhaseData.name;
               return (
-                <div
+                <button
                   key={idx}
+                  type="button"
                   onClick={() => onSelectTab('watchlist')}
-                  className={`p-4 rounded-lg border cursor-pointer transition-[border-color,background-color] duration-150 ease-out active:scale-[0.98] ${isActive
-                    ? 'border-emerald-500/40 bg-emerald-950/10'
-                    : 'border-white/5 bg-white/[0.02] hover:border-white/10'
-                    }`}
+                  className={`ui-press ui-press--surface ui-press--on-dark ui-focus text-left p-4 rounded-xl border ${
+                    isActive
+                      ? 'border-emerald-500/40 bg-emerald-950/15'
+                      : 'border-white/10 bg-[#0f131b] hover:border-white/20'
+                  }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-white truncate pr-2">
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <span className="text-sm font-medium text-white truncate">
                       {phase.name.split('—')[1]?.trim() || phase.name}
                     </span>
-                    <span className="text-xs text-gray-500 font-mono shrink-0 tabular-nums">
+                    <span className="text-xs text-slate-400 font-mono shrink-0 tabular-nums">
                       {phase.completed}/{phase.total}
                     </span>
                   </div>
-                  <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                  <div className="w-full bg-white/[0.08] h-1 rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-[width,background-color] duration-300 ease-out ${phase.percent === 100 ? 'bg-emerald-500' : isActive ? 'bg-emerald-500' : 'bg-gray-600'
-                        }`}
+                      className={`h-full rounded-full transition-[width,background-color] duration-300 ease-out ${
+                        phase.percent === 100
+                          ? 'bg-emerald-400'
+                          : isActive
+                          ? 'bg-emerald-500'
+                          : 'bg-slate-500'
+                      }`}
                       style={{ width: `${phase.percent}%` }}
                     />
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
         </section>
 
-        {/* 6. Quiz callout — simple */}
-        <section
-          onClick={() => onSelectTab('quiz')}
-          className="p-6 rounded-lg border border-white/5 bg-white/[0.02] hover:border-white/10 cursor-pointer transition-[border-color] duration-150 ease-out flex items-center justify-between group active:scale-[0.996]"
-        >
-          <div>
-            <h3 className="text-lg font-semibold text-white">Test Your Knowledge</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Spoiler-safe quizzes based on what you've watched.
-            </p>
-          </div>
-          <ChevronRight size={20} className="text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-[color,transform] duration-150 ease-out" />
+        {/* Lore Quiz Entry */}
+        <section>
+          <button
+            type="button"
+            onClick={() => onSelectTab('quiz')}
+            className="ui-press ui-press--surface ui-press--on-dark ui-focus w-full p-5 sm:p-6 rounded-2xl border border-white/10 bg-[#0f131b] hover:border-white/20 flex items-center justify-between text-left"
+          >
+            <div>
+              <h3 className="text-base sm:text-lg font-semibold text-white">
+                Lore Challenge
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+                Questions filtered strictly to titles you have watched.
+              </p>
+            </div>
+            <ChevronRight
+              size={18}
+              className="ui-icon-nudge text-slate-400 shrink-0"
+              aria-hidden="true"
+            />
+          </button>
         </section>
       </div>
     </div>
