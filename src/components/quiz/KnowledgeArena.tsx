@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  HelpCircle,
   ShieldCheck,
   AlertTriangle,
   Clock,
   CheckCircle2,
   XCircle,
   RotateCcw,
-  Sparkles,
-  Flame,
   Award,
   ChevronRight,
   ArrowRight,
   BookOpen,
-  Filter
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { QUIZ_QUESTIONS, QUIZ_CATEGORIES, QuizQuestion } from '../../data/quizBank';
@@ -22,70 +18,51 @@ import { useAppStore } from '../../services/store';
 export const KnowledgeArena: React.FC = () => {
   const { watchProgress, isEpisodeWatched, recordQuizAttempt } = useAppStore();
 
-  // Screen State: 'lobby' | 'playing' | 'results'
   const [gameState, setGameState] = useState<'lobby' | 'playing' | 'results'>('lobby');
-
-  // Configuration
   const [quizMode, setQuizMode] = useState<'watched_only' | 'full_collection'>('watched_only');
   const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
   const [difficulty, setDifficulty] = useState<'all' | 'beginner' | 'intermediate' | 'expert'>('all');
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [timerEnabled, setTimerEnabled] = useState<boolean>(true);
 
-  // Active Play State
   const [activeQuestions, setActiveQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState<boolean>(false);
   const [timerSeconds, setTimerSeconds] = useState<number>(20);
   const [score, setScore] = useState<number>(0);
-  const [answersLog, setAnswersLog] = useState<Array<{
-    question: QuizQuestion;
-    selected: string;
-    isCorrect: boolean;
-  }>>([]);
+  const [answersLog, setAnswersLog] = useState<
+    Array<{
+      question: QuizQuestion;
+      selected: string;
+      isCorrect: boolean;
+    }>
+  >([]);
 
-  // Mode A: Watched Titles & Episodes Filtering for strict spoiler protection
   const watchedMovieIds = useMemo(() => {
     return Object.values(watchProgress)
-      .filter(p => p.status === 'completed' || p.status === 'in_progress')
-      .map(p => p.movieId);
+      .filter((p) => p.status === 'completed' || p.status === 'in_progress')
+      .map((p) => p.movieId);
   }, [watchProgress]);
 
-  // Available Questions Pool based on config
   const availableQuestions = useMemo(() => {
-    return QUIZ_QUESTIONS.filter(q => {
-      // Spoiler Protection in Mode A
+    return QUIZ_QUESTIONS.filter((q) => {
       if (quizMode === 'watched_only') {
         const isWatched = watchedMovieIds.includes(q.relatedMovieId);
         if (!isWatched) return false;
-
-        // If it specifies a spoiler episode, check if user has watched it
         if (q.spoilerSeason && q.spoilerEpisode) {
           const epWatched = isEpisodeWatched(q.relatedMovieId, q.spoilerSeason, q.spoilerEpisode);
           if (!epWatched) return false;
         }
       }
-
-      // Category Filter
-      if (selectedCategory !== 'All Categories' && q.category !== selectedCategory) {
-        return false;
-      }
-
-      // Difficulty Filter
-      if (difficulty !== 'all' && q.difficulty !== difficulty) {
-        return false;
-      }
-
+      if (selectedCategory !== 'All Categories' && q.category !== selectedCategory) return false;
+      if (difficulty !== 'all' && q.difficulty !== difficulty) return false;
       return true;
     });
   }, [quizMode, selectedCategory, difficulty, watchedMovieIds, isEpisodeWatched]);
 
-  // Start Quiz
   const handleStartQuiz = () => {
     if (availableQuestions.length === 0) return;
-
-    // Shuffle and slice
     const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
     const count = Math.min(questionCount, shuffled.length);
     setActiveQuestions(shuffled.slice(0, count));
@@ -98,74 +75,58 @@ export const KnowledgeArena: React.FC = () => {
     setGameState('playing');
   };
 
-  // Timer Countdown in Playing State
   useEffect(() => {
     if (gameState !== 'playing' || !timerEnabled || isAnswerSubmitted) return;
-
     if (timerSeconds <= 0) {
-      // Time expired: auto-submit as incorrect
       handleSubmitAnswer('__TIMEOUT__');
       return;
     }
-
     const timer = setInterval(() => {
-      setTimerSeconds(prev => prev - 1);
+      setTimerSeconds((prev) => prev - 1);
     }, 1000);
-
     return () => clearInterval(timer);
   }, [gameState, timerEnabled, timerSeconds, isAnswerSubmitted]);
 
-  // Handle Option Click
   const handleSelectOption = (option: string) => {
     if (isAnswerSubmitted) return;
     setSelectedAnswer(option);
   };
 
-  // Submit Answer
   const handleSubmitAnswer = (chosen = selectedAnswer) => {
     if (isAnswerSubmitted) return;
-
     const currentQ = activeQuestions[currentIndex];
     const isCorrect = chosen === currentQ.correctAnswer;
+    if (isCorrect) setScore((prev) => prev + 1);
 
-    if (isCorrect) {
-      setScore(prev => prev + 1);
-    }
-
-    setAnswersLog(prev => [
+    setAnswersLog((prev) => [
       ...prev,
       {
         question: currentQ,
-        selected: chosen || '__NO_ANSWER__',
-        isCorrect
-      }
+        selected: chosen || 'No answer',
+        isCorrect,
+      },
     ]);
-
     setIsAnswerSubmitted(true);
   };
 
-  // Next Question
   const handleNextQuestion = () => {
     if (currentIndex + 1 < activeQuestions.length) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
       setSelectedAnswer(null);
       setIsAnswerSubmitted(false);
       setTimerSeconds(20);
     } else {
-      // Quiz Finished!
       finishQuiz();
     }
   };
 
-  // Finish Quiz and calculate analytics
   const finishQuiz = () => {
-    const finalScore = score + (selectedAnswer === activeQuestions[currentIndex]?.correctAnswer ? 1 : 0);
+    const finalScore = score;
     const total = activeQuestions.length;
     const percentage = total > 0 ? Math.round((finalScore / total) * 100) : 0;
 
-    // Identify weak topics
     const categoryFails: Record<string, number> = {};
-    answersLog.forEach(log => {
+    answersLog.forEach((log) => {
       if (!log.isCorrect) {
         categoryFails[log.question.category] = (categoryFails[log.question.category] || 0) + 1;
       }
@@ -182,17 +143,17 @@ export const KnowledgeArena: React.FC = () => {
       score: finalScore,
       totalQuestions: total,
       percentage,
-      weakTopics
+      weakTopics,
     });
 
     if (percentage >= 80) {
       try {
         confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
+          particleCount: 80,
+          spread: 65,
+          origin: { y: 0.6 },
         });
-      } catch { }
+      } catch {}
     }
 
     setGameState('results');
@@ -201,84 +162,93 @@ export const KnowledgeArena: React.FC = () => {
   const currentQ = activeQuestions[currentIndex];
 
   return (
-    <div className="space-y-8 pb-20">
-      {/* ==================================================== */}
-      {/* 1. LOBBY & CONFIGURATION SCREEN */}
-      {/* ==================================================== */}
+    <div className="space-y-6 pb-20 max-w-4xl mx-auto">
+      {/* 1. LOBBY SCREEN */}
       {gameState === 'lobby' && (
-        <div className="space-y-8">
-          {/* Header Banner */}
-          <div className="doom-glass-panel rounded-3xl p-6 md:p-8 border border-white/10 shadow-card">
-            <div className="max-w-2xl space-y-2">
-              <h2 className="font-cinematic text-3xl sm:text-5xl text-white uppercase tracking-wider">
-                Marvel Lore Quiz
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed">
-                Test your knowledge of the Marvel Cinematic Universe with spoiler-safe questions.
-              </p>
-            </div>
+        <div className="space-y-6">
+          <div className="pb-4 border-b border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+              Lore Quiz
+            </h1>
+            <span className="text-xs font-mono tabular-nums text-slate-400">
+              {availableQuestions.length} matching questions
+            </span>
           </div>
 
-          {/* Configuration Card */}
-          <div className="doom-glass rounded-3xl p-6 md:p-8 border border-white/10 space-y-6 shadow-card">
-            {/* Mode Selector */}
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">
-                Spoiler Protection
-              </label>
+          <div className="bg-[#0f131b] rounded-2xl p-5 sm:p-6 border border-white/10 space-y-6">
+            {/* Spoiler Mode */}
+            <div className="space-y-2.5">
+              <span className="block text-xs font-medium text-slate-300">
+                Spoiler Filter
+              </span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div
+                <button
+                  type="button"
                   onClick={() => setQuizMode('watched_only')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-[border-color,background-color,box-shadow] duration-200 ease-out ${quizMode === 'watched_only'
-                    ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
-                    : 'bg-white/[0.02] border-white/5 hover:border-white/15'
-                    }`}
+                  aria-pressed={quizMode === 'watched_only'}
+                  className={`ui-press ui-press--surface ui-press--on-dark ui-focus p-4 rounded-xl border text-left ${
+                    quizMode === 'watched_only'
+                      ? 'bg-emerald-500/10 border-emerald-500/45'
+                      : 'bg-white/[0.02] border-white/10 hover:border-white/20'
+                  }`}
                 >
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <ShieldCheck size={18} className="text-emerald-400" />
-                    <span className="font-semibold text-sm text-white">
-                      Watched Titles Only (Zero Spoilers)
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="inline-flex items-center gap-2 font-semibold text-sm text-white">
+                      <ShieldCheck size={16} className="text-emerald-400 shrink-0" aria-hidden="true" />
+                      <span>Watched Titles Only</span>
                     </span>
+                    {quizMode === 'watched_only' && (
+                      <CheckCircle2 size={15} className="text-emerald-400 shrink-0" aria-hidden="true" />
+                    )}
                   </div>
-                  <p className="text-xs text-gray-400 font-sans leading-relaxed">
-                    Questions are exclusively from movies and series you have watched.
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Restricts questions to titles and episodes marked as watched or watching.
                   </p>
-                </div>
+                </button>
 
-                <div
+                <button
+                  type="button"
                   onClick={() => setQuizMode('full_collection')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-[border-color,background-color,box-shadow] duration-200 ease-out ${quizMode === 'full_collection'
-                    ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
-                    : 'bg-white/[0.02] border-white/5 hover:border-white/15'
-                    }`}
+                  aria-pressed={quizMode === 'full_collection'}
+                  className={`ui-press ui-press--surface ui-press--on-dark ui-focus p-4 rounded-xl border text-left ${
+                    quizMode === 'full_collection'
+                      ? 'bg-emerald-500/10 border-emerald-500/45'
+                      : 'bg-white/[0.02] border-white/10 hover:border-white/20'
+                  }`}
                 >
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <AlertTriangle size={18} className="text-amber-400" />
-                    <span className="font-semibold text-sm text-white">
-                      All Titles (Full Multiverse)
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="inline-flex items-center gap-2 font-semibold text-sm text-white">
+                      <AlertTriangle size={16} className="text-amber-400 shrink-0" aria-hidden="true" />
+                      <span>All Titles (Full Multiverse)</span>
                     </span>
+                    {quizMode === 'full_collection' && (
+                      <CheckCircle2 size={15} className="text-emerald-400 shrink-0" aria-hidden="true" />
+                    )}
                   </div>
-                  <p className="text-xs text-gray-400 font-sans leading-relaxed">
-                    Questions from all Marvel Cinematic Universe titles.
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Includes all phases and titles regardless of your watch progress.
                   </p>
-                </div>
+                </button>
               </div>
             </div>
 
-            {/* Category Selector */}
-            <div className="space-y-2">
-              <label className="block text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold">
-                Lore Category
-              </label>
+            {/* Categories */}
+            <div className="space-y-2.5">
+              <span className="block text-xs font-medium text-slate-300">
+                Category
+              </span>
               <div className="flex flex-wrap gap-2">
-                {QUIZ_CATEGORIES.map(cat => (
+                {QUIZ_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
+                    type="button"
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] ${selectedCategory === cat
-                      ? 'bg-doom-gold text-doom-950 font-bold shadow-md'
-                      : 'bg-doom-950 text-gray-400 hover:text-white border border-doom-border'
-                      }`}
+                    aria-pressed={selectedCategory === cat}
+                    className={`ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-full text-xs font-medium border ${
+                      selectedCategory === cat
+                        ? 'bg-white text-doom-950 font-semibold border-white'
+                        : 'bg-white/[0.03] text-slate-300 hover:text-white border-white/12'
+                    }`}
                   >
                     {cat}
                   </button>
@@ -286,16 +256,17 @@ export const KnowledgeArena: React.FC = () => {
               </div>
             </div>
 
-            {/* Difficulty, Question Count, and Timer */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            {/* Parameters Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
               <div>
-                <label className="block text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold mb-1.5">
+                <label htmlFor="quiz-difficulty" className="block text-xs font-medium text-slate-300 mb-1.5">
                   Difficulty
                 </label>
                 <select
+                  id="quiz-difficulty"
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value as any)}
-                  className="w-full bg-doom-950 border border-doom-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-doom-red"
+                  className="doom-select ui-field h-9 w-full border border-white/14 rounded-xl px-3 text-xs text-white"
                 >
                   <option value="all">Mixed Difficulties</option>
                   <option value="beginner">Beginner (Recruit)</option>
@@ -305,18 +276,21 @@ export const KnowledgeArena: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold mb-1.5">
+                <span className="block text-xs font-medium text-slate-300 mb-1.5">
                   Question Count
-                </label>
-                <div className="flex gap-2">
-                  {[5, 10, 15, 20].map(cnt => (
+                </span>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[5, 10, 15, 20].map((cnt) => (
                     <button
                       key={cnt}
+                      type="button"
                       onClick={() => setQuestionCount(cnt)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] border ${questionCount === cnt
-                        ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white border-doom-emerald/40 shadow-sm'
-                        : 'bg-doom-950 text-gray-400 border-border hover:text-white'
-                        }`}
+                      aria-pressed={questionCount === cnt}
+                      className={`ui-press ui-press--on-dark ui-focus h-9 rounded-xl text-xs font-mono font-semibold tabular-nums border ${
+                        questionCount === cnt
+                          ? 'bg-emerald-500 text-doom-950 border-emerald-400'
+                          : 'bg-[#090a0f] text-slate-300 border-white/14 hover:text-white'
+                      }`}
                     >
                       {cnt}
                     </button>
@@ -325,166 +299,183 @@ export const KnowledgeArena: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-marvel uppercase tracking-wider text-gray-400 font-bold mb-1.5">
-                  Response Timer (20s)
-                </label>
+                <span className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Response Timer
+                </span>
                 <button
+                  type="button"
+                  role="switch"
+                  aria-checked={timerEnabled}
                   onClick={() => setTimerEnabled(!timerEnabled)}
-                  className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.96] ${timerEnabled
-                    ? 'bg-doom-950 border-doom-emerald text-doom-emerald'
-                    : 'bg-doom-950 border-border text-gray-500'
-                    }`}
+                  className={`ui-press ui-press--on-dark ui-focus w-full h-9 px-3 rounded-xl text-xs font-medium flex items-center justify-center gap-2 border ${
+                    timerEnabled
+                      ? 'bg-emerald-500/12 border-emerald-500/40 text-emerald-300'
+                      : 'bg-[#090a0f] border-white/14 text-slate-400'
+                  }`}
                 >
-                  <Clock size={14} />
-                  <span>{timerEnabled ? '20s Timer Enabled' : 'Untimed Relaxed'}</span>
+                  <Clock size={14} aria-hidden="true" />
+                  <span>{timerEnabled ? '20s per question' : 'Untimed'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Pool availability status & Launch */}
-            <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-xs text-gray-400 font-mono">
-                Available Questions in Pool: <strong className="text-white tabular-nums">{availableQuestions.length}</strong>
+            {/* Launch Bar */}
+            <div className="pt-4 border-t border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="text-xs text-slate-400">
+                <span>
+                  Question pool:{' '}
+                  <strong className="text-white font-mono tabular-nums">
+                    {availableQuestions.length}
+                  </strong>
+                </span>
                 {quizMode === 'watched_only' && watchedMovieIds.length === 0 && (
-                  <span className="text-doom-red ml-2 font-sans">
-                    (You have not marked any titles watched yet! Switch to Mode B or check off watched titles)
-                  </span>
+                  <p className="text-amber-300 mt-1">
+                    No watched titles recorded yet. Switch to All Titles or mark titles watched.
+                  </p>
                 )}
               </div>
 
               <button
+                type="button"
                 onClick={handleStartQuiz}
                 disabled={availableQuestions.length === 0}
-                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-[filter,transform] duration-150 ease-out shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02] active:scale-[0.96]"
+                className="ui-press ui-focus h-10 w-full sm:w-auto bg-white text-doom-950 px-6 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center justify-center gap-2 shrink-0"
               >
                 <span>Enter Arena</span>
-                <ChevronRight size={18} />
+                <ChevronRight size={15} className="ui-icon-nudge" aria-hidden="true" />
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ==================================================== */}
-      {/* 2. ACTIVE QUIZ PLAYING SCREEN */}
-      {/* ==================================================== */}
+      {/* 2. ACTIVE QUESTION SCREEN */}
       {gameState === 'playing' && currentQ && (
-        <div className="max-w-3xl mx-auto space-y-6">
-          {/* Status Header */}
-          <div className="flex items-center justify-between bg-doom-950/90 border border-doom-border p-4 rounded-2xl">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-mono font-bold text-doom-gold tabular-nums">
-                QUESTION {currentIndex + 1} OF {activeQuestions.length}
+        <div className="max-w-3xl mx-auto space-y-5">
+          <div className="flex items-center justify-between bg-[#0f131b] border border-white/10 p-4 rounded-2xl">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-xs font-mono font-semibold text-emerald-400 tabular-nums">
+                Question {currentIndex + 1} / {activeQuestions.length}
               </span>
-              <span className="text-[10px] bg-doom-900 text-gray-300 border border-doom-border px-2 py-0.5 rounded font-mono uppercase">
+              <span className="text-[11px] bg-white/[0.06] text-slate-200 border border-white/10 px-2 py-0.5 rounded-md">
                 {currentQ.category}
               </span>
-              <span className="text-[10px] text-gray-500 font-mono uppercase">
+              <span className="text-[11px] text-slate-400 capitalize">
                 {currentQ.difficulty}
               </span>
             </div>
 
-            {/* Timer */}
             {timerEnabled && (
-              <div className={`flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-full border ${timerSeconds <= 5
-                ? 'bg-red-950 border-red-500 text-red-400 animate-pulse'
-                : 'bg-doom-900 border-doom-border text-gray-300'
-                }`}>
-                <Clock size={13} />
-                <span className="tabular-nums">{timerSeconds}s</span>
+              <div
+                aria-live="off"
+                className={`inline-flex items-center gap-1.5 font-mono text-xs px-3 h-7 rounded-full border tabular-nums ${
+                  timerSeconds <= 5
+                    ? 'bg-rose-500/15 border-rose-500/50 text-rose-300'
+                    : 'bg-white/[0.05] border-white/12 text-slate-200'
+                }`}
+              >
+                <Clock size={12} aria-hidden="true" />
+                <span>{timerSeconds}s</span>
               </div>
             )}
           </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden">
+          <div className="w-full bg-white/[0.08] h-1 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald transition-[width] duration-300 ease-out"
+              className="h-full bg-emerald-500 transition-[width] duration-300 ease-out"
               style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
             />
           </div>
 
-          {/* Question Box */}
-          <div className="doom-metallic-card rounded-3xl p-6 md:p-8 border border-border space-y-6 shadow-card">
-            <h3 className="font-marvel text-2xl md:text-3xl text-white font-bold tracking-wide leading-relaxed">
+          <div className="bg-[#0f131b] rounded-2xl p-5 sm:p-7 border border-white/10 space-y-5">
+            <h2 className="text-lg sm:text-xl font-semibold text-white leading-snug">
               {currentQ.question}
-            </h3>
+            </h2>
 
-            {/* Options */}
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {currentQ.options.map((option, idx) => {
                 const isSelected = selectedAnswer === option;
                 const isCorrect = option === currentQ.correctAnswer;
 
-                let optionClasses = 'bg-doom-950/80 border-border hover:border-white/20 text-gray-200';
+                let optionClasses =
+                  'bg-[#090a0f] border-white/12 hover:border-white/25 text-slate-200';
 
                 if (isAnswerSubmitted) {
                   if (isCorrect) {
-                    optionClasses = 'bg-emerald-950/80 border-doom-emerald text-emerald-200 font-bold shadow-[0_0_15px_rgba(16,185,129,0.15)]';
+                    optionClasses =
+                      'bg-emerald-500/15 border-emerald-500/50 text-emerald-200 font-semibold';
                   } else if (isSelected && !isCorrect) {
-                    optionClasses = 'bg-red-950/80 border-red-500 text-red-200 line-through';
+                    optionClasses =
+                      'bg-rose-500/15 border-rose-500/50 text-rose-200 line-through';
                   } else {
-                    optionClasses = 'bg-doom-950/40 border-border/40 text-gray-600';
+                    optionClasses = 'bg-[#090a0f]/50 border-white/[0.06] text-slate-500';
                   }
                 } else if (isSelected) {
-                  optionClasses = 'bg-doom-emerald/10 border-doom-emerald text-white font-semibold shadow-[0_0_15px_rgba(16,185,129,0.15)]';
+                  optionClasses =
+                    'bg-emerald-500/12 border-emerald-400 text-white font-semibold';
                 }
 
                 return (
                   <button
                     key={idx}
+                    type="button"
                     disabled={isAnswerSubmitted}
                     onClick={() => handleSelectOption(option)}
-                    className={`w-full p-4 rounded-xl border text-left text-sm transition-[background-color,color,border-color,box-shadow] duration-150 ease-out flex items-center justify-between gap-3 ${optionClasses}`}
+                    aria-pressed={isSelected}
+                    className={`ui-press ui-press--surface ui-press--on-dark ui-focus w-full p-3.5 rounded-xl border text-left text-sm flex items-center justify-between gap-3 ${optionClasses}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-lg bg-doom-900 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-400 shrink-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-6 h-6 rounded-md bg-white/[0.06] border border-white/10 flex items-center justify-center font-mono text-xs text-slate-300 shrink-0">
                         {String.fromCharCode(65 + idx)}
                       </span>
                       <span>{option}</span>
                     </div>
 
                     {isAnswerSubmitted && isCorrect && (
-                      <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+                      <CheckCircle2 size={16} className="text-emerald-400 shrink-0" aria-hidden="true" />
                     )}
                     {isAnswerSubmitted && isSelected && !isCorrect && (
-                      <XCircle size={18} className="text-red-400 shrink-0" />
+                      <XCircle size={16} className="text-rose-400 shrink-0" aria-hidden="true" />
                     )}
                   </button>
                 );
               })}
             </div>
 
-            {/* Explanation Drawer when submitted */}
             {isAnswerSubmitted && (
-              <div className="p-4 rounded-xl bg-doom-950 border border-border space-y-2 animate-fadeIn">
-                <div className="flex items-center gap-2 text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
-                  <BookOpen size={14} />
-                  <span>Canonical Lore Explanation</span>
+              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
+                  <BookOpen size={13} aria-hidden="true" />
+                  <span>Lore Note</span>
                 </div>
-                <p className="text-xs text-gray-300 font-sans leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {currentQ.explanation}
                 </p>
               </div>
             )}
 
-            {/* Actions: Submit or Next */}
-            <div className="pt-4 border-t border-border flex justify-end">
+            <div className="pt-4 border-t border-white/[0.08] flex justify-end">
               {!isAnswerSubmitted ? (
                 <button
+                  type="button"
                   onClick={() => handleSubmitAnswer()}
                   disabled={!selectedAnswer}
-                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-[filter,transform] duration-150 ease-out shadow-md border border-doom-emerald/40 active:scale-[0.96]"
+                  className="ui-press ui-focus h-9 bg-white text-doom-950 px-5 rounded-lg text-xs font-semibold"
                 >
                   Confirm Answer
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={handleNextQuestion}
-                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-[filter,transform] duration-150 ease-out shadow-md flex items-center gap-2 border border-doom-emerald/40 active:scale-[0.96]"
+                  className="ui-press ui-focus h-9 bg-white text-doom-950 px-5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5"
                 >
-                  <span>{currentIndex + 1 < activeQuestions.length ? 'Next Question' : 'View Debrief & Results'}</span>
-                  <ArrowRight size={14} />
+                  <span>
+                    {currentIndex + 1 < activeQuestions.length
+                      ? 'Next Question'
+                      : 'View Results'}
+                  </span>
+                  <ArrowRight size={14} className="ui-icon-nudge" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -492,87 +483,72 @@ export const KnowledgeArena: React.FC = () => {
         </div>
       )}
 
-      {/* ==================================================== */}
-      {/* 3. DEBRIEF & RESULTS SCREEN */}
-      {/* ==================================================== */}
+      {/* 3. RESULTS SCREEN */}
       {gameState === 'results' && (
         <div className="max-w-2xl mx-auto space-y-6">
-          <div className="doom-metallic-card rounded-3xl p-8 border border-border text-center space-y-4 shadow-card">
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-doom-emerald-dark to-doom-emerald flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.25)]">
-              <Award size={40} />
+          <div className="bg-[#0f131b] rounded-2xl p-6 sm:p-8 border border-white/10 text-center space-y-4">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center text-emerald-400">
+              <Award size={28} aria-hidden="true" />
             </div>
 
-            <span className="text-xs font-marvel uppercase tracking-wider text-doom-emerald font-bold">
-              Challenge Concluded
-            </span>
-
-            <h2 className="font-cinematic text-5xl md:text-6xl text-white uppercase tracking-wider tabular-nums">
+            <h2 className="font-cinematic text-4xl sm:text-5xl text-white uppercase tracking-wider tabular-nums">
               Score: {score} / {activeQuestions.length}
             </h2>
 
-            <div className="font-mono text-2xl text-doom-emerald font-bold tabular-nums">
+            <div className="font-mono text-xl text-emerald-400 font-bold tabular-nums">
               {Math.round((score / activeQuestions.length) * 100)}% Accuracy
             </div>
 
-            <p className="text-xs sm:text-sm text-gray-300 font-sans max-w-md mx-auto">
-              {score / activeQuestions.length >= 0.8
-                ? 'Outstanding performance. Your command of multiversal timelines and canon is combat-ready.'
-                : 'Debrief complete. Review the question logs below and catch up on essential viewing.'}
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <div className="pt-2">
               <button
+                type="button"
                 onClick={() => setGameState('lobby')}
-                className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md transition-[filter,transform] duration-150 ease-out flex items-center gap-2 border border-doom-emerald/40 active:scale-[0.96]"
+                className="ui-press ui-focus h-10 bg-white text-doom-950 px-5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-2"
               >
-                <RotateCcw size={14} />
-                <span>Return to Arena Lobby</span>
+                <RotateCcw size={14} aria-hidden="true" />
+                <span>Play Again</span>
               </button>
             </div>
           </div>
 
-          {/* Question Review Breakdown */}
           <div className="space-y-3">
-            <h4 className="font-marvel text-lg text-white font-bold tracking-wide">
-              Question Debrief & Verification
-            </h4>
-
+            <h3 className="text-base font-semibold text-white">Answer Review</h3>
             {answersLog.map((log, idx) => (
               <div
                 key={idx}
-                className={`p-4 rounded-xl border space-y-2 ${log.isCorrect
-                  ? 'bg-doom-950 border-emerald-900/60'
-                  : 'bg-doom-950 border-red-900/60'
-                  }`}
+                className={`p-4 rounded-xl border space-y-2 bg-[#0f131b] ${
+                  log.isCorrect ? 'border-emerald-500/30' : 'border-rose-500/30'
+                }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-2">
                     {log.isCorrect ? (
-                      <CheckCircle2 size={16} className="text-emerald-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 size={15} className="text-emerald-400 mt-0.5 shrink-0" aria-hidden="true" />
                     ) : (
-                      <XCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
+                      <XCircle size={15} className="text-rose-400 mt-0.5 shrink-0" aria-hidden="true" />
                     )}
-                    <div className="text-xs font-semibold text-white">
+                    <span className="text-xs sm:text-sm font-medium text-white">
                       {log.question.question}
-                    </div>
+                    </span>
                   </div>
-                  <span className="text-[10px] text-gray-500 font-mono shrink-0 uppercase">
+                  <span className="text-[11px] text-slate-400 shrink-0">
                     {log.question.category}
                   </span>
                 </div>
 
-                <div className="text-xs font-sans pl-6 space-y-1">
-                  <div className="text-gray-400">
-                    Your answer: <span className={log.isCorrect ? 'text-emerald-300 font-semibold' : 'text-red-300'}>{log.selected}</span>
+                <div className="text-xs pl-6 space-y-1">
+                  <div className="text-slate-400">
+                    Your answer:{' '}
+                    <span className={log.isCorrect ? 'text-emerald-300 font-medium' : 'text-rose-300'}>
+                      {log.selected}
+                    </span>
                   </div>
                   {!log.isCorrect && (
-                    <div className="text-emerald-400">
-                      Correct answer: <strong className="text-white">{log.question.correctAnswer}</strong>
+                    <div className="text-emerald-300">
+                      Correct: <strong className="text-white">{log.question.correctAnswer}</strong>
                     </div>
                   )}
-                  <p className="text-[11px] text-gray-400 italic pt-1">
-                    "{log.question.explanation}"
-                  </p>
+                  <p className="text-slate-400 pt-1">{log.question.explanation}</p>
                 </div>
               </div>
             ))}

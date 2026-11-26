@@ -1,25 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import {
   Search,
-  Filter,
   Plus,
   Check,
   Star,
   Film,
-  Tv,
-  Sparkles,
   Info,
-  Clock,
-  Layers,
-  Flame,
-  Compass
+  X,
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
 import { MoveCollectionModal } from '../watchlist/MoveCollectionModal';
 import { CinematicImage } from '../common/CinematicImage';
 
-// Extended discovery titles library for rich exploration
 const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
   {
     id: 'mcu-iron-man-1',
@@ -52,9 +45,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/movies/iron-man/1660000038',
         searchUrl: 'https://www.hotstar.com/in/explore?search_query=Iron+Man',
-        lastVerifiedAt: 'Nov 2026'
-      }
-    ]
+        lastVerifiedAt: 'Nov 2026',
+      },
+    ],
   },
   {
     id: 'mcu-wandavision',
@@ -87,9 +80,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/shows/wandavision/1260051344',
         searchUrl: 'https://www.hotstar.com/in/explore?search_query=WandaVision',
-        lastVerifiedAt: 'Nov 2026'
-      }
-    ]
+        lastVerifiedAt: 'Nov 2026',
+      },
+    ],
   },
   {
     id: 'mcu-thor-ragnarok',
@@ -110,7 +103,7 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
     defaultPhaseGroup: 'Optional Viewing',
     defaultSequenceNumber: 99,
     defaultPriority: 'optional',
-    whyItMatters: 'Destruction of Asgard, Odin\'s passing, Thor losing Mjolnir and awakening his true lightning godhood, directly leading into the opening frames of Infinity War.',
+    whyItMatters: "Destruction of Asgard, Odin's passing, Thor losing Mjolnir and awakening his true lightning godhood, directly leading into the opening frames of Infinity War.",
     charactersIntroduced: ['Valkyrie', 'Hela (Goddess of Death)', 'Grandmaster', 'Korg'],
     relevantPlotPoints: ['Mjolnir shattered', 'Surtur unleashes Ragnarok', 'Thanos sanctuary ship intercepts the refugee fleet'],
     universeConnections: ['Avengers: Infinity War', 'Loki (2021)'],
@@ -122,9 +115,9 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/movies/thor-ragnarok/1660010577',
         searchUrl: 'https://www.hotstar.com/in/explore?search_query=Thor+Ragnarok',
-        lastVerifiedAt: 'Nov 2026'
-      }
-    ]
+        lastVerifiedAt: 'Nov 2026',
+      },
+    ],
   },
   {
     id: 'fox-logan-2017',
@@ -157,10 +150,10 @@ const ADDITIONAL_DISCOVERY_TITLES: MarvelTitle[] = [
         availabilityStatus: 'available',
         directUrl: 'https://www.hotstar.com/in/movies/logan/1770016994',
         searchUrl: 'https://www.hotstar.com/in/explore?search_query=Logan',
-        lastVerifiedAt: 'Nov 2026'
-      }
-    ]
-  }
+        lastVerifiedAt: 'Nov 2026',
+      },
+    ],
+  },
 ];
 
 interface DiscoverCatalogProps {
@@ -169,12 +162,12 @@ interface DiscoverCatalogProps {
 
 export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDetails }) => {
   const { collections, activeCollectionId } = useAppStore();
-  const activeCol = collections.find(c => c.id === activeCollectionId) || collections[0];
+  const activeCol = collections.find((c) => c.id === activeCollectionId) || collections[0];
 
   const allAvailableTitles = useMemo(() => {
     const map = new Map<string, MarvelTitle>();
-    MARVEL_TITLES.forEach(t => map.set(t.id, t));
-    ADDITIONAL_DISCOVERY_TITLES.forEach(t => map.set(t.id, t));
+    MARVEL_TITLES.forEach((t) => map.set(t.id, t));
+    ADDITIONAL_DISCOVERY_TITLES.forEach((t) => map.set(t.id, t));
     return Array.from(map.values());
   }, []);
 
@@ -182,41 +175,40 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
   const [selectedTag, setSelectedTag] = useState<'All' | 'Trending' | 'Multiverse' | 'Avengers' | 'Mutants'>('All');
   const [selectedMediaType, setSelectedMediaType] = useState<'all' | 'movie' | 'tv'>('all');
   const [selectedGenre, setSelectedGenre] = useState<string>('All');
-
-  // Modal to add to collection
   const [modalTitle, setModalTitle] = useState<MarvelTitle | null>(null);
 
-  // Filtered titles
   const filteredTitles = useMemo(() => {
-    return allAvailableTitles.filter(title => {
-      // Search query
+    return allAvailableTitles.filter((title) => {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchTitle = title.title.toLowerCase().includes(q);
-        const matchCast = title.cast.some(c => c.toLowerCase().includes(q));
+        const matchCast = title.cast.some((c) => c.toLowerCase().includes(q));
         const matchDirector = title.director.toLowerCase().includes(q);
-        const matchChar = title.charactersIntroduced.some(ci => ci.toLowerCase().includes(q));
+        const matchChar = title.charactersIntroduced.some((ci) => ci.toLowerCase().includes(q));
         if (!matchTitle && !matchCast && !matchDirector && !matchChar) return false;
       }
 
-      // Media type
       if (selectedMediaType !== 'all' && title.mediaType !== selectedMediaType) return false;
-
-      // Genre
       if (selectedGenre !== 'All' && !title.genres.includes(selectedGenre)) return false;
 
-      // Category tags
-      if (selectedTag === 'Trending') {
-        return title.releaseYear >= 2021;
-      }
+      if (selectedTag === 'Trending') return title.releaseYear >= 2021;
       if (selectedTag === 'Multiverse') {
-        return title.defaultPhaseGroup === 'Phase 02 — The Multiverse' || title.id.includes('loki') || title.id.includes('strange');
+        return (
+          title.defaultPhaseGroup === 'Phase 02 — The Multiverse' ||
+          title.id.includes('loki') ||
+          title.id.includes('strange')
+        );
       }
       if (selectedTag === 'Avengers') {
         return title.title.includes('Avengers') || title.title.includes('Captain America');
       }
       if (selectedTag === 'Mutants') {
-        return title.title.includes('X-Men') || title.title.includes('Wolverine') || title.title.includes('Deadpool') || title.title.includes('Logan');
+        return (
+          title.title.includes('X-Men') ||
+          title.title.includes('Wolverine') ||
+          title.title.includes('Deadpool') ||
+          title.title.includes('Logan')
+        );
       }
 
       return true;
@@ -224,47 +216,54 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
   }, [allAvailableTitles, searchQuery, selectedTag, selectedMediaType, selectedGenre]);
 
   const isInActiveCollection = (movieId: string) => {
-    return activeCol?.items.some(i => i.movieId === movieId);
+    return activeCol?.items.some((i) => i.movieId === movieId);
+  };
+
+  const resetAllFilters = () => {
+    setSearchQuery('');
+    setSelectedTag('All');
+    setSelectedMediaType('all');
+    setSelectedGenre('All');
   };
 
   return (
     <div className="space-y-5 pb-20">
-      {/* 1. Discover Header & Search Bar — Minimal & Subtle */}
-      <div className="pb-3 border-b border-white/5 space-y-3">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Discover
-          </h2>
-          <p className="text-xs text-gray-400 font-sans mt-0.5">
-            Search movies, series, characters, and sagas across the Marvel Cinematic Universe.
-          </p>
-        </div>
+      {/* Header & Search */}
+      <div className="pb-4 border-b border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+          Discover
+        </h1>
 
-        {/* Search Input Bar - Sleek & Compact */}
-        <div className="relative max-w-xl">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+        <div className="relative w-full md:max-w-md">
+          <Search
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            size={15}
+            aria-hidden="true"
+          />
           <input
-            type="text"
+            type="search"
+            aria-label="Search titles, characters, or actors"
             placeholder="Search titles, characters, actors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/10 focus:border-emerald-500/40 rounded-xl pl-9 pr-9 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none transition-colors duration-150 ease-out shadow-inner"
+            className="ui-field w-full h-9 bg-[#0f131b] border border-white/14 rounded-xl pl-10 pr-9 text-xs sm:text-sm text-white placeholder:text-slate-500"
           />
           {searchQuery && (
             <button
+              type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-gray-400 hover:text-white px-1 py-0.5"
+              aria-label="Clear search"
+              className="ui-press ui-press--on-dark ui-focus absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md text-slate-400 hover:text-white flex items-center justify-center"
             >
-              Clear
+              <X size={13} aria-hidden="true" />
             </button>
           )}
         </div>
       </div>
 
-      {/* 2. Category Pills & Filter Toolbar — Minimal & Subtle */}
-      <div className="p-2 sm:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-        {/* Curated Category Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+      {/* Category & Filter Bar */}
+      <div className="p-2 rounded-xl bg-[#0f131b] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           {[
             { id: 'All', label: 'All' },
             { id: 'Trending', label: 'Trending' },
@@ -274,23 +273,26 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           ].map((tag) => (
             <button
               key={tag.id}
+              type="button"
               onClick={() => setSelectedTag(tag.id as any)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] whitespace-nowrap ${selectedTag === tag.id
-                ? 'bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+              aria-pressed={selectedTag === tag.id}
+              className={`ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap shrink-0 border ${
+                selectedTag === tag.id
+                  ? 'bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/35'
+                  : 'text-slate-400 hover:text-white border-transparent hover:bg-white/[0.06]'
+              }`}
             >
               {tag.label}
             </button>
           ))}
         </div>
 
-        {/* Media & Genre Selectors */}
-        <div className="grid grid-cols-2 md:flex items-center gap-2">
+        <div className="grid grid-cols-2 md:flex items-center gap-2 shrink-0">
           <select
+            aria-label="Filter by media type"
             value={selectedMediaType}
             onChange={(e) => setSelectedMediaType(e.target.value as any)}
-            className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500/40"
+            className="doom-select ui-field h-8 border border-white/14 rounded-lg px-2.5 text-xs text-slate-200"
           >
             <option value="all">All Types</option>
             <option value="movie">Movies</option>
@@ -298,9 +300,10 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
           </select>
 
           <select
+            aria-label="Filter by genre"
             value={selectedGenre}
             onChange={(e) => setSelectedGenre(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none focus:border-emerald-500/40"
+            className="doom-select ui-field h-8 border border-white/14 rounded-lg px-2.5 text-xs text-slate-200"
           >
             <option value="All">All Genres</option>
             <option value="Action">Action</option>
@@ -312,37 +315,49 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
         </div>
       </div>
 
-      {/* 3. Results Grid */}
+      {/* Results Header & Grid */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs text-gray-400 font-mono px-0.5 gap-2">
-          <span className="whitespace-nowrap tabular-nums">{filteredTitles.length} Titles</span>
-          <span className="truncate text-right">Target: <strong className="text-white">{activeCol?.name}</strong></span>
+        <div className="flex items-center justify-between text-xs text-slate-400 px-0.5 gap-2">
+          <span className="font-mono tabular-nums whitespace-nowrap">
+            {filteredTitles.length} {filteredTitles.length === 1 ? 'Title' : 'Titles'}
+          </span>
+          <span className="truncate text-right">
+            Active list: <strong className="text-slate-200 font-medium">{activeCol?.name}</strong>
+          </span>
         </div>
 
         {filteredTitles.length === 0 ? (
-          <div className="rounded-2xl p-12 text-center space-y-3 bg-white/[0.02] border border-white/5">
-            <Film size={28} className="mx-auto text-gray-500" />
-            <h3 className="text-lg font-semibold uppercase tracking-wider text-white">
-              No Titles Found
-            </h3>
-            <p className="text-xs text-gray-400 max-w-sm mx-auto font-sans">
-              No matching cinematic entries for "{searchQuery}". Try searching for another movie, series, or character.
+          <div className="rounded-2xl p-12 text-center space-y-3 bg-[#0f131b] border border-white/10">
+            <Film size={24} className="mx-auto text-slate-400" aria-hidden="true" />
+            <h3 className="text-base font-semibold text-white">No matching titles</h3>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              {searchQuery
+                ? `No entries match "${searchQuery}".`
+                : 'No entries match your active filters.'}
             </p>
+            <button
+              type="button"
+              onClick={resetAllFilters}
+              className="ui-press ui-focus h-9 px-4 rounded-lg bg-white text-doom-950 text-xs font-semibold inline-flex items-center justify-center"
+            >
+              Reset filters
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {filteredTitles.map((title) => {
               const inCollection = isInActiveCollection(title.id);
               return (
-                <div
+                <article
                   key={title.id}
-                  className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-[background-color,border-color] duration-200 ease-out flex flex-col justify-between group"
+                  className="p-2 rounded-2xl bg-[#0f131b] hover:bg-[#131823] border border-white/10 hover:border-white/20 transition-[background-color,border-color] duration-150 flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Poster Image */}
-                    <div
+                    <button
+                      type="button"
                       onClick={() => onOpenTitleDetails(title)}
-                      className="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-doom-950 cursor-pointer"
+                      aria-label={`View details for ${title.title}`}
+                      className="ui-press ui-press--surface ui-press--on-dark ui-focus relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-doom-950 block text-left"
                     >
                       <CinematicImage
                         src={title.posterPath}
@@ -352,73 +367,89 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent opacity-60" />
+                      <div
+                        data-ui-overlap
+                        className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none"
+                      />
 
-                      {/* Media Type Badge */}
-                      <span className="absolute top-2 left-2 px-1.5 py-0.5 text-[9px] rounded font-mono font-bold bg-black/60 text-white/90 backdrop-blur-sm border border-white/10 uppercase">
-                        {title.mediaType === 'tv' ? 'TV' : 'MOVIE'}
+                      <span
+                        data-ui-overlap
+                        className="absolute top-2 left-2 px-1.5 py-0.5 text-[10px] rounded font-mono font-semibold bg-black/75 text-white/90 backdrop-blur-sm uppercase pointer-events-none"
+                      >
+                        {title.mediaType === 'tv' ? 'TV' : 'Movie'}
                       </span>
 
-                      {/* Rating Pill */}
-                      <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm border border-white/10 px-1.5 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1">
-                        <Star size={9} fill="currentColor" />
+                      <div
+                        data-ui-overlap
+                        className="absolute top-2 right-2 bg-black/75 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1 pointer-events-none"
+                      >
+                        <Star size={10} fill="currentColor" aria-hidden="true" />
                         <span className="tabular-nums">{title.rating.toFixed(1)}</span>
                       </div>
 
-                      {/* In Watchlist Indicator Pill */}
                       {inCollection && (
-                        <div className="absolute bottom-2 left-2 bg-emerald-500/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm backdrop-blur-sm">
-                          <Check size={9} />
+                        <div
+                          data-ui-overlap
+                          className="absolute bottom-2 left-2 bg-emerald-500 text-doom-950 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 pointer-events-none"
+                        >
+                          <Check size={10} strokeWidth={2.5} aria-hidden="true" />
                           <span>In List</span>
                         </div>
                       )}
-                    </div>
+                    </button>
 
-                    {/* Title & Metadata */}
-                    <div className="pt-2">
-                      <h4
+                    <div className="pt-2 px-0.5">
+                      <button
+                        type="button"
                         onClick={() => onOpenTitleDetails(title)}
-                        className="text-xs sm:text-sm font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors leading-tight"
+                        className="ui-dim ui-focus block w-full text-left text-xs sm:text-sm font-semibold text-white truncate hover:text-emerald-300 leading-tight"
                         title={title.title}
                       >
                         {title.title}
-                      </h4>
-                      <div className="text-[10px] text-gray-400 font-mono mt-0.5 truncate">
-                        {title.releaseYear} • {title.genres[0]}
+                      </button>
+                      <div className="text-[11px] text-slate-400 font-mono tabular-nums mt-1 truncate">
+                        {title.releaseYear} · {title.genres[0]}
                       </div>
                     </div>
                   </div>
 
-                  {/* Compact Action Buttons */}
-                  <div className="pt-2 mt-1.5 border-t border-white/5 flex items-center gap-1.5">
+                  {/* Uniform 32px action bar */}
+                  <div className="pt-2 mt-2 border-t border-white/[0.06] flex items-center gap-1.5">
                     <button
+                      type="button"
                       onClick={() => setModalTitle(title)}
-                      className={`flex-1 py-1 px-2 rounded-md font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] truncate ${inCollection
-                        ? 'bg-white/5 text-gray-300 hover:text-white border border-white/10'
-                        : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
-                        }`}
-                      title={inCollection ? 'Add to another collection' : `Add to ${activeCol?.name || 'List'}`}
+                      className={`ui-press ui-press--on-dark ui-focus flex-1 h-8 px-2.5 rounded-lg font-medium text-xs flex items-center justify-center gap-1.5 truncate border ${
+                        inCollection
+                          ? 'bg-white/[0.06] text-slate-200 border-white/12 hover:text-white'
+                          : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35 hover:bg-emerald-500/25'
+                      }`}
+                      title={
+                        inCollection
+                          ? 'Add to another collection'
+                          : `Add to ${activeCol?.name || 'List'}`
+                      }
                     >
-                      <Plus size={11} />
+                      <Plus size={13} className="shrink-0" aria-hidden="true" />
                       <span className="truncate">{inCollection ? 'Add Other' : 'Add to List'}</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => onOpenTitleDetails(title)}
-                      className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-[background-color,color] duration-150 ease-out active:scale-[0.96] shrink-0"
+                      aria-label={`Details for ${title.title}`}
+                      className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg bg-white/[0.04] border border-white/12 text-slate-400 hover:text-white flex items-center justify-center shrink-0"
                       title="View Details"
                     >
-                      <Info size={12} />
+                      <Info size={13} aria-hidden="true" />
                     </button>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
         )}
       </div>
 
-      {/* Add to Collection Modal */}
       <MoveCollectionModal
         isOpen={!!modalTitle}
         title={modalTitle}
