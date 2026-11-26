@@ -96,7 +96,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="absolute top-4 right-4 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all"
+            className="absolute top-4 right-4 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
           >
             <X size={18} />
           </button>
@@ -112,7 +112,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               </span>
               <div className="flex items-center gap-1 text-xs text-amber-400 font-medium ml-auto">
                 <Star size={13} fill="currentColor" />
-                <span>{title.rating.toFixed(1)}</span>
+                <span className="tabular-nums">{title.rating.toFixed(1)}</span>
               </div>
             </div>
 
@@ -132,9 +132,9 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                   href={streamUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 shrink-0"
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition-[background-color,transform] duration-150 ease-out shadow-md active:scale-[0.96] shrink-0"
                 >
-                  <Play size={14} fill="currentColor" />
+                  <Play size={14} fill="currentColor" className="ml-px" />
                   <span>Watch on {primaryStream?.provider || 'Platform'}</span>
                   <ExternalLink size={12} className="opacity-70" />
                 </a>
@@ -144,7 +144,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
               <div className="inline-flex items-center bg-white/5 border border-white/10 rounded-lg p-0.5 shrink-0">
                 <button
                   onClick={() => updateWatchStatus(title.id, 'not_started')}
-                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors duration-150 ease-out ${
                     currentStatus === 'not_started'
                       ? 'bg-white/15 text-white font-semibold'
                       : 'text-gray-400 hover:text-white'
@@ -154,7 +154,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'in_progress')}
-                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors duration-150 ease-out ${
                     currentStatus === 'in_progress'
                       ? 'bg-amber-500/20 text-amber-300 font-semibold'
                       : 'text-gray-400 hover:text-white'
@@ -164,7 +164,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                 </button>
                 <button
                   onClick={() => updateWatchStatus(title.id, 'completed')}
-                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors flex items-center gap-1 ${
+                  className={`px-2.5 py-1.5 rounded text-xs whitespace-nowrap transition-colors duration-150 ease-out flex items-center gap-1 ${
                     currentStatus === 'completed'
                       ? 'bg-emerald-500 text-white font-semibold shadow'
                       : 'text-gray-400 hover:text-white'
@@ -231,7 +231,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                       <button
                         key={s.seasonNumber}
                         onClick={() => setSelectedSeason(s.seasonNumber)}
-                        className={`px-2.5 py-1 rounded text-xs font-mono transition-all ${
+                        className={`px-2.5 py-1 rounded text-xs font-mono transition-[background-color,color] duration-150 ease-out ${
                           selectedSeason === s.seasonNumber
                             ? 'bg-white text-black font-semibold'
                             : 'text-gray-400 hover:text-white'
@@ -254,7 +254,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                         <div
                           key={ep.episodeNumber}
                           onClick={() => toggleEpisodeWatched(title.id, s.seasonNumber, ep.episodeNumber)}
-                          className={`flex items-center justify-between gap-3 p-2.5 rounded-lg border transition-all cursor-pointer ${
+                          className={`flex items-center justify-between gap-3 p-2.5 rounded-lg border transition-[background-color,border-color] duration-150 ease-out cursor-pointer ${
                             watched 
                               ? 'bg-emerald-950/15 border-emerald-500/30' 
                               : 'bg-white/[0.02] border-white/5 hover:border-white/15'
@@ -271,7 +271,7 @@ export const TitleDetailsModal: React.FC<TitleDetailsModalProps> = ({
                               {ep.title}
                             </span>
                           </div>
-                          <span className="text-[10px] text-gray-500 font-mono shrink-0">{ep.runtime}m</span>
+                          <span className="text-[10px] text-gray-500 font-mono shrink-0 tabular-nums">{ep.runtime}m</span>
                         </div>
                       );
                     })}

@@ -19,7 +19,7 @@ export const AchievementToast: React.FC<AchievementToastProps> = ({ achievement,
   if (!achievement) return null;
 
   return (
-    <div className="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 max-w-sm w-full bg-doom-900 border-2 border-doom-gold rounded-xl p-4 shadow-sm animate-bounce select-none">
+    <div className="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 max-w-sm w-full bg-doom-900 border-2 border-doom-gold rounded-xl p-4 shadow-sm animate-slide-in-up select-none">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-doom-gold to-doom-red flex items-center justify-center text-white shrink-0 shadow-md">
           <Award size={20} />
@@ -32,7 +32,7 @@ export const AchievementToast: React.FC<AchievementToastProps> = ({ achievement,
             </span>
             <button
               onClick={onDismiss}
-              className="text-gray-400 hover:text-white p-0.5"
+              className="text-gray-400 hover:text-white p-0.5 transition-colors duration-150 ease-out active:scale-[0.96]"
             >
               <X size={14} />
             </button>

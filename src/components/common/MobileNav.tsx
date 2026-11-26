@@ -75,9 +75,9 @@ const PhosphorIcons: Record<string, { regular: React.ReactNode; fill: React.Reac
 
 export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab }) => {
   return (
-    <nav 
+    <nav
       aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm sm:max-w-md flex items-center justify-around rounded-full p-2 bg-[#12161f]/95 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.85),0_0_24px_rgba(16,185,129,0.2)] transition-all"
+      className="lg:hidden fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm sm:max-w-md flex items-center justify-around rounded-full p-2 bg-[#12161f]/95 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.85),0_0_24px_rgba(16,185,129,0.2)]"
     >
       {NAV_ITEMS.map((item) => {
         const isActive = currentTab === item.id;
@@ -89,11 +89,10 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentTab, onSelectTab })
             onClick={() => onSelectTab(item.id)}
             aria-label={item.label}
             aria-current={isActive ? 'page' : undefined}
-            className={`flex-1 flex flex-col items-center justify-center transition-all duration-200 select-none py-1.5 rounded-full ${
-              isActive
-                ? 'bg-zinc-900 border border-emerald-500/40 text-white shadow-[0_2px_12px_rgba(0,0,0,0.7),0_0_14px_rgba(16,185,129,0.35)]'
-                : 'text-gray-400 hover:text-white'
-            }`}
+            className={`flex-1 flex flex-col items-center justify-center transition-[background-color,color,box-shadow] duration-200 ease-out select-none py-1.5 rounded-full active:scale-[0.96] ${isActive
+              ? 'bg-zinc-900 border border-emerald-500/40 text-white shadow-[0_2px_12px_rgba(0,0,0,0.7),0_0_14px_rgba(16,185,129,0.35)]'
+              : 'text-gray-400 hover:text-white'
+              }`}
           >
             <div className="w-5 h-5 flex items-center justify-center">
               {isActive ? iconConfig?.fill : iconConfig?.regular}

@@ -185,7 +185,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
     return (
       <div
         key={title.id}
-        className="group relative flex flex-col justify-between rounded-xl overflow-hidden bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/15 transition-all p-2"
+        className="group relative flex flex-col justify-between rounded-xl overflow-hidden bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/15 transition-[background-color,border-color] duration-200 ease-out p-2"
       >
         <div>
           {/* 1. Portrait Poster: aspect-[2/3] */}
@@ -198,7 +198,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               alt={title.title}
               fallbackTitle={title.title}
               fallbackSubtitle={String(title.releaseYear)}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 will-change-transform"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70 group-hover:opacity-40 transition-opacity" />
@@ -223,13 +223,13 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             {/* Rating pill bottom-right */}
             <div className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] text-amber-400 font-mono flex items-center gap-0.5">
               <Star size={9} fill="currentColor" />
-              <span>{title.rating.toFixed(1)}</span>
+              <span className="tabular-nums">{title.rating.toFixed(1)}</span>
             </div>
 
             {/* Center hover play */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
               <div className="w-8 h-8 rounded-full bg-white/90 text-doom-950 flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-                <Play size={13} fill="currentColor" className="ml-0.5" />
+                <Play size={13} fill="currentColor" className="ml-px" />
               </div>
             </div>
           </div>
@@ -259,16 +259,16 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               href={streamUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all truncate"
+              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color] duration-150 ease-out active:scale-[0.96] truncate"
               title={`Stream on ${streamInfo?.provider || 'Platform'}`}
             >
-              <Play size={10} fill="currentColor" />
+              <Play size={10} fill="currentColor" className="ml-px" />
               <span className="truncate">Watch</span>
             </a>
           ) : (
             <button
               onClick={() => onOpenTitleDetails(title)}
-              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all"
+              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
             >
               <Info size={10} />
               <span>Info</span>
@@ -380,14 +380,14 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                 <button
                   key={col.id}
                   onClick={() => setActiveCollectionId(col.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-[background-color,color] duration-150 ease-out active:scale-[0.96] flex items-center gap-1.5 ${
                     isActive
                       ? 'bg-white/15 text-white font-semibold'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{col.name}</span>
-                  <span className="text-[10px] font-mono opacity-70">({col.items.length})</span>
+                  <span className="text-[10px] font-mono opacity-70 tabular-nums">({col.items.length})</span>
                 </button>
               );
             })}
@@ -397,7 +397,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                 setEditingColId(null);
                 setColModalOpen(true);
               }}
-              className="px-2.5 py-1 rounded-full text-xs text-gray-400 hover:text-white border border-dashed border-white/20 hover:border-white/40 flex items-center gap-1 transition-all"
+              className="px-2.5 py-1 rounded-full text-xs text-gray-400 hover:text-white border border-dashed border-white/20 hover:border-white/40 flex items-center gap-1 transition-[border-color,color] duration-150 ease-out active:scale-[0.96]"
               title="Create a new collection"
             >
               <Plus size={11} />
@@ -439,7 +439,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
 
             <button
               onClick={onNavigateDiscover}
-              className="text-xs font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1 rounded-lg transition-all flex items-center gap-1.5"
+              className="text-xs font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1 rounded-lg transition-[background-color,color] duration-150 ease-out active:scale-[0.96] flex items-center gap-1.5"
             >
               <Plus size={12} />
               <span>Add</span>
@@ -461,9 +461,9 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           </div>
           
           <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <span>{collectionCompletedCount}/{collectionTotalCount} watched</span>
+            <span className="tabular-nums">{collectionCompletedCount}/{collectionTotalCount} watched</span>
             <span className="text-gray-600">•</span>
-            <span className="text-emerald-400 font-medium">{collectionPercent}%</span>
+            <span className="text-emerald-400 font-medium tabular-nums">{collectionPercent}%</span>
           </div>
         </div>
       </div>
@@ -481,7 +481,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
             <button
               key={opt.val}
               onClick={() => setStatusFilter(opt.val as any)}
-              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-[background-color,color] duration-150 ease-out active:scale-[0.96] ${
                 statusFilter === opt.val
                   ? 'bg-white/15 text-white font-semibold'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -550,7 +550,7 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               setMediaFilter('all');
               setPhaseFilter('all');
             }}
-            className="bg-white/10 hover:bg-white/15 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+            className="bg-white/10 hover:bg-white/15 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
           >
             Clear Filters
           </button>
@@ -572,11 +572,11 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
                     <h2 className="text-sm sm:text-base font-medium text-white tracking-wide">
                       {group.displayName}
                     </h2>
-                    <span className="text-xs text-gray-500 font-mono">
+                    <span className="text-xs text-gray-500 font-mono tabular-nums">
                       ({group.items.length})
                     </span>
                   </div>
-                  <span className="text-[11px] text-gray-400 font-mono">
+                  <span className="text-[11px] text-gray-400 font-mono tabular-nums">
                     {groupWatchedCount}/{group.items.length} watched
                   </span>
                 </div>

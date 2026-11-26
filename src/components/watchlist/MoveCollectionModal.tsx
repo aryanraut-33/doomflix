@@ -82,7 +82,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
               <button
                 type="button"
                 onClick={() => setPriority('essential')}
-                className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-all ${
+                className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.96] ${
                   priority === 'essential'
                     ? 'bg-doom-red text-white border-doom-red shadow-sm'
                     : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
@@ -93,7 +93,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
               <button
                 type="button"
                 onClick={() => setPriority('optional')}
-                className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-all ${
+                className={`py-2 rounded-lg text-xs font-bold tracking-wider uppercase border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.96] ${
                   priority === 'optional'
                     ? 'bg-doom-gold text-doom-950 border-doom-gold shadow-sm'
                     : 'bg-doom-950 text-gray-400 border-doom-border hover:text-white'
@@ -114,7 +114,7 @@ export const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ title,
             </button>
             <button
               onClick={handleAdd}
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm flex items-center gap-1.5"
             >
               <Plus size={14} />
               <span>Add Title</span>

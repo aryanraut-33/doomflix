@@ -184,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
           e.preventDefault();
           onSelectTab('home');
         }}
-        className="absolute top-[36px] left-[48px] -translate-x-1/2 w-[40px] h-[40px] doom-flame-container cursor-pointer z-20 transition-transform active:scale-95 select-none"
+        className="absolute top-[36px] left-[48px] -translate-x-1/2 w-[40px] h-[40px] doom-flame-container cursor-pointer z-20 transition-transform active:scale-[0.96] select-none"
         aria-label="Doomflix Home"
       >
         {/* Doom Green Smoke & Flame Layers */}
@@ -226,15 +226,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
           // Staggered entrance for labels on expand; instant unified exit on collapse
           const labelStyle: React.CSSProperties = isExpanded
             ? {
-                opacity: 1,
-                transform: 'translateX(0px)',
-                transition: `opacity 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, transform 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)`
-              }
+              opacity: 1,
+              transform: 'translateX(0px)',
+              transition: `opacity 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, transform 220ms cubic-bezier(0.4, 0, 0.2, 1) ${60 + index * 30}ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)`
+            }
             : {
-                opacity: 0,
-                transform: 'translateX(-8px)',
-                transition: 'opacity 120ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)'
-              };
+              opacity: 0,
+              transform: 'translateX(-8px)',
+              transition: 'opacity 120ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 150ms cubic-bezier(0.4, 0, 0.2, 1)'
+            };
 
           return (
             <a
@@ -250,7 +250,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
               onBlur={() => setFocusedId(null)}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
-              className="relative w-full h-[44px] flex items-center select-none active:scale-[0.97] transition-transform duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset rounded-[8px]"
+              className="relative w-full h-[44px] flex items-center select-none active:scale-[0.96] transition-transform duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset rounded-[8px]"
             >
               {/* Active Route Soft Glow Halo (64x64 circle centered on icon at x=48px, y=22px) */}
               <div
@@ -290,11 +290,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
               >
                 <span
                   data-label={item.label}
-                  className={`nav-label ${
-                    isItemActiveOrHovered
-                      ? 'font-bold text-white'
-                      : 'font-medium text-[rgba(255,255,255,0.62)]'
-                  }`}
+                  className={`nav-label ${isItemActiveOrHovered
+                    ? 'font-bold text-white'
+                    : 'font-medium text-[rgba(255,255,255,0.62)]'
+                    }`}
                 >
                   {item.label}
                 </span>

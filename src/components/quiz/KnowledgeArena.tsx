@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  HelpCircle, 
-  ShieldCheck, 
-  AlertTriangle, 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
-  RotateCcw, 
-  Sparkles, 
-  Flame, 
-  Award, 
-  ChevronRight, 
+import {
+  HelpCircle,
+  ShieldCheck,
+  AlertTriangle,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  Sparkles,
+  Flame,
+  Award,
+  ChevronRight,
   ArrowRight,
   BookOpen,
   Filter
@@ -192,7 +192,7 @@ export const KnowledgeArena: React.FC = () => {
           spread: 70,
           origin: { y: 0.6 }
         });
-      } catch {}
+      } catch { }
     }
 
     setGameState('results');
@@ -229,11 +229,10 @@ export const KnowledgeArena: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div
                   onClick={() => setQuizMode('watched_only')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    quizMode === 'watched_only'
-                      ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
-                      : 'bg-white/[0.02] border-white/5 hover:border-white/15'
-                  }`}
+                  className={`p-4 rounded-2xl border cursor-pointer transition-[border-color,background-color,box-shadow] duration-200 ease-out ${quizMode === 'watched_only'
+                    ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
+                    : 'bg-white/[0.02] border-white/5 hover:border-white/15'
+                    }`}
                 >
                   <div className="flex items-center gap-2.5 mb-1.5">
                     <ShieldCheck size={18} className="text-emerald-400" />
@@ -248,11 +247,10 @@ export const KnowledgeArena: React.FC = () => {
 
                 <div
                   onClick={() => setQuizMode('full_collection')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    quizMode === 'full_collection'
-                      ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
-                      : 'bg-white/[0.02] border-white/5 hover:border-white/15'
-                  }`}
+                  className={`p-4 rounded-2xl border cursor-pointer transition-[border-color,background-color,box-shadow] duration-200 ease-out ${quizMode === 'full_collection'
+                    ? 'bg-zinc-800/90 border-emerald-500/50 shadow-[0_2px_12px_rgba(16,185,129,0.2)]'
+                    : 'bg-white/[0.02] border-white/5 hover:border-white/15'
+                    }`}
                 >
                   <div className="flex items-center gap-2.5 mb-1.5">
                     <AlertTriangle size={18} className="text-amber-400" />
@@ -277,11 +275,10 @@ export const KnowledgeArena: React.FC = () => {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      selectedCategory === cat
-                        ? 'bg-doom-gold text-doom-950 font-bold shadow-md'
-                        : 'bg-doom-950 text-gray-400 hover:text-white border border-doom-border'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] ${selectedCategory === cat
+                      ? 'bg-doom-gold text-doom-950 font-bold shadow-md'
+                      : 'bg-doom-950 text-gray-400 hover:text-white border border-doom-border'
+                      }`}
                   >
                     {cat}
                   </button>
@@ -316,11 +313,10 @@ export const KnowledgeArena: React.FC = () => {
                     <button
                       key={cnt}
                       onClick={() => setQuestionCount(cnt)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all border ${
-                        questionCount === cnt
-                          ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white border-doom-emerald/40 shadow-sm'
-                          : 'bg-doom-950 text-gray-400 border-border hover:text-white'
-                      }`}
+                      className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] border ${questionCount === cnt
+                        ? 'bg-gradient-to-r from-doom-emerald-dark to-doom-emerald text-white border-doom-emerald/40 shadow-sm'
+                        : 'bg-doom-950 text-gray-400 border-border hover:text-white'
+                        }`}
                     >
                       {cnt}
                     </button>
@@ -334,11 +330,10 @@ export const KnowledgeArena: React.FC = () => {
                 </label>
                 <button
                   onClick={() => setTimerEnabled(!timerEnabled)}
-                  className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-all ${
-                    timerEnabled
-                      ? 'bg-doom-950 border-doom-emerald text-doom-emerald'
-                      : 'bg-doom-950 border-border text-gray-500'
-                  }`}
+                  className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.96] ${timerEnabled
+                    ? 'bg-doom-950 border-doom-emerald text-doom-emerald'
+                    : 'bg-doom-950 border-border text-gray-500'
+                    }`}
                 >
                   <Clock size={14} />
                   <span>{timerEnabled ? '20s Timer Enabled' : 'Untimed Relaxed'}</span>
@@ -349,7 +344,7 @@ export const KnowledgeArena: React.FC = () => {
             {/* Pool availability status & Launch */}
             <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-xs text-gray-400 font-mono">
-                Available Questions in Pool: <strong className="text-white">{availableQuestions.length}</strong>
+                Available Questions in Pool: <strong className="text-white tabular-nums">{availableQuestions.length}</strong>
                 {quizMode === 'watched_only' && watchedMovieIds.length === 0 && (
                   <span className="text-doom-red ml-2 font-sans">
                     (You have not marked any titles watched yet! Switch to Mode B or check off watched titles)
@@ -360,7 +355,7 @@ export const KnowledgeArena: React.FC = () => {
               <button
                 onClick={handleStartQuiz}
                 disabled={availableQuestions.length === 0}
-                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02]"
+                className="w-full sm:w-auto bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-8 py-3 rounded-xl font-cinematic text-xl tracking-wider uppercase transition-[filter,transform] duration-150 ease-out shadow-md flex items-center justify-center gap-2 border border-doom-emerald/40 hover:scale-[1.02] active:scale-[0.96]"
               >
                 <span>Enter Arena</span>
                 <ChevronRight size={18} />
@@ -378,7 +373,7 @@ export const KnowledgeArena: React.FC = () => {
           {/* Status Header */}
           <div className="flex items-center justify-between bg-doom-950/90 border border-doom-border p-4 rounded-2xl">
             <div className="flex items-center gap-3">
-              <span className="text-xs font-mono font-bold text-doom-gold">
+              <span className="text-xs font-mono font-bold text-doom-gold tabular-nums">
                 QUESTION {currentIndex + 1} OF {activeQuestions.length}
               </span>
               <span className="text-[10px] bg-doom-900 text-gray-300 border border-doom-border px-2 py-0.5 rounded font-mono uppercase">
@@ -391,13 +386,12 @@ export const KnowledgeArena: React.FC = () => {
 
             {/* Timer */}
             {timerEnabled && (
-              <div className={`flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-full border ${
-                timerSeconds <= 5 
-                  ? 'bg-red-950 border-red-500 text-red-400 animate-pulse' 
-                  : 'bg-doom-900 border-doom-border text-gray-300'
-              }`}>
+              <div className={`flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-full border ${timerSeconds <= 5
+                ? 'bg-red-950 border-red-500 text-red-400 animate-pulse'
+                : 'bg-doom-900 border-doom-border text-gray-300'
+                }`}>
                 <Clock size={13} />
-                <span>{timerSeconds}s</span>
+                <span className="tabular-nums">{timerSeconds}s</span>
               </div>
             )}
           </div>
@@ -405,7 +399,7 @@ export const KnowledgeArena: React.FC = () => {
           {/* Progress Bar */}
           <div className="w-full bg-doom-950 h-1.5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald transition-all duration-300"
+              className="h-full bg-gradient-to-r from-doom-emerald-dark to-doom-emerald transition-[width] duration-300 ease-out"
               style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
             />
           </div>
@@ -421,7 +415,7 @@ export const KnowledgeArena: React.FC = () => {
               {currentQ.options.map((option, idx) => {
                 const isSelected = selectedAnswer === option;
                 const isCorrect = option === currentQ.correctAnswer;
-                
+
                 let optionClasses = 'bg-doom-950/80 border-border hover:border-white/20 text-gray-200';
 
                 if (isAnswerSubmitted) {
@@ -441,7 +435,7 @@ export const KnowledgeArena: React.FC = () => {
                     key={idx}
                     disabled={isAnswerSubmitted}
                     onClick={() => handleSelectOption(option)}
-                    className={`w-full p-4 rounded-xl border text-left text-sm transition-all flex items-center justify-between gap-3 ${optionClasses}`}
+                    className={`w-full p-4 rounded-xl border text-left text-sm transition-[background-color,color,border-color,box-shadow] duration-150 ease-out flex items-center justify-between gap-3 ${optionClasses}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-6 h-6 rounded-lg bg-doom-900 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-400 shrink-0">
@@ -480,14 +474,14 @@ export const KnowledgeArena: React.FC = () => {
                 <button
                   onClick={() => handleSubmitAnswer()}
                   disabled={!selectedAnswer}
-                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md border border-doom-emerald/40"
+                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-[filter,transform] duration-150 ease-out shadow-md border border-doom-emerald/40 active:scale-[0.96]"
                 >
                   Confirm Answer
                 </button>
               ) : (
                 <button
                   onClick={handleNextQuestion}
-                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center gap-2 border border-doom-emerald/40"
+                  className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-[filter,transform] duration-150 ease-out shadow-md flex items-center gap-2 border border-doom-emerald/40 active:scale-[0.96]"
                 >
                   <span>{currentIndex + 1 < activeQuestions.length ? 'Next Question' : 'View Debrief & Results'}</span>
                   <ArrowRight size={14} />
@@ -512,11 +506,11 @@ export const KnowledgeArena: React.FC = () => {
               Challenge Concluded
             </span>
 
-            <h2 className="font-cinematic text-5xl md:text-6xl text-white uppercase tracking-wider">
+            <h2 className="font-cinematic text-5xl md:text-6xl text-white uppercase tracking-wider tabular-nums">
               Score: {score} / {activeQuestions.length}
             </h2>
 
-            <div className="font-mono text-2xl text-doom-emerald font-bold">
+            <div className="font-mono text-2xl text-doom-emerald font-bold tabular-nums">
               {Math.round((score / activeQuestions.length) * 100)}% Accuracy
             </div>
 
@@ -529,7 +523,7 @@ export const KnowledgeArena: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <button
                 onClick={() => setGameState('lobby')}
-                className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 border border-doom-emerald/40"
+                className="bg-gradient-to-r from-doom-emerald-dark to-doom-emerald hover:brightness-110 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md transition-[filter,transform] duration-150 ease-out flex items-center gap-2 border border-doom-emerald/40 active:scale-[0.96]"
               >
                 <RotateCcw size={14} />
                 <span>Return to Arena Lobby</span>
@@ -546,11 +540,10 @@ export const KnowledgeArena: React.FC = () => {
             {answersLog.map((log, idx) => (
               <div
                 key={idx}
-                className={`p-4 rounded-xl border space-y-2 ${
-                  log.isCorrect
-                    ? 'bg-doom-950 border-emerald-900/60'
-                    : 'bg-doom-950 border-red-900/60'
-                }`}
+                className={`p-4 rounded-xl border space-y-2 ${log.isCorrect
+                  ? 'bg-doom-950 border-emerald-900/60'
+                  : 'bg-doom-950 border-red-900/60'
+                  }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-2">

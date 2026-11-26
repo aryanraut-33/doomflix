@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  Check, 
-  Star, 
-  Film, 
-  Tv, 
-  Sparkles, 
+import {
+  Search,
+  Filter,
+  Plus,
+  Check,
+  Star,
+  Film,
+  Tv,
+  Sparkles,
   Info,
   Clock,
   Layers,
@@ -248,7 +248,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
             placeholder="Search titles, characters, actors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/10 focus:border-emerald-500/40 rounded-xl pl-9 pr-9 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none transition-all shadow-inner"
+            className="w-full bg-white/[0.03] border border-white/10 focus:border-emerald-500/40 rounded-xl pl-9 pr-9 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none transition-colors duration-150 ease-out shadow-inner"
           />
           {searchQuery && (
             <button
@@ -275,11 +275,10 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
             <button
               key={tag.id}
               onClick={() => setSelectedTag(tag.id as any)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
-                selectedTag === tag.id
-                  ? 'bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] whitespace-nowrap ${selectedTag === tag.id
+                ? 'bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               {tag.label}
             </button>
@@ -316,7 +315,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
       {/* 3. Results Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs text-gray-400 font-mono px-0.5 gap-2">
-          <span className="whitespace-nowrap">{filteredTitles.length} Titles</span>
+          <span className="whitespace-nowrap tabular-nums">{filteredTitles.length} Titles</span>
           <span className="truncate text-right">Target: <strong className="text-white">{activeCol?.name}</strong></span>
         </div>
 
@@ -337,11 +336,11 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
               return (
                 <div
                   key={title.id}
-                  className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all flex flex-col justify-between group"
+                  className="p-2.5 sm:p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-[background-color,border-color] duration-200 ease-out flex flex-col justify-between group"
                 >
                   <div>
                     {/* Poster Image */}
-                    <div 
+                    <div
                       onClick={() => onOpenTitleDetails(title)}
                       className="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-doom-950 cursor-pointer"
                     >
@@ -350,7 +349,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                         alt={title.title}
                         fallbackTitle={title.title}
                         fallbackSubtitle={String(title.releaseYear)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-doom-950/80 via-transparent to-transparent opacity-60" />
@@ -363,7 +362,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                       {/* Rating Pill */}
                       <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm border border-white/10 px-1.5 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1">
                         <Star size={9} fill="currentColor" />
-                        <span>{title.rating.toFixed(1)}</span>
+                        <span className="tabular-nums">{title.rating.toFixed(1)}</span>
                       </div>
 
                       {/* In Watchlist Indicator Pill */}
@@ -377,7 +376,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
 
                     {/* Title & Metadata */}
                     <div className="pt-2">
-                      <h4 
+                      <h4
                         onClick={() => onOpenTitleDetails(title)}
                         className="text-xs sm:text-sm font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors leading-tight"
                         title={title.title}
@@ -394,11 +393,10 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
                   <div className="pt-2 mt-1.5 border-t border-white/5 flex items-center gap-1.5">
                     <button
                       onClick={() => setModalTitle(title)}
-                      className={`flex-1 py-1 px-2 rounded-md font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-all truncate ${
-                        inCollection
-                          ? 'bg-white/5 text-gray-300 hover:text-white border border-white/10'
-                          : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
-                      }`}
+                      className={`flex-1 py-1 px-2 rounded-md font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color,border-color] duration-150 ease-out active:scale-[0.96] truncate ${inCollection
+                        ? 'bg-white/5 text-gray-300 hover:text-white border border-white/10'
+                        : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
+                        }`}
                       title={inCollection ? 'Add to another collection' : `Add to ${activeCol?.name || 'List'}`}
                     >
                       <Plus size={11} />
@@ -407,7 +405,7 @@ export const DiscoverCatalog: React.FC<DiscoverCatalogProps> = ({ onOpenTitleDet
 
                     <button
                       onClick={() => onOpenTitleDetails(title)}
-                      className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors shrink-0"
+                      className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-[background-color,color] duration-150 ease-out active:scale-[0.96] shrink-0"
                       title="View Details"
                     >
                       <Info size={12} />

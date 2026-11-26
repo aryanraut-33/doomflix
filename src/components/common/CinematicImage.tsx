@@ -41,7 +41,7 @@ export const CinematicImage: React.FC<CinematicImageProps> = ({
       alt={alt}
       onError={() => setHasError(true)}
       onLoad={() => setIsLoaded(true)}
-      className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-80'} ${className}`}
+      className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'} outline outline-1 -outline-offset-1 outline-white/10 ${className}`}
       {...props}
     />
   );

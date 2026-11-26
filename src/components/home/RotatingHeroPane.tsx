@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Play, 
-  CheckCircle2, 
-  ChevronLeft, 
-  ChevronRight, 
-  Info, 
+import {
+  Play,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Info,
   ExternalLink,
   Plus,
   Search,
@@ -36,9 +36,9 @@ const DEFAULT_SHOWCASE_IDS = [
 const MOBILE_CATEGORIES = ['ALL', 'MOVIES', 'SERIES', 'PHASE 1-3', 'PHASE 4-6'] as const;
 type MobileCategory = typeof MOBILE_CATEGORIES[number];
 
-export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({ 
-  onSelectTab, 
-  onOpenTitleDetails 
+export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
+  onSelectTab,
+  onOpenTitleDetails
 }) => {
   const { watchProgress, user, updateWatchStatus } = useAppStore();
   const [selectedCategory, setSelectedCategory] = useState<MobileCategory>('ALL');
@@ -83,16 +83,16 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
       return baseMovies.filter(t => t.mediaType === 'tv');
     }
     if (selectedCategory === 'PHASE 1-3') {
-      return MARVEL_TITLES.filter(t => 
-        t.defaultPhaseGroup.includes('Phase One') || 
-        t.defaultPhaseGroup.includes('Phase Two') || 
+      return MARVEL_TITLES.filter(t =>
+        t.defaultPhaseGroup.includes('Phase One') ||
+        t.defaultPhaseGroup.includes('Phase Two') ||
         t.defaultPhaseGroup.includes('Phase Three')
       ).slice(0, 6);
     }
     if (selectedCategory === 'PHASE 4-6') {
-      return MARVEL_TITLES.filter(t => 
-        t.defaultPhaseGroup.includes('Phase Four') || 
-        t.defaultPhaseGroup.includes('Phase Five') || 
+      return MARVEL_TITLES.filter(t =>
+        t.defaultPhaseGroup.includes('Phase Four') ||
+        t.defaultPhaseGroup.includes('Phase Five') ||
         t.defaultPhaseGroup.includes('Phase Six')
       ).slice(0, 6);
     }
@@ -221,7 +221,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
         {/* Mobile Hero Billboard Card */}
         <div className="px-4 pt-2">
-          <div 
+          <div
             className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.85)] bg-doom-950 group cursor-grab active:cursor-grabbing touch-pan-y"
             onClick={() => onOpenTitleDetails(activeMovie)}
             onTouchStart={handleTouchStart}
@@ -251,16 +251,15 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   updateWatchStatus(
-                    activeMovie.id, 
+                    activeMovie.id,
                     currentStatus === 'completed' ? 'not_started' : 'completed'
                   );
                 }}
                 aria-label="Toggle Watchlist"
-                className={`w-9 h-9 rounded-full backdrop-blur-md flex items-center justify-center transition-all ${
-                  currentStatus === 'completed'
-                    ? 'bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
-                    : 'bg-black/60 text-white/80 hover:text-white border border-white/15'
-                }`}
+                className={`w-9 h-9 rounded-full backdrop-blur-md flex items-center justify-center transition-[background-color,color,box-shadow] duration-150 ease-out active:scale-[0.96] ${currentStatus === 'completed'
+                  ? 'bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+                  : 'bg-black/60 text-white/80 hover:text-white border border-white/15'
+                  }`}
               >
                 {currentStatus === 'completed' ? <CheckCircle2 size={16} /> : <Bookmark size={15} />}
               </button>
@@ -285,7 +284,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
                 <div className="flex items-center gap-1 text-amber-400 font-semibold bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
                   <Star size={12} fill="currentColor" />
-                  <span>{activeMovie.rating.toFixed(1)}</span>
+                  <span className="tabular-nums">{activeMovie.rating.toFixed(1)}</span>
                 </div>
               </div>
 
@@ -297,9 +296,9 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-200 text-black py-2.5 px-4 rounded-full font-bold text-xs shadow-lg transition-transform active:scale-95"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-200 text-black py-2.5 px-4 rounded-full font-bold text-xs shadow-lg transition-transform duration-150 ease-out active:scale-[0.96]"
                   >
-                    <Play size={13} fill="currentColor" />
+                    <Play size={13} fill="currentColor" className="ml-px" />
                     <span>Watch Now</span>
                   </a>
                 )}
@@ -310,7 +309,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                     onOpenTitleDetails(activeMovie);
                   }}
                   aria-label="More Info"
-                  className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 hover:bg-black/80 transition-colors"
+                  className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 hover:bg-black/80 transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
                 >
                   <Info size={16} />
                 </button>
@@ -325,11 +324,10 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                       e.stopPropagation();
                       setCurrentIndex(idx);
                     }}
-                    className={`transition-all duration-300 rounded-full ${
-                      idx === currentIndex 
-                        ? 'w-5 h-1.5 bg-emerald-400' 
-                        : 'w-1.5 h-1.5 bg-white/30'
-                    }`}
+                    className={`transition-[width,background-color] duration-300 ease-out rounded-full ${idx === currentIndex
+                      ? 'w-5 h-1.5 bg-emerald-400'
+                      : 'w-1.5 h-1.5 bg-white/30'
+                      }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
                 ))}
@@ -342,7 +340,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
       {/* ============================================================== */}
       {/* 2. DESKTOP FORMAT ONLY (lg:block): Wide Cinematic Layout       */}
       {/* ============================================================== */}
-      <section 
+      <section
         className="hidden lg:block relative w-screen -ml-[50vw] left-1/2 overflow-hidden bg-doom-950 select-none group"
         style={{ minHeight: 'calc(100vh - 56px)' }}
         onMouseEnter={() => setIsPaused(true)}
@@ -366,7 +364,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
 
         {/* Content positioned to clear the 96px collapsed rail */}
         <div className="relative z-10 h-full flex flex-col justify-end pl-32 lg:pl-36 pr-6 sm:pr-12 lg:pr-16 pb-16 sm:pb-20 pt-32" style={{ minHeight: 'calc(100vh - 56px)' }}>
-          
+
           {/* Title */}
           <h1 className="font-cinematic text-5xl lg:text-7xl xl:text-8xl text-white uppercase tracking-wider leading-[0.9] drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] max-w-3xl">
             {activeMovie.title}
@@ -399,17 +397,17 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 href={streamUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-200 text-doom-950 px-6 py-2.5 rounded-md font-bold text-sm transition-all"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-200 text-doom-950 px-6 py-2.5 rounded-md font-bold text-sm transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
                 title={`Stream ${activeMovie.title}`}
               >
-                <Play size={16} fill="currentColor" />
+                <Play size={16} fill="currentColor" className="ml-px" />
                 <span>Watch now</span>
               </a>
             )}
 
             <button
               onClick={() => onOpenTitleDetails(activeMovie)}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all"
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
               title="More Info"
             >
               <Info size={18} />
@@ -431,11 +429,10 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 onMouseDown={(e) => e.preventDefault()}
-                className={`h-0.5 rounded-full transition-all duration-500 outline-none focus:outline-none focus-visible:outline-none focus:ring-0 select-none ${
-                  idx === currentIndex 
-                    ? 'w-8 bg-white' 
-                    : 'w-4 bg-white/30 hover:bg-white/50'
-                }`}
+                className={`h-0.5 rounded-full transition-[width,background-color] duration-500 ease-out outline-none focus:outline-none focus-visible:outline-none focus:ring-0 select-none ${idx === currentIndex
+                  ? 'w-8 bg-white'
+                  : 'w-4 bg-white/30 hover:bg-white/50'
+                  }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
@@ -447,7 +444,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           <button
             onClick={(e) => handleNext(e)}
             onMouseDown={(e) => e.preventDefault()}
-            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-95 transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-[0.96] transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
             aria-label="Next slide"
             title="Next slide"
           >
@@ -456,7 +453,7 @@ export const RotatingHeroPane: React.FC<RotatingHeroPaneProps> = ({
           <button
             onClick={(e) => handlePrev(e)}
             onMouseDown={(e) => e.preventDefault()}
-            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-95 transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
+            className="p-2 text-white/75 hover:text-white hover:scale-125 active:scale-[0.96] transition-transform cursor-pointer outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 ring-0 shadow-none border-0 select-none filter drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)]"
             aria-label="Previous slide"
             title="Previous slide"
           >

@@ -43,6 +43,15 @@
     @apply bg-background text-foreground font-sans antialiased;
     color-scheme: dark;
   }
+
+  /* Typography: balance headings, pretty body text */
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p, li, figcaption, blockquote {
+    text-wrap: pretty;
+  }
 }
 
 /* Universal Invisible Scrollbars across all browsers */
@@ -124,7 +133,9 @@ button:active {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-property: background-color, border-color, box-shadow, transform;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .doom-glass-card:hover {
@@ -152,7 +163,10 @@ button:active {
   -webkit-text-stroke: 3.5px #94a3b8;
   user-select: none;
   letter-spacing: -0.04em;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-variant-numeric: tabular-nums;
+  transition-property: -webkit-text-stroke-color, filter;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-block;
 }
 
@@ -170,7 +184,9 @@ button:active {
 }
 
 .metallic-card-hover {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-property: transform, border-color, box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 .metallic-card-hover:hover {
   border-color: rgba(16, 185, 129, 0.4);

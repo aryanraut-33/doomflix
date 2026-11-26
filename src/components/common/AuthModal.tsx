@@ -138,7 +138,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <button
               onClick={handleManualSync}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 bg-doom-800 hover:bg-doom-750 border border-doom-border text-white text-xs py-2.5 rounded-lg font-semibold transition-all"
+              className="w-full flex items-center justify-center gap-2 bg-doom-800 hover:bg-doom-750 border border-doom-border text-white text-xs py-2.5 rounded-lg font-semibold transition-[background-color,transform] duration-150 ease-out active:scale-[0.96]"
             >
               <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
               <span>Sync All Progress to Cloud</span>
@@ -198,7 +198,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-doom-red hover:bg-doom-red-bright text-white font-semibold py-2.5 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-doom-red hover:bg-doom-red-bright text-white font-semibold py-2.5 rounded-lg text-sm transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm flex items-center justify-center gap-2 mt-2"
             >
               {isLoading ? (
                 <RefreshCw size={16} className="animate-spin" />

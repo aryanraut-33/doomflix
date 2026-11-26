@@ -70,16 +70,16 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-cinematic text-2xl md:text-3xl text-white uppercase tracking-wider">
                   {user.username}
                 </h2>
                 {user.isGuest ? (
-                  <span className="text-[10px] bg-white/10 text-gray-400 border border-white/10 px-2 py-0.5 rounded-full font-mono">
+                  <span className="text-[10px] bg-white/10 text-gray-400 border border-white/10 px-2 py-0.5 rounded-full font-mono whitespace-nowrap shrink-0">
                     Guest Account
                   </span>
                 ) : (
-                  <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-mono flex items-center gap-1">
+                  <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-mono flex items-center gap-1 whitespace-nowrap shrink-0">
                     <CheckCircle2 size={10} /> Synced
                   </span>
                 )}
@@ -97,14 +97,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
                 <button
                   onClick={handleManualSync}
                   disabled={syncLoading}
-                  className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 active:scale-95"
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-[background-color,color,transform] duration-150 ease-out flex items-center justify-center gap-2 active:scale-[0.96]"
                 >
                   <RefreshCw size={13} className={syncLoading ? 'animate-spin' : ''} />
                   <span>Sync Progress</span>
                 </button>
                 <button
                   onClick={logout}
-                  className="w-full sm:w-auto bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  className="w-full sm:w-auto bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 px-4 py-2 rounded-xl text-xs font-semibold transition-[background-color,color,transform] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.96]"
                   title="Sign out of your account"
                 >
                   <LogOut size={13} />
@@ -115,14 +115,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={onOpenAuth}
-                  className="w-full sm:w-auto bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
+                  className="w-full sm:w-auto bg-white hover:bg-gray-200 text-black px-5 py-2 rounded-xl text-xs font-bold transition-[background-color,transform] duration-150 ease-out shadow-md flex items-center justify-center gap-2 active:scale-[0.96]"
                 >
                   <Database size={14} />
                   <span>Sign in / Sync Progress</span>
                 </button>
                 <button
                   onClick={logout}
-                  className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-medium transition-[background-color,color,transform] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.96]"
                   title="Reset session"
                 >
                   <LogOut size={13} />
@@ -148,7 +148,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             <Sparkles size={14} className="text-doom-emerald" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
-            {overallStats.completionPercentage}%
+            <span className="tabular-nums">{overallStats.completionPercentage}%</span>
           </div>
           <div className="text-[11px] text-gray-400 font-mono">
             {overallStats.completedCount} of {overallStats.totalTitles} titles watched
@@ -161,7 +161,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             <Film size={14} className="text-doom-emerald" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
-            {overallStats.moviesWatched}
+            <span className="tabular-nums">{overallStats.moviesWatched}</span>
           </div>
           <div className="text-[11px] text-gray-400 font-mono">
             Feature-length films
@@ -174,7 +174,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             <Tv size={14} className="text-doom-emerald" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
-            {overallStats.seriesCompleted}
+            <span className="tabular-nums">{overallStats.seriesCompleted}</span>
           </div>
           <div className="text-[11px] text-gray-400 font-mono">
             Loki & Multiverse TV
@@ -187,7 +187,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             <Layers size={14} className="text-doom-gold" />
           </div>
           <div className="font-cinematic text-4xl text-white font-black tracking-wider">
-            {collections.length}
+            <span className="tabular-nums">{collections.length}</span>
           </div>
           <div className="text-[11px] text-gray-400 font-mono">
             Active curated lists
@@ -208,7 +208,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             </p>
           </div>
           <div className="text-xs font-mono text-emerald-400 font-semibold shrink-0">
-            {unlockedAchievements.length} / {ACHIEVEMENTS.length} Unlocked
+            <span className="tabular-nums">{unlockedAchievements.length} / {ACHIEVEMENTS.length}</span> Unlocked
           </div>
         </div>
 
@@ -230,7 +230,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
             return (
               <div
                 key={ach.id}
-                className={`p-3 sm:p-4 rounded-xl border transition-all flex flex-col justify-between ${borderGlow}`}
+                className={`p-3 sm:p-4 rounded-xl border transition-[border-color,background-color,color] duration-200 ease-out flex flex-col justify-between ${borderGlow}`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-1 mb-2">
@@ -293,7 +293,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               Avg Accuracy
             </div>
             <div className="text-lg sm:text-2xl font-bold text-white tracking-tight mt-0.5">
-              {avgAccuracy}%
+              <span className="tabular-nums">{avgAccuracy}%</span>
             </div>
           </div>
 
@@ -302,7 +302,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onOpenAuth }) => {
               Top Score
             </div>
             <div className="text-lg sm:text-2xl font-bold text-amber-400 tracking-tight mt-0.5">
-              {bestScore}%
+              <span className="tabular-nums">{bestScore}%</span>
             </div>
           </div>
 

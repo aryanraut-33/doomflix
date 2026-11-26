@@ -91,7 +91,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
             </button>
             <button
               type="submit"
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"
+              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm"
             >
               {existingCol ? 'Save Changes' : 'Create Collection'}
             </button>
