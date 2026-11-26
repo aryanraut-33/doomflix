@@ -19,30 +19,36 @@ export const AchievementToast: React.FC<AchievementToastProps> = ({ achievement,
   if (!achievement) return null;
 
   return (
-    <div className="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 max-w-sm w-full bg-doom-900 border-2 border-doom-gold rounded-xl p-4 shadow-sm animate-slide-in-up select-none">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-24 lg:bottom-8 right-4 lg:right-8 z-50 max-w-sm w-[calc(100%-2rem)] sm:w-full bg-[#10141d] border border-emerald-500/35 rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.8)] animate-slide-in-up select-none"
+    >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-doom-gold to-doom-red flex items-center justify-center text-white shrink-0 shadow-md">
-          <Award size={20} />
+        <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+          <Award size={18} aria-hidden="true" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-marvel uppercase tracking-wider text-doom-gold font-bold">
-              Achievement Unlocked!
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-emerald-400">
+              Badge Unlocked
             </span>
             <button
+              type="button"
               onClick={onDismiss}
-              className="text-gray-400 hover:text-white p-0.5 transition-colors duration-150 ease-out active:scale-[0.96]"
+              aria-label="Dismiss notification"
+              className="ui-press ui-press--on-dark ui-focus w-7 h-7 rounded-lg text-slate-400 hover:text-white flex items-center justify-center shrink-0"
             >
-              <X size={14} />
+              <X size={14} aria-hidden="true" />
             </button>
           </div>
 
-          <h4 className="font-cinematic text-lg text-white tracking-wide truncate">
+          <h4 className="text-sm font-semibold text-white truncate mt-0.5">
             {achievement.name}
           </h4>
 
-          <p className="text-xs text-gray-300 line-clamp-2 mt-0.5 font-sans">
+          <p className="text-xs text-slate-400 line-clamp-2 mt-0.5 leading-snug">
             {achievement.description}
           </p>
         </div>

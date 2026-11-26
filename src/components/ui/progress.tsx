@@ -1,5 +1,5 @@
-import * as React from "react";
-import { cn } from "../../lib/utils";
+import * as React from 'react';
+import { cn } from '../../lib/utils';
 
 interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: number;
@@ -11,14 +11,14 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     <div
       ref={ref}
       className={cn(
-        "relative h-2 w-full overflow-hidden rounded-full bg-secondary border border-white/5",
+        'relative h-2 w-full overflow-hidden rounded-full bg-white/[0.08]',
         className
       )}
       {...props}
     >
       <div
         className={cn(
-          "h-full w-full flex-1 bg-primary transition-transform duration-500 ease-out",
+          'h-full w-full flex-1 bg-emerald-500 transition-transform duration-300 ease-out',
           indicatorClassName
         )}
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
@@ -26,6 +26,6 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     </div>
   )
 );
-Progress.displayName = "Progress";
+Progress.displayName = 'Progress';
 
 export { Progress };
