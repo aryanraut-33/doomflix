@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, FileText, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Check } from 'lucide-react';
 import { useAppStore } from '../../services/store';
 import { MarvelTitle } from '../../data/marvelCatalogue';
 
@@ -14,6 +14,21 @@ export const NotesModal: React.FC<NotesModalProps> = ({ title, isOpen, onClose }
   const currentNotes = title ? watchProgress[title.id]?.personalNotes || '' : '';
   const [notes, setNotes] = useState(currentNotes);
 
+  useEffect(() => {
+    if (isOpen && title) {
+      setNotes(watchProgress[title.id]?.personalNotes || '');
+    }
+  }, [isOpen, title, watchProgress]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !title) return null;
 
   const handleSave = () => {
@@ -22,56 +37,63 @@ export const NotesModal: React.FC<NotesModalProps> = ({ title, isOpen, onClose }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-doom-900 border border-doom-border rounded-2xl p-6 shadow-2xl">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg hover:bg-doom-800 transition-colors"
-        >
-          <X size={18} />
-        </button>
-
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-doom-red/20 text-doom-red border border-doom-red/40 flex items-center justify-center">
-            <FileText size={20} />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="notes-modal-title"
+        className="ui-dialog-enter relative w-full max-w-lg bg-[#101319] border border-white/12 rounded-2xl p-6 shadow-2xl space-y-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 id="notes-modal-title" className="text-lg font-semibold text-white truncate">
+              Notes · {title.title}
+            </h2>
           </div>
-          <div>
-            <span className="text-[10px] font-marvel uppercase tracking-wider text-doom-gold font-bold">
-              Operative Debrief Notes
-            </span>
-            <h3 className="font-cinematic text-2xl uppercase tracking-wider text-white truncate max-w-sm">
-              {title.title}
-            </h3>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg bg-white/[0.05] text-slate-300 hover:text-white flex items-center justify-center shrink-0"
+          >
+            <X size={16} aria-hidden="true" />
+          </button>
         </div>
 
         <div className="space-y-4">
-          <p className="text-xs text-gray-400 font-sans">
-            Record personal theories, timeline connections, or viewing thoughts for this title.
-          </p>
+          <div>
+            <label htmlFor="title-notes-input" className="sr-only">
+              Personal notes for {title.title}
+            </label>
+            <textarea
+              id="title-notes-input"
+              rows={6}
+              placeholder="Write timeline connections, mid-credits takeaways, or rewatch thoughts..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="ui-field w-full bg-[#090a0f] border border-white/14 rounded-xl p-3.5 text-sm text-white placeholder:text-slate-500 resize-none leading-relaxed"
+            />
+          </div>
 
-          <textarea
-            rows={6}
-            placeholder="e.g. Note the mid-credits scene with Clea; compare the Darkhold spells to WandaVision..."
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full bg-doom-950 border border-doom-border rounded-xl p-3.5 text-sm text-gray-100 focus:outline-none focus:border-doom-red transition-colors resize-none leading-relaxed"
-          />
-
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+              className="ui-press ui-press--on-dark ui-focus h-9 px-4 text-xs font-medium text-slate-300 hover:text-white rounded-lg"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleSave}
-              className="bg-doom-red hover:bg-doom-red-bright text-white px-5 py-2 rounded-lg text-xs font-bold transition-[background-color,transform] duration-150 ease-out active:scale-[0.96] shadow-sm flex items-center gap-1.5"
+              className="ui-press ui-focus h-9 bg-white text-doom-950 px-5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5"
             >
-              <Check size={14} />
-              <span>Save Operative Notes</span>
+              <Check size={14} aria-hidden="true" />
+              <span>Save Notes</span>
             </button>
           </div>
         </div>

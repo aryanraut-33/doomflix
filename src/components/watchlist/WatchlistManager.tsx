@@ -1,24 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Play, 
-  CheckCircle2, 
-  Clock, 
-  ChevronDown, 
-  ChevronUp, 
-  ArrowUpDown, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  RotateCcw, 
-  Film, 
-  FileText, 
-  ExternalLink,
+import React, { useState, useMemo, useEffect } from 'react';
+import {
+  Play,
+  CheckCircle2,
+  Clock,
+  Plus,
+  Edit2,
+  Trash2,
+  RotateCcw,
+  Film,
+  FileText,
   Layers,
   Sparkles,
   Info,
   Star,
   MoreVertical,
-  Check
+  Check,
 } from 'lucide-react';
 import { MARVEL_TITLES, MarvelTitle, PHASE_ORDER } from '../../data/marvelCatalogue';
 import { useAppStore } from '../../services/store';
@@ -34,84 +30,107 @@ interface WatchlistManagerProps {
 
 type SortOption = 'phase' | 'sequence' | 'year' | 'rating' | 'title';
 
-export const WatchlistManager: React.FC<WatchlistManagerProps> = ({ 
-  onOpenTitleDetails, 
-  onNavigateDiscover 
+export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
+  onOpenTitleDetails,
+  onNavigateDiscover,
 }) => {
-  const { 
-    collections, 
-    activeCollectionId, 
-    setActiveCollectionId, 
+  const {
+    collections,
+    activeCollectionId,
+    setActiveCollectionId,
     deleteCollection,
     removeTitleFromCollection,
     toggleTitlePriority,
     resetCollectionToDefault,
     watchProgress,
     updateWatchStatus,
-    getSeriesEpisodeStats
   } = useAppStore();
 
-  const activeCol = collections.find(c => c.id === activeCollectionId) || collections[0];
+  const activeCol = collections.find((c) => c.id === activeCollectionId) || collections[0];
 
-  // Modals state
   const [colModalOpen, setColModalOpen] = useState(false);
   const [editingColId, setEditingColId] = useState<string | null>(null);
   const [notesModalTitle, setNotesModalTitle] = useState<MarvelTitle | null>(null);
   const [moveModalTitle, setMoveModalTitle] = useState<MarvelTitle | null>(null);
   const [activeMenuTitleId, setActiveMenuTitleId] = useState<string | null>(null);
+  const [feedbackMsg, setFeedbackMsg] = useState<string>('');
 
-  // Filters & Sorting State - Phase wise by default!
   const [statusFilter, setStatusFilter] = useState<'all' | 'not_started' | 'in_progress' | 'completed'>('all');
   const [mediaFilter, setMediaFilter] = useState<'all' | 'movie' | 'tv'>('all');
   const [phaseFilter, setPhaseFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('phase');
 
-  // Build items combined with catalogue metadata
+  useEffect(() => {
+    if (!activeMenuTitleId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveMenuTitleId(null);
+    };
+    const onClick = () => setActiveMenuTitleId(null);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('click', onClick);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('click', onClick);
+    };
+  }, [activeMenuTitleId]);
+
+  useEffect(() => {
+    if (!feedbackMsg) return;
+    const t = window.setTimeout(() => setFeedbackMsg(''), 3000);
+    return () => clearTimeout(t);
+  }, [feedbackMsg]);
+
   const enrichedItems = useMemo(() => {
     if (!activeCol) return [];
-    return activeCol.items.map(item => {
-      const details = MARVEL_TITLES.find(t => t.id === item.movieId);
+    return activeCol.items.map((item) => {
+      const details = MARVEL_TITLES.find((t) => t.id === item.movieId);
       return {
         ...item,
-        details: details || {
-          id: item.movieId,
-          tmdbId: 0,
-          mediaType: 'movie',
-          title: 'Unknown Title',
-          releaseYear: 2025,
-          releaseDate: '2025-01-01',
-          runtime: 120,
-          rating: 7.0,
-          voteCount: 0,
-          genres: ['Action'],
-          director: 'Unknown',
-          cast: [],
-          synopsis: 'Custom added title.',
-          posterPath: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500',
-          backdropPath: '',
-          defaultPhaseGroup: 'Optional Viewing' as any,
-          defaultSequenceNumber: 99,
-          defaultPriority: 'optional' as any,
-          whyItMatters: '',
-          charactersIntroduced: [],
-          relevantPlotPoints: [],
-          universeConnections: [],
-          multiverseSignificance: '',
-          canonStatus: 'Confirmed Canon' as any,
-          streamingIndia: []
-        } as MarvelTitle
+        details:
+          details ||
+          ({
+            id: item.movieId,
+            tmdbId: 0,
+            mediaType: 'movie',
+            title: 'Custom Title',
+            releaseYear: 2025,
+            releaseDate: '2025-01-01',
+            runtime: 120,
+            rating: 7.0,
+            voteCount: 0,
+            genres: ['Action'],
+            director: 'Unknown',
+            cast: [],
+            synopsis: 'Custom added title.',
+            posterPath: '',
+            backdropPath: '',
+            defaultPhaseGroup: 'Optional Viewing' as any,
+            defaultSequenceNumber: 99,
+            defaultPriority: 'optional' as any,
+            whyItMatters: '',
+            charactersIntroduced: [],
+            relevantPlotPoints: [],
+            universeConnections: [],
+            multiverseSignificance: '',
+            canonStatus: 'Confirmed Canon' as any,
+            streamingIndia: [],
+          } as MarvelTitle),
       };
     });
   }, [activeCol]);
 
-  // Filter and Sort Items
   const filteredAndSortedItems = useMemo(() => {
     return enrichedItems
-      .filter(item => {
+      .filter((item) => {
         const prog = watchProgress[item.movieId]?.status || 'not_started';
         if (statusFilter !== 'all' && prog !== statusFilter) return false;
         if (mediaFilter !== 'all' && item.details.mediaType !== mediaFilter) return false;
-        if (phaseFilter !== 'all' && (item.phaseGroup || item.details.defaultPhaseGroup) !== phaseFilter) return false;
+        if (
+          phaseFilter !== 'all' &&
+          (item.phaseGroup || item.details.defaultPhaseGroup) !== phaseFilter
+        ) {
+          return false;
+        }
         return true;
       })
       .sort((a, b) => {
@@ -133,45 +152,47 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
       });
   }, [enrichedItems, statusFilter, mediaFilter, phaseFilter, sortBy, watchProgress]);
 
-  // Grouped by Phase structure when sorting by phase
   const phaseGroupSections = useMemo(() => {
     if (sortBy !== 'phase' || phaseFilter !== 'all') return null;
 
     const groups: { phaseName: string; displayName: string; items: typeof filteredAndSortedItems }[] = [];
-    
+
     for (const phase of PHASE_ORDER) {
       const itemsInPhase = filteredAndSortedItems.filter(
-        i => (i.phaseGroup || i.details.defaultPhaseGroup) === phase
+        (i) => (i.phaseGroup || i.details.defaultPhaseGroup) === phase
       );
       if (itemsInPhase.length > 0) {
         groups.push({
           phaseName: phase,
           displayName: phase.split('—')[1]?.trim() || phase,
-          items: itemsInPhase
+          items: itemsInPhase,
         });
       }
     }
 
-    // Optional or extra titles
     const extras = filteredAndSortedItems.filter(
-      i => !PHASE_ORDER.includes((i.phaseGroup || i.details.defaultPhaseGroup) as any)
+      (i) => !PHASE_ORDER.includes((i.phaseGroup || i.details.defaultPhaseGroup) as any)
     );
     if (extras.length > 0) {
       groups.push({
         phaseName: 'Optional',
         displayName: 'Special & Optional Lore',
-        items: extras
+        items: extras,
       });
     }
 
     return groups;
   }, [filteredAndSortedItems, sortBy, phaseFilter]);
 
-  const collectionCompletedCount = enrichedItems.filter(i => watchProgress[i.movieId]?.status === 'completed').length;
+  const collectionCompletedCount = enrichedItems.filter(
+    (i) => watchProgress[i.movieId]?.status === 'completed'
+  ).length;
   const collectionTotalCount = enrichedItems.length;
-  const collectionPercent = collectionTotalCount > 0 ? Math.round((collectionCompletedCount / collectionTotalCount) * 100) : 0;
+  const collectionPercent =
+    collectionTotalCount > 0
+      ? Math.round((collectionCompletedCount / collectionTotalCount) * 100)
+      : 0;
 
-  // Render a compact, subtle portrait card (fitting 2-3 per row on mobile, 5-6 on desktop)
   const renderCard = (item: (typeof enrichedItems)[0]) => {
     const title = item.details;
     const progress = watchProgress[title.id]?.status || 'not_started';
@@ -183,15 +204,16 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
     const streamUrl = streamInfo?.directUrl || streamInfo?.searchUrl;
 
     return (
-      <div
+      <article
         key={title.id}
-        className="group relative flex flex-col justify-between rounded-xl overflow-hidden bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/15 transition-[background-color,border-color] duration-200 ease-out p-2"
+        className="group relative flex flex-col justify-between rounded-2xl bg-[#0f131b] hover:bg-[#131823] border border-white/10 hover:border-white/20 transition-[background-color,border-color] duration-150 p-2"
       >
         <div>
-          {/* 1. Portrait Poster: aspect-[2/3] */}
-          <div 
+          <button
+            type="button"
             onClick={() => onOpenTitleDetails(title)}
-            className="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-doom-950 cursor-pointer shadow-md"
+            aria-label={`View details for ${title.title}`}
+            className="ui-press ui-press--surface ui-press--on-dark ui-focus relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-doom-950 block text-left"
           >
             <CinematicImage
               src={title.posterPath || title.backdropPath}
@@ -201,206 +223,266 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 will-change-transform"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70 group-hover:opacity-40 transition-opacity" />
+            <div
+              data-ui-overlap
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70 group-hover:opacity-45 transition-opacity pointer-events-none"
+            />
 
-            {/* Top Indicators */}
-            <div className="absolute top-1.5 inset-x-1.5 flex items-center justify-between pointer-events-none">
-              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm text-white/90">
+            <div
+              data-ui-overlap
+              className="absolute top-1.5 inset-x-1.5 flex items-center justify-between pointer-events-none"
+            >
+              <span className="text-[10px] font-mono font-semibold tabular-nums px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm text-white/90">
                 #{String(item.sequenceNumber).padStart(2, '0')}
               </span>
               {isCompleted && (
-                <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
-                  <CheckCircle2 size={11} />
+                <span
+                  aria-label="Watched"
+                  className="w-5 h-5 rounded-full bg-emerald-500 text-doom-950 flex items-center justify-center"
+                >
+                  <CheckCircle2 size={12} aria-hidden="true" />
                 </span>
               )}
               {isWatching && (
-                <span className="w-5 h-5 rounded-full bg-amber-500 text-black flex items-center justify-center shadow font-bold text-[9px]">
-                  <Clock size={11} />
+                <span
+                  aria-label="Watching"
+                  className="w-5 h-5 rounded-full bg-amber-400 text-doom-950 flex items-center justify-center"
+                >
+                  <Clock size={12} aria-hidden="true" />
                 </span>
               )}
             </div>
 
-            {/* Rating pill bottom-right */}
-            <div className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] text-amber-400 font-mono flex items-center gap-0.5">
-              <Star size={9} fill="currentColor" />
+            <div
+              data-ui-overlap
+              className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] text-amber-400 font-mono flex items-center gap-1 pointer-events-none"
+            >
+              <Star size={10} fill="currentColor" aria-hidden="true" />
               <span className="tabular-nums">{title.rating.toFixed(1)}</span>
             </div>
 
-            {/* Center hover play */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
-              <div className="w-8 h-8 rounded-full bg-white/90 text-doom-950 flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-                <Play size={13} fill="currentColor" className="ml-px" />
+            <div
+              data-ui-overlap
+              className="hidden sm:flex absolute inset-0 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/25 pointer-events-none"
+            >
+              <div className="w-9 h-9 rounded-full bg-white text-doom-950 flex items-center justify-center shadow-lg">
+                <Play size={14} fill="currentColor" className="ml-px" aria-hidden="true" />
               </div>
             </div>
-          </div>
+          </button>
 
-          {/* 2. Title & Metadata */}
-          <div className="pt-2">
-            <h4 
+          <div className="pt-2 px-0.5">
+            <button
+              type="button"
               onClick={() => onOpenTitleDetails(title)}
-              className="text-xs sm:text-sm font-semibold text-white truncate cursor-pointer hover:text-emerald-300 transition-colors leading-tight"
+              className="ui-dim ui-focus block w-full text-left text-xs sm:text-sm font-semibold text-white truncate hover:text-emerald-300 leading-tight"
               title={title.title}
             >
               {title.title}
-            </h4>
-            <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono mt-0.5">
-              <span>{title.releaseYear} • {title.mediaType === 'tv' ? 'Series' : `${title.runtime}m`}</span>
+            </button>
+            <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono tabular-nums mt-1">
+              <span>
+                {title.releaseYear} · {title.mediaType === 'tv' ? 'Series' : `${title.runtime}m`}
+              </span>
               {isEssential && (
-                <span className="text-[9px] text-emerald-400/90 font-medium">Essential</span>
+                <span className="text-[10px] font-sans text-emerald-400 font-medium">
+                  Essential
+                </span>
               )}
             </div>
           </div>
         </div>
 
-        {/* 3. Compact Action & Status Controls */}
-        <div className="pt-2 mt-1.5 border-t border-white/5 flex items-center gap-1.5">
+        {/* Uniform 32px footer controls */}
+        <div className="pt-2 mt-2 border-t border-white/[0.06] flex items-center gap-1.5">
           {streamUrl ? (
             <a
               href={streamUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color] duration-150 ease-out active:scale-[0.96] truncate"
+              className="ui-press ui-press--on-dark ui-focus flex-1 h-8 px-2.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white font-medium text-xs flex items-center justify-center gap-1.5 truncate"
               title={`Stream on ${streamInfo?.provider || 'Platform'}`}
             >
-              <Play size={10} fill="currentColor" className="ml-px" />
+              <Play size={12} fill="currentColor" className="ml-px shrink-0" aria-hidden="true" />
               <span className="truncate">Watch</span>
             </a>
           ) : (
             <button
+              type="button"
               onClick={() => onOpenTitleDetails(title)}
-              className="flex-1 py-1 px-2 rounded-md bg-white/10 hover:bg-white/20 text-white font-medium text-[10px] sm:text-[11px] flex items-center justify-center gap-1 transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
+              className="ui-press ui-press--on-dark ui-focus flex-1 h-8 px-2.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white font-medium text-xs flex items-center justify-center gap-1.5"
             >
-              <Info size={10} />
+              <Info size={12} className="shrink-0" aria-hidden="true" />
               <span>Info</span>
             </button>
           )}
 
-          {/* Quick Status Advance Button */}
           <button
+            type="button"
             onClick={() => {
-              const nextStatus = progress === 'not_started' ? 'in_progress' : progress === 'in_progress' ? 'completed' : 'not_started';
+              const nextStatus =
+                progress === 'not_started'
+                  ? 'in_progress'
+                  : progress === 'in_progress'
+                  ? 'completed'
+                  : 'not_started';
               updateWatchStatus(title.id, nextStatus);
             }}
-            className={`p-1 rounded-md text-[10px] border transition-colors ${
+            aria-label={`Change watch status (currently ${progress.replace('_', ' ')})`}
+            aria-pressed={isCompleted}
+            className={`ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 ${
               isCompleted
-                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                ? 'bg-emerald-500/20 border-emerald-500/45 text-emerald-400'
                 : isWatching
-                ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
-                : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
-            }`}
-            title={`Status: ${progress === 'completed' ? 'Watched' : progress === 'in_progress' ? 'Watching' : 'Not Started'}. Click to toggle`}
+                ? 'bg-amber-500/20 border-amber-500/45 text-amber-300'
+                : 'bg-white/[0.04] border-white/12 text-slate-400 hover:text-white'
+              }`}
+            title={`Status: ${
+              progress === 'completed'
+                ? 'Watched'
+                : progress === 'in_progress'
+                ? 'Watching'
+                : 'Not Started'
+            }. Click to toggle`}
           >
-            {isCompleted ? <CheckCircle2 size={13} /> : isWatching ? <Clock size={13} /> : <Check size={13} />}
+            {isCompleted ? (
+              <CheckCircle2 size={13} className="ui-pop-icon" aria-hidden="true" />
+            ) : isWatching ? (
+              <Clock size={13} className="ui-pop-icon" aria-hidden="true" />
+            ) : (
+              <Check size={13} aria-hidden="true" />
+            )}
           </button>
 
-          {/* More options menu */}
           <div className="relative">
             <button
-              onClick={() => setActiveMenuTitleId(isMenuOpen ? null : title.id)}
-              className="p-1 rounded-md bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveMenuTitleId(isMenuOpen ? null : title.id);
+              }}
+              aria-label={`More options for ${title.title}`}
+              aria-expanded={isMenuOpen}
+              className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg bg-white/[0.04] border border-white/12 text-slate-400 hover:text-white flex items-center justify-center shrink-0"
               title="More options"
             >
-              <MoreVertical size={13} />
+              <MoreVertical size={13} aria-hidden="true" />
             </button>
 
             {isMenuOpen && (
-              <div 
-                className="absolute right-0 bottom-full mb-1 w-36 rounded-lg bg-doom-950 border border-white/20 shadow-2xl py-1 z-30 text-xs backdrop-blur-xl"
-                onMouseLeave={() => setActiveMenuTitleId(null)}
+              <div
+                role="menu"
+                onClick={(e) => e.stopPropagation()}
+                className="ui-dialog-enter absolute right-0 bottom-full mb-1.5 w-40 rounded-xl bg-[#131823] border border-white/15 shadow-2xl p-1 z-30 text-xs"
               >
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     onOpenTitleDetails(title);
                     setActiveMenuTitleId(null);
                   }}
-                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                  className="ui-press ui-press--on-dark ui-focus w-full h-8 px-2.5 rounded-lg text-left text-slate-200 hover:bg-white/10 flex items-center gap-2"
                 >
-                  <Info size={11} />
+                  <Info size={13} aria-hidden="true" />
                   <span>Details</span>
                 </button>
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     toggleTitlePriority(activeCol.id, title.id);
                     setActiveMenuTitleId(null);
                   }}
-                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                  className="ui-press ui-press--on-dark ui-focus w-full h-8 px-2.5 rounded-lg text-left text-slate-200 hover:bg-white/10 flex items-center gap-2"
                 >
-                  <Sparkles size={11} className={isEssential ? 'text-emerald-400' : ''} />
-                  <span>{isEssential ? 'Optional' : 'Essential'}</span>
+                  <Sparkles size={13} className={isEssential ? 'text-emerald-400' : ''} aria-hidden="true" />
+                  <span>{isEssential ? 'Mark Optional' : 'Mark Essential'}</span>
                 </button>
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setNotesModalTitle(title);
                     setActiveMenuTitleId(null);
                   }}
-                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                  className="ui-press ui-press--on-dark ui-focus w-full h-8 px-2.5 rounded-lg text-left text-slate-200 hover:bg-white/10 flex items-center gap-2"
                 >
-                  <FileText size={11} />
+                  <FileText size={13} aria-hidden="true" />
                   <span>Notes</span>
                 </button>
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     setMoveModalTitle(title);
                     setActiveMenuTitleId(null);
                   }}
-                  className="w-full px-2.5 py-1 text-left text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5"
+                  className="ui-press ui-press--on-dark ui-focus w-full h-8 px-2.5 rounded-lg text-left text-slate-200 hover:bg-white/10 flex items-center gap-2"
                 >
-                  <Layers size={11} />
+                  <Layers size={13} aria-hidden="true" />
                   <span>Move</span>
                 </button>
-                <div className="my-0.5 border-t border-white/10" />
+                <div className="my-1 border-t border-white/10" />
                 <button
+                  type="button"
+                  role="menuitem"
                   onClick={() => {
                     removeTitleFromCollection(activeCol.id, title.id);
                     setActiveMenuTitleId(null);
+                    setFeedbackMsg(`Removed "${title.title}" from ${activeCol.name}.`);
                   }}
-                  className="w-full px-2.5 py-1 text-left text-red-400 hover:bg-red-950/50 flex items-center gap-1.5"
+                  className="ui-press ui-press--on-dark ui-focus w-full h-8 px-2.5 rounded-lg text-left text-rose-400 hover:bg-rose-500/15 flex items-center gap-2"
                 >
-                  <Trash2 size={11} />
+                  <Trash2 size={13} aria-hidden="true" />
                   <span>Remove</span>
                 </button>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </article>
     );
   };
 
   return (
     <div className="space-y-6 pb-20">
-      {/* 1. Collection Header Bar — Minimal, Subtle & Unboxed */}
-      <div className="pb-3 border-b border-white/5 space-y-3">
-        {/* Collection Switcher Pills & Action Tools */}
+      {/* Header Bar */}
+      <div className="pb-4 border-b border-white/[0.08] space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            {collections.map(col => {
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+            {collections.map((col) => {
               const isActive = col.id === activeCollectionId;
               return (
                 <button
                   key={col.id}
+                  type="button"
                   onClick={() => setActiveCollectionId(col.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-[background-color,color] duration-150 ease-out active:scale-[0.96] flex items-center gap-1.5 ${
+                  aria-pressed={isActive}
+                  className={`ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 whitespace-nowrap shrink-0 border ${
                     isActive
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                      ? 'bg-white/14 text-white border-white/20 font-semibold'
+                      : 'bg-transparent text-slate-400 hover:text-white border-transparent hover:bg-white/[0.06]'
                   }`}
                 >
                   <span>{col.name}</span>
-                  <span className="text-[10px] font-mono opacity-70 tabular-nums">({col.items.length})</span>
+                  <span className="text-[11px] font-mono tabular-nums opacity-75">
+                    ({col.items.length})
+                  </span>
                 </button>
               );
             })}
 
             <button
+              type="button"
               onClick={() => {
                 setEditingColId(null);
                 setColModalOpen(true);
               }}
-              className="px-2.5 py-1 rounded-full text-xs text-gray-400 hover:text-white border border-dashed border-white/20 hover:border-white/40 flex items-center gap-1 transition-[border-color,color] duration-150 ease-out active:scale-[0.96]"
+              className="ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-full text-xs font-medium text-slate-300 hover:text-white border border-dashed border-white/20 hover:border-white/35 flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="Create a new collection"
             >
-              <Plus size={11} />
+              <Plus size={13} aria-hidden="true" />
               <span>New</span>
             </button>
           </div>
@@ -408,83 +490,104 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           <div className="flex items-center gap-2 shrink-0">
             {activeCol?.isSystemCollection ? (
               <button
-                onClick={() => resetCollectionToDefault(activeCol.id)}
-                className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1"
+                type="button"
+                onClick={() => {
+                  resetCollectionToDefault(activeCol.id);
+                  setFeedbackMsg('Watchlist restored to recommended phase order.');
+                }}
+                className="ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-white/[0.05] border border-white/10 inline-flex items-center gap-1.5"
                 title="Reset to recommended order"
               >
-                <RotateCcw size={12} />
+                <RotateCcw size={13} aria-hidden="true" />
                 <span className="hidden sm:inline">Reset</span>
               </button>
             ) : (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     setEditingColId(activeCol.id);
                     setColModalOpen(true);
                   }}
-                  className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1"
+                  aria-label="Rename collection"
+                  className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg text-slate-300 hover:text-white bg-white/[0.05] border border-white/10 inline-flex items-center justify-center"
                   title="Rename"
                 >
-                  <Edit2 size={12} />
+                  <Edit2 size={13} aria-hidden="true" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => deleteCollection(activeCol.id)}
-                  className="text-xs text-red-400/80 hover:text-red-400 flex items-center gap-1 transition-colors px-2 py-1"
+                  aria-label="Delete collection"
+                  className="ui-press ui-press--on-dark ui-focus w-8 h-8 rounded-lg text-rose-400 bg-rose-500/10 border border-rose-500/25 inline-flex items-center justify-center"
                   title="Delete"
                 >
-                  <Trash2 size={12} />
+                  <Trash2 size={13} aria-hidden="true" />
                 </button>
               </>
             )}
 
             <button
+              type="button"
               onClick={onNavigateDiscover}
-              className="text-xs font-medium text-white/90 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-1 rounded-lg transition-[background-color,color] duration-150 ease-out active:scale-[0.96] flex items-center gap-1.5"
+              className="ui-press ui-focus h-8 px-3 rounded-lg text-xs font-semibold text-doom-950 bg-white inline-flex items-center gap-1.5 shrink-0"
             >
-              <Plus size={12} />
+              <Plus size={13} aria-hidden="true" />
               <span>Add</span>
             </button>
           </div>
         </div>
 
-        {/* Title & Subtle Inline Progress */}
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
           <div className="flex items-baseline gap-2.5">
-            <h1 className="text-lg sm:text-xl font-medium text-white tracking-wide">
+            <h1 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
               {activeCol?.name}
             </h1>
             {activeCol?.isSystemCollection && (
-              <span className="text-[10px] text-gray-400 font-mono">
-                Curated Prep
+              <span className="text-xs text-slate-400">
+                Curated sequence
               </span>
             )}
           </div>
-          
-          <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <span className="tabular-nums">{collectionCompletedCount}/{collectionTotalCount} watched</span>
-            <span className="text-gray-600">•</span>
-            <span className="text-emerald-400 font-medium tabular-nums">{collectionPercent}%</span>
+
+          <div className="flex items-center gap-2 text-xs font-mono tabular-nums text-slate-400">
+            <span>
+              {collectionCompletedCount}/{collectionTotalCount} watched
+            </span>
+            <span aria-hidden="true" className="text-slate-600">/</span>
+            <span className="text-emerald-400 font-semibold">{collectionPercent}%</span>
           </div>
         </div>
+
+        {feedbackMsg && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300"
+          >
+            {feedbackMsg}
+          </div>
+        )}
       </div>
 
-      {/* 2. Filter & Sort Toolbar — Responsive & Minimal (No Clipping on Mobile) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
-        {/* Status Filter Chips */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+      {/* Filters & Sort */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           {[
             { val: 'all', label: 'All' },
             { val: 'in_progress', label: 'Watching' },
             { val: 'completed', label: 'Watched' },
             { val: 'not_started', label: 'Not Started' },
-          ].map(opt => (
+          ].map((opt) => (
             <button
               key={opt.val}
+              type="button"
               onClick={() => setStatusFilter(opt.val as any)}
-              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-[background-color,color] duration-150 ease-out active:scale-[0.96] ${
+              aria-pressed={statusFilter === opt.val}
+              className={`ui-press ui-press--on-dark ui-focus h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap shrink-0 border ${
                 statusFilter === opt.val
-                  ? 'bg-white/15 text-white font-semibold'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-white/14 text-white border-white/20 font-semibold'
+                  : 'text-slate-400 hover:text-white border-transparent hover:bg-white/[0.06]'
               }`}
             >
               {opt.label}
@@ -492,36 +595,37 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
           ))}
         </div>
 
-        {/* Media & Sorting Controls — 3 Equal Grid Cols on Mobile, Inline on Desktop */}
-        <div className="grid grid-cols-3 sm:flex items-center gap-1.5 w-full sm:w-auto">
-          {/* Media Filter */}
+        <div className="grid grid-cols-3 sm:flex items-center gap-2 w-full sm:w-auto">
           <select
+            aria-label="Filter by media type"
             value={mediaFilter}
             onChange={(e) => setMediaFilter(e.target.value as any)}
-            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none"
+            className="doom-select ui-field h-8 w-full sm:w-auto border border-white/14 rounded-lg px-2.5 text-xs text-slate-200"
           >
             <option value="all">All Types</option>
             <option value="movie">Movies</option>
             <option value="tv">Series</option>
           </select>
 
-          {/* Phase Filter */}
           <select
+            aria-label="Filter by phase"
             value={phaseFilter}
             onChange={(e) => setPhaseFilter(e.target.value)}
-            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none truncate"
+            className="doom-select ui-field h-8 w-full sm:w-auto border border-white/14 rounded-lg px-2.5 text-xs text-slate-200 truncate"
           >
             <option value="all">All Phases</option>
-            {PHASE_ORDER.map(p => (
-              <option key={p} value={p}>{p.split('—')[1]?.trim() || p}</option>
+            {PHASE_ORDER.map((p) => (
+              <option key={p} value={p}>
+                {p.split('—')[1]?.trim() || p}
+              </option>
             ))}
           </select>
 
-          {/* Sort By Dropdown */}
           <select
+            aria-label="Sort watchlist"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="w-full sm:w-auto bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2 py-1 text-xs text-gray-300 focus:outline-none"
+            className="doom-select ui-field h-8 w-full sm:w-auto border border-white/14 rounded-lg px-2.5 text-xs text-slate-200"
           >
             <option value="phase">Phase Order</option>
             <option value="sequence">Sequence</option>
@@ -532,71 +636,61 @@ export const WatchlistManager: React.FC<WatchlistManagerProps> = ({
         </div>
       </div>
 
-      {/* 3. Titles Display: 2-3 per row on Mobile, 5-6 on Desktop */}
+      {/* Results */}
       {filteredAndSortedItems.length === 0 ? (
-        <div className="rounded-2xl p-10 text-center space-y-3 border border-white/5 bg-white/[0.01]">
-          <div className="w-12 h-12 rounded-full bg-white/5 text-gray-400 flex items-center justify-center mx-auto">
-            <Film size={20} />
+        <div className="rounded-2xl p-10 text-center space-y-3 border border-white/10 bg-[#0f131b]">
+          <div className="w-11 h-11 rounded-full bg-white/[0.06] text-slate-400 flex items-center justify-center mx-auto">
+            <Film size={20} aria-hidden="true" />
           </div>
-          <h3 className="text-base font-semibold text-white">
-            No Titles Match Filters
-          </h3>
-          <p className="text-xs text-gray-400 max-w-sm mx-auto font-sans">
-            Adjust your active filters or add new titles from the Discover catalog.
-          </p>
+          <h3 className="text-base font-semibold text-white">No titles match these filters</h3>
           <button
+            type="button"
             onClick={() => {
               setStatusFilter('all');
               setMediaFilter('all');
               setPhaseFilter('all');
             }}
-            className="bg-white/10 hover:bg-white/15 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition-[background-color,color] duration-150 ease-out active:scale-[0.96]"
+            className="ui-press ui-focus h-9 bg-white text-doom-950 px-4 rounded-lg text-xs font-semibold inline-flex items-center justify-center"
           >
-            Clear Filters
+            Clear filters
           </button>
         </div>
       ) : phaseGroupSections ? (
-        /* Phase-Wise Grouped Display */
         <div className="space-y-8">
           {phaseGroupSections.map((group) => {
             const groupWatchedCount = group.items.filter(
-              i => watchProgress[i.movieId]?.status === 'completed'
+              (i) => watchProgress[i.movieId]?.status === 'completed'
             ).length;
 
             return (
               <section key={group.phaseName} className="space-y-3">
-                {/* Phase Section Header */}
-                <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    <h2 className="text-sm sm:text-base font-medium text-white tracking-wide">
+                <div className="flex items-center justify-between border-b border-white/[0.07] pb-2">
+                  <div className="flex items-baseline gap-2">
+                    <h2 className="text-sm sm:text-base font-semibold text-white">
                       {group.displayName}
                     </h2>
-                    <span className="text-xs text-gray-500 font-mono tabular-nums">
+                    <span className="text-xs text-slate-400 font-mono tabular-nums">
                       ({group.items.length})
                     </span>
                   </div>
-                  <span className="text-[11px] text-gray-400 font-mono tabular-nums">
+                  <span className="text-xs text-slate-400 font-mono tabular-nums">
                     {groupWatchedCount}/{group.items.length} watched
                   </span>
                 </div>
 
-                {/* Grid: 2-3 movies per row on mobile, 4 on tablet, 5-6 on desktop */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
-                  {group.items.map(item => renderCard(item))}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                  {group.items.map((item) => renderCard(item))}
                 </div>
               </section>
             );
           })}
         </div>
       ) : (
-        /* Standard Sorted Grid: 2-3 movies per row on mobile, 5-6 on desktop */
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
-          {filteredAndSortedItems.map(item => renderCard(item))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+          {filteredAndSortedItems.map((item) => renderCard(item))}
         </div>
       )}
 
-      {/* Modals */}
       <CollectionModal
         isOpen={colModalOpen}
         onClose={() => setColModalOpen(false)}
